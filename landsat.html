@@ -84,86 +84,134 @@
   .chart-card h3 { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:4px; }
   .chart-subtitle { font-size:13px; color:var(--muted); margin-bottom:20px; }
 
-  /* ── FIGURE BLOCKS ── */
+  /* ══ FIGURE BLOCKS ══ */
   .figure-block {
-    background:var(--card-bg);
-    border:1px solid var(--border-neutral);
-    border-radius:12px;
-    overflow:hidden;
-    margin-bottom:24px;
+    background: #13201a;
+    border: 1px solid var(--border-neutral);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
   }
+
+  /* header bar */
   .figure-header {
-    padding:16px 24px 14px;
-    border-bottom:1px solid var(--border-neutral);
-    display:flex; align-items:baseline; gap:12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border-neutral);
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(0,0,0,0.2);
   }
   .figure-label {
     font-family:'IBM Plex Mono',monospace; font-size:10px;
     letter-spacing:2px; text-transform:uppercase;
     color:var(--accent); flex-shrink:0;
+    background:rgba(200,122,58,0.1); border:1px solid var(--border);
+    border-radius:3px; padding:2px 8px;
   }
   .figure-title {
-    font-size:14px; font-weight:500; color:var(--text);
+    font-size:13px; font-weight:500; color:var(--text); line-height:1.4;
   }
-  .figure-zoom-hint {
-    font-family:'IBM Plex Mono',monospace; font-size:10px;
-    color:rgba(255,255,255,0.25); margin-left:auto; flex-shrink:0;
-    display:flex; align-items:center; gap:5px;
+  .figure-zoom-btn {
+    margin-left:auto; flex-shrink:0;
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px;
+    color:var(--accent2); background:rgba(122,184,146,0.1);
+    border:1px solid rgba(122,184,146,0.25); border-radius:4px;
+    padding:4px 12px; cursor:pointer; white-space:nowrap;
+    transition:background 0.15s;
+  }
+  .figure-zoom-btn:hover { background:rgba(122,184,146,0.22); }
+
+  /* mat frame — dark border between page and white map */
+  .figure-mat {
+    background: #1a2820;
+    padding: 16px;
+    cursor: zoom-in;
+    position: relative;
+  }
+  .figure-mat:hover .figure-zoom-overlay { opacity:1; }
+
+  /* zoom overlay on hover */
+  .figure-zoom-overlay {
+    position:absolute; inset:16px;
+    background:rgba(0,0,0,0.0);
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; transition:opacity 0.2s; pointer-events:none;
+    border-radius:4px;
+  }
+  .figure-zoom-overlay-inner {
+    background:rgba(0,0,0,0.55); border:1px solid rgba(255,255,255,0.2);
+    border-radius:6px; padding:8px 18px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:2px;
+    color:rgba(255,255,255,0.85); text-transform:uppercase;
   }
 
-  /* image wrapper — white bg images get padding + subtle inset */
-  .figure-img-wrap {
-    background:#f8f6f0;  /* match map white background */
-    padding:0;
-    cursor:zoom-in;
-    position:relative;
-    overflow:hidden;
-    transition:opacity 0.15s;
-  }
-  .figure-img-wrap:hover { opacity:0.93; }
-  .figure-img-wrap img {
-    width:100%;
-    height:auto;
-    display:block;
-  }
-  /* portrait map — constrain width so it doesn't stretch awkwardly */
-  .figure-portrait .figure-img-wrap {
-    max-width:680px;
-    margin:0 auto;
-    border-left:1px solid rgba(0,0,0,0.06);
-    border-right:1px solid rgba(0,0,0,0.06);
-  }
-  /* landscape panel map — full width */
-  .figure-landscape .figure-img-wrap {
-    width:100%;
+  /* the actual image — always full width of its mat, height auto = NO CLIPPING */
+  .figure-mat img {
+    width: 100%;
+    height: auto;          /* critical — never clip multi-panel images */
+    display: block;
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.12);
   }
 
-  .figure-caption {
-    padding:12px 24px 14px;
-    font-size:12px; line-height:1.65;
-    color:rgba(255,255,255,0.32);
-    font-style:italic;
-    border-top:1px solid var(--border-neutral);
+  /* portrait: center with max-width so tall map doesn't go wall-to-wall */
+  .figure-portrait .figure-mat {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
   }
-  .figure-caption strong { color:rgba(255,255,255,0.5); font-style:normal; }
+  .figure-portrait .figure-mat img {
+    max-width: 620px;
+    width: 100%;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
 
-  /* panel labels below multi-panel images */
+  /* landscape / panel: full width, no max constraint */
+  .figure-landscape .figure-mat img {
+    max-width: 100%;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+
+  /* panel label strip */
   .panel-labels {
-    display:flex; gap:0;
-    border-top:1px solid var(--border-neutral);
-    background:rgba(0,0,0,0.15);
+    display: flex;
+    border-top: 1px solid var(--border-neutral);
+    background: rgba(0,0,0,0.25);
   }
   .panel-label {
-    flex:1; padding:8px 0; text-align:center;
+    flex:1; padding:9px 4px; text-align:center;
     font-family:'IBM Plex Mono',monospace; font-size:10px;
-    color:rgba(255,255,255,0.35); letter-spacing:1px;
+    color:rgba(255,255,255,0.38); letter-spacing:1px;
     border-right:1px solid var(--border-neutral);
   }
   .panel-label:last-child { border-right:none; }
-  .panel-label span { display:block; font-size:9px; color:rgba(255,255,255,0.2); margin-top:2px; letter-spacing:0; font-family:'Hanken Grotesk',sans-serif; }
+  .panel-label.best { color:var(--accent); }
+  .panel-label span {
+    display:block; font-size:9px; color:rgba(255,255,255,0.22);
+    margin-top:2px; font-family:'Hanken Grotesk',sans-serif; letter-spacing:0;
+  }
+  .panel-label.best span { color:rgba(200,122,58,0.65); }
 
-  /* side-by-side figure pair */
-  .figure-pair { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px; }
+  /* caption */
+  .figure-caption {
+    padding: 12px 20px 14px;
+    font-size: 12px; line-height: 1.7;
+    color: rgba(255,255,255,0.35);
+    font-style: italic;
+    border-top: 1px solid var(--border-neutral);
+    background: rgba(0,0,0,0.15);
+  }
+  .figure-caption strong { color:rgba(255,255,255,0.55); font-style:normal; }
+
+  /* image error state */
+  .img-error-block {
+    background:#1a2820; min-height:200px; border-radius:4px;
+    display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:10px; padding:32px;
+    border:1px dashed rgba(200,122,58,0.3);
+  }
+  .img-error-block p { font-size:13px; color:rgba(255,255,255,0.35); text-align:center; line-height:1.65; }
+  .img-error-block code { font-family:'IBM Plex Mono',monospace; font-size:10px; color:rgba(200,122,58,0.6); }
 
   /* ── LIGHTBOX ── */
   .lightbox-overlay {
@@ -205,26 +253,18 @@
   .ph-slot-name { font-size:13px; color:rgba(255,255,255,0.4); }
   .ph-slot-hint { font-size:11px; color:rgba(255,255,255,0.18); margin-top:2px; line-height:1.5; }
 
-  /* image loading & error states */
-  .figure-img-wrap img { background: #f0ede6; min-height:200px; }
-  .img-error {
-    padding:40px 24px; text-align:center;
-    font-size:13px; color:rgba(0,0,0,0.45);
-    background:#f8f6f0; min-height:180px;
-    display:flex; flex-direction:column;
-    align-items:center; justify-content:center; gap:8px;
-    line-height:1.7;
-  }
-  .img-error small { font-family:'IBM Plex Mono',monospace; font-size:10px; opacity:0.6; }
-
-  /* ArcGIS sharing note strip */
+  /* ArcGIS hosting note */
   .arcgis-note {
     display:flex; align-items:center; gap:10px;
-    background:rgba(74,154,186,0.08); border:1px solid rgba(74,154,186,0.2);
-    border-radius:8px; padding:10px 16px; margin-bottom:16px;
-    font-size:12px; color:rgba(240,236,228,0.5);
+    background:rgba(74,154,186,0.07); border:1px solid rgba(74,154,186,0.18);
+    border-radius:8px; padding:10px 16px; margin-bottom:20px;
+    font-size:12px; color:rgba(240,236,228,0.45); line-height:1.5;
   }
-  .arcgis-note strong { color:rgba(74,154,186,0.9); font-size:11px; font-family:'IBM Plex Mono',monospace; letter-spacing:1px; }
+  .arcgis-note strong {
+    color:rgba(74,154,186,0.85); font-size:10px;
+    font-family:'IBM Plex Mono',monospace; letter-spacing:1.5px;
+    flex-shrink:0;
+  }
 
   footer { border-top:1px solid var(--border-neutral); padding:28px 64px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
   .footer-text { font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.22); }
@@ -310,17 +350,17 @@
       <div class="figure-header">
         <div class="figure-label">Figure 1</div>
         <div class="figure-title">Vegetation Damage Assessment Map — Lower MRD (2010–2019)</div>
-        <div class="figure-zoom-hint">🔍 Click to enlarge</div>
+        <button class="figure-zoom-btn" onclick="openLightbox('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/d4f0a500cd094599b1b7dc4c723cc186/data','Figure 1. Vegetation dieback assessment map based on NDVI change in the lower MRD from 2010 to 2019.')">⤢ Enlarge</button>
       </div>
-      <div class="figure-img-wrap"
-           onclick="openLightbox('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/d4f0a500cd094599b1b7dc4c723cc186/data','Figure 1. Vegetation dieback assessment map based on NDVI change in the lower MRD from 2010 to 2019. Classes: Vegetation Loss (orange), Dieback (red), Non-Veg to Veg Gain (lime), Stable Vegetation (grey), Increased Vegetation (green), Water (blue).')">
+      <div class="figure-mat" onclick="openLightbox('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/d4f0a500cd094599b1b7dc4c723cc186/data','Figure 1. Vegetation dieback assessment map based on NDVI change in the lower MRD from 2010 to 2019.')">
+        <div class="figure-zoom-overlay"><div class="figure-zoom-overlay-inner">Click to Enlarge</div></div>
         <img src="https://lsu-its.maps.arcgis.com/sharing/rest/content/items/d4f0a500cd094599b1b7dc4c723cc186/data"
              alt="Vegetation Damage Assessment Map Lower MRD 2010-2019"
              loading="lazy"
-             onerror="this.parentElement.innerHTML='<div class=\'img-error\'>⚠ Image unavailable — ensure ArcGIS item is shared publicly.<br><small>Item ID: d4f0a500cd094599b1b7dc4c723cc186</small></div>'">
+             onerror="this.outerHTML='<div class=\'img-error-block\'><p>⚠ Image unavailable — check ArcGIS sharing is set to <strong>Everyone (Public)</strong></p><code>Item: d4f0a500cd094599b1b7dc4c723cc186</code></div>'">
       </div>
       <div class="figure-caption">
-        <strong>Figure 1.</strong> Vegetation dieback assessment map based on NDVI change in the lower MRD from 2010 to 2019. Orange = Vegetation to Non-Vegetation loss; Red = Dieback; Lime = Non-Vegetation to Vegetation gain; Grey = Stable vegetation (no change); Green = Increased vegetation density; Blue = Water. Dieback and loss are concentrated along the east and south margins of the delta.
+        <strong>Figure 1.</strong> Vegetation dieback assessment map based on NDVI change in the lower MRD from 2010 to 2019. <strong>Orange</strong> = Vegetation to Non-Vegetation (loss); <strong>Red</strong> = Dieback; <strong>Lime</strong> = Non-Vegetation to Vegetation (gain); <strong>Grey</strong> = Stable vegetation; <strong>Green</strong> = Increased vegetation density; <strong>Blue</strong> = Water. Dieback and loss concentrated in east and south delta margins.
       </div>
     </div>
 
@@ -378,25 +418,25 @@
     <div class="figure-block figure-landscape">
       <div class="figure-header">
         <div class="figure-label">Figure 2</div>
-        <div class="figure-title">WV-2 Classification Results — Main Pass (KNN · MLC · SVM · RF)</div>
-        <div class="figure-zoom-hint">🔍 Click to enlarge</div>
+        <div class="figure-title">WV-2 Classification — Main Pass &nbsp;·&nbsp; (a) KNN &nbsp;·&nbsp; (b) MLC &nbsp;·&nbsp; (c) SVM ★ &nbsp;·&nbsp; (d) RF &nbsp;·&nbsp; (e) Location</div>
+        <button class="figure-zoom-btn" onclick="openLightbox('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/0639f41d535c465baf2e2465d4694364/data','Figure 2. WV-2 classification results for Main Pass.')">⤢ Enlarge</button>
       </div>
-      <div class="figure-img-wrap"
-           onclick="openLightbox('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/0639f41d535c465baf2e2465d4694364/data','Figure 2. WV-2 classification results for Main Pass: (a) KNN — OA 73.56%, (b) MLC — OA 80.50%, (c) SVM — OA 90.80% κ=0.90 [best], (d) RF — OA 71.26%, (e) Study area location in lower MRD.')">
+      <div class="figure-mat" onclick="openLightbox('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/0639f41d535c465baf2e2465d4694364/data','Figure 2. WV-2 classification results for Main Pass: (a) KNN OA 73.56%, (b) MLC OA 80.50%, (c) SVM OA 90.80% κ=0.90 — best, (d) RF OA 71.26%, (e) study area inset.')">
+        <div class="figure-zoom-overlay"><div class="figure-zoom-overlay-inner">Click to Enlarge</div></div>
         <img src="https://lsu-its.maps.arcgis.com/sharing/rest/content/items/0639f41d535c465baf2e2465d4694364/data"
-             alt="WV-2 Classification Main Pass — KNN MLC SVM RF comparison"
+             alt="WV-2 Classification Main Pass — KNN MLC SVM RF"
              loading="lazy"
-             onerror="this.parentElement.innerHTML='<div class=\'img-error\'>⚠ Image unavailable — ensure ArcGIS item is shared publicly.<br><small>Item ID: 0639f41d535c465baf2e2465d4694364</small></div>'">
+             onerror="this.outerHTML='<div class=\'img-error-block\'><p>⚠ Image unavailable — check ArcGIS sharing is set to <strong>Everyone (Public)</strong></p><code>Item: 0639f41d535c465baf2e2465d4694364</code></div>'">
       </div>
       <div class="panel-labels">
         <div class="panel-label">(a) KNN<span>OA 73.56% · κ 0.70</span></div>
         <div class="panel-label">(b) MLC<span>OA 80.50% · κ 0.78</span></div>
-        <div class="panel-label" style="color:var(--accent);border-color:rgba(200,122,58,0.3);">(c) SVM ★<span style="color:rgba(200,122,58,0.6);">OA 90.80% · κ 0.90 — Best</span></div>
+        <div class="panel-label best">(c) SVM ★<span>OA 90.80% · κ 0.90 — Best</span></div>
         <div class="panel-label">(d) RF<span>OA 71.26% · κ 0.67</span></div>
         <div class="panel-label">(e) Location<span>Study area inset</span></div>
       </div>
       <div class="figure-caption">
-        <strong>Figure 2.</strong> Classification results for WorldView-2 imagery in Main Pass: (a) KNN; (b) MLC; (c) SVM — best overall accuracy at 90.80% (κ = 0.90); (d) RF; (e) Study area location within the lower MRD. Delta Phragmites (lime green) is the dominant class. Legend: Bare Soil (purple) · Dead Vegetation (tan) · Delta Phragmites (lime) · European Phragmites (red) · Man Made (cyan) · Marsh Grass (brown) · Mud (pink) · Shrub/Woody (dark green) · Water (blue).
+        <strong>Figure 2.</strong> WV-2 classification results for Main Pass: (a) KNN; (b) MLC; (c) SVM — best at 90.80% OA (κ = 0.90); (d) RF; (e) location inset. Delta Phragmites (lime green) is the dominant class. Classes: Bare Soil (purple) · Dead Vegetation (tan) · Delta Phragmites (lime) · European Phragmites (red) · Man Made (cyan) · Marsh Grass (brown) · Mud (pink) · Shrub/Woody (dark green) · Water (blue).
       </div>
     </div>
 
@@ -404,15 +444,27 @@
     <div class="figure-block figure-landscape">
       <div class="figure-header">
         <div class="figure-label">Figure 3</div>
-        <div class="figure-title">WV-2 Classification Results — South Pass (KNN · MLC · SVM · RF)</div>
-        <div class="figure-zoom-hint">🔍 Click to enlarge</div>
+        <div class="figure-title">WV-2 Classification — South Pass &nbsp;·&nbsp; (a) KNN &nbsp;·&nbsp; (b) MLC &nbsp;·&nbsp; (c) SVM ★ &nbsp;·&nbsp; (d) RF &nbsp;·&nbsp; (e) Location</div>
+        <button class="figure-zoom-btn" onclick="openLightbox('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/dec2f740a1b04a41a7433a4d3e4170ed/data','Figure 3. WV-2 classification results for South Pass.')">⤢ Enlarge</button>
       </div>
-      <div class="figure-img-wrap"
-           onclick="openLightbox('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/dec2f740a1b04a41a7433a4d3e4170ed/data','Figure 3. WV-2 classification results for South Pass: (a) KNN — OA 73.56%, (b) MLC — OA 80.50%, (c) SVM — OA 90.80% κ=0.90 [best], (d) RF — OA 71.26%, (e) Study area location in lower MRD.')">
+      <div class="figure-mat" onclick="openLightbox('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/dec2f740a1b04a41a7433a4d3e4170ed/data','Figure 3. WV-2 classification results for South Pass: (a) KNN OA 73.56%, (b) MLC OA 80.50%, (c) SVM OA 90.80% κ=0.90 — best, (d) RF OA 71.26%, (e) study area inset.')">
+        <div class="figure-zoom-overlay"><div class="figure-zoom-overlay-inner">Click to Enlarge</div></div>
         <img src="https://lsu-its.maps.arcgis.com/sharing/rest/content/items/dec2f740a1b04a41a7433a4d3e4170ed/data"
-             alt="WV-2 Classification South Pass — KNN MLC SVM RF comparison"
+             alt="WV-2 Classification South Pass — KNN MLC SVM RF"
              loading="lazy"
-             onerror="this.parentElement.innerHTML='<div class=\'img-error\'>⚠ Image unavailable — ensure ArcGIS item is shared publicly.<br><small>Item ID: dec2f740a1b04a41a7433a4d3e4170ed</small></div>'">
+             onerror="this.outerHTML='<div class=\'img-error-block\'><p>⚠ Image unavailable — check ArcGIS sharing is set to <strong>Everyone (Public)</strong></p><code>Item: dec2f740a1b04a41a7433a4d3e4170ed</code></div>'">
+      </div>
+      <div class="panel-labels">
+        <div class="panel-label">(a) KNN<span>OA 73.56% · κ 0.70</span></div>
+        <div class="panel-label">(b) MLC<span>OA 80.50% · κ 0.78</span></div>
+        <div class="panel-label best">(c) SVM ★<span>OA 90.80% · κ 0.90 — Best</span></div>
+        <div class="panel-label">(d) RF<span>OA 71.26% · κ 0.67</span></div>
+        <div class="panel-label">(e) Location<span>Study area inset</span></div>
+      </div>
+      <div class="figure-caption">
+        <strong>Figure 3.</strong> WV-2 classification results for South Pass: (a) KNN; (b) MLC; (c) SVM — best at 90.80% OA (κ = 0.90); (d) RF; (e) location inset. South Pass shows a more elongated distribution of Delta Phragmites along the main channel compared to Main Pass.
+      </div>
+    </div>
       </div>
       <div class="panel-labels">
         <div class="panel-label">(a) KNN<span>OA 73.56% · κ 0.70</span></div>
@@ -421,11 +473,6 @@
         <div class="panel-label">(d) RF<span>OA 71.26% · κ 0.67</span></div>
         <div class="panel-label">(e) Location<span>Study area inset</span></div>
       </div>
-      <div class="figure-caption">
-        <strong>Figure 3.</strong> Classification results for WorldView-2 imagery in South Pass: (a) KNN; (b) MLC; (c) SVM — best overall accuracy at 90.80% (κ = 0.90); (d) RF; (e) Study area location. South Pass shows a more elongated distribution of Delta Phragmites along the main channel compared to Main Pass.
-      </div>
-    </div>
-
     <!-- Chart 2: Classifier comparison -->
     <div class="chart-card">
       <h3>Classifier Comparison — Overall Accuracy &amp; Kappa (WV-2)</h3>
