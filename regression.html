@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scale Regression Analysis — LSU Meng Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Hanken+Grotesk:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark: #100e08;
+    --card-bg: #1a1710;
+    --accent: #c8a96e;
+    --accent2: #7ab892;
+    --text: #f0ece4;
+    --muted: rgba(240,236,228,0.58);
+    --border: rgba(200,169,110,0.22);
+    --border-neutral: rgba(122,184,146,0.14);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Hanken Grotesk',sans-serif; background:var(--dark); color:var(--text); }
+
+  nav {
+    padding:18px 64px; border-bottom:1px solid var(--border-neutral);
+    display:flex; align-items:center; gap:16px;
+  }
+  .nav-back { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--accent2); text-decoration:none; display:flex; align-items:center; gap:8px; }
+  .nav-back:hover { color:var(--text); }
+  .nav-sep { color:rgba(255,255,255,0.2); }
+  .nav-current { font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.35); letter-spacing:1px; }
+
+  .hero {
+    background:linear-gradient(150deg, #0e0a04 0%, #1a1408 40%, #100e08 100%);
+    padding:72px 64px 60px;
+    border-bottom:1px solid var(--border);
+    position:relative; overflow:hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse at 75% 50%, rgba(200,169,110,0.1) 0%, transparent 65%);
+  }
+  .hero-inner { max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+  .hero-kicker {
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase;
+    color:var(--accent); margin-bottom:16px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .hero-kicker::before { content:''; width:28px; height:1px; background:var(--accent); display:block; }
+
+  .aag-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:1px;
+    background:rgba(200,169,110,0.12); border:1px solid var(--border);
+    border-radius:6px; padding:6px 14px; color:var(--accent);
+    margin-bottom:20px;
+  }
+
+  h1 { font-family:'Playfair Display',serif; font-size:clamp(28px,3.8vw,48px); font-weight:700; line-height:1.2; color:var(--text); max-width:860px; margin-bottom:20px; }
+  h1 em { font-style:italic; color:var(--accent); }
+  .hero-desc { font-size:15px; line-height:1.78; color:var(--muted); max-width:720px; margin-bottom:20px; }
+  .hero-authors { font-family:'IBM Plex Mono',monospace; font-size:12px; color:rgba(255,255,255,0.45); margin-bottom:32px; letter-spacing:0.5px; }
+  .hero-stats { display:flex; gap:28px; flex-wrap:wrap; }
+  .hstat { border-left:2px solid var(--border); padding-left:14px; }
+  .hstat-val { font-family:'IBM Plex Mono',monospace; font-size:20px; font-weight:500; color:var(--accent); }
+  .hstat-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-top:2px; }
+
+  .content-wrap { max-width:1200px; margin:0 auto; padding:64px 64px 80px; }
+
+  .sec-head { display:flex; align-items:center; gap:14px; margin-bottom:32px; margin-top:56px; }
+  .sec-head:first-child { margin-top:0; }
+  .sec-num {
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:2px;
+    color:var(--accent); background:rgba(200,169,110,0.1); border:1px solid var(--border);
+    border-radius:4px; padding:3px 10px;
+  }
+  h2 { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:var(--text); }
+  .sec-rule { flex:1; height:1px; background:var(--border-neutral); }
+
+  .info-card {
+    background:var(--card-bg); border:1px solid var(--border-neutral);
+    border-radius:12px; padding:28px 32px; margin-bottom:20px;
+  }
+  .info-card h3 { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:10px; }
+  .info-card p { font-size:14px; line-height:1.78; color:var(--muted); }
+  .info-card p+p { margin-top:10px; }
+
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+
+  .stat-block { background:var(--card-bg); border:1px solid var(--border-neutral); border-radius:12px; padding:22px 24px; }
+  .sb-val { font-family:'IBM Plex Mono',monospace; font-size:24px; font-weight:500; color:var(--accent); line-height:1; margin-bottom:6px; }
+  .sb-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.35); }
+  .sb-desc { font-size:13px; line-height:1.65; color:var(--muted); margin-top:10px; }
+
+  /* sensor comparison table */
+  .data-table { width:100%; border-collapse:collapse; font-size:13px; margin-top:14px; }
+  .data-table th { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.4); text-align:left; padding:8px 14px; border-bottom:1px solid var(--border-neutral); }
+  .data-table td { padding:9px 14px; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--muted); }
+  .data-table tr:last-child td { border-bottom:none; }
+  .val-accent { color:var(--accent); font-family:'IBM Plex Mono',monospace; }
+  .val-good { color:#7ab892; font-family:'IBM Plex Mono',monospace; }
+  .row-hl td { color:var(--text); }
+
+  /* hypothesis cards */
+  .hyp-card {
+    border-radius:12px; padding:22px 26px; border:1px solid;
+  }
+  .hyp-validated { background:rgba(122,184,146,0.08); border-color:rgba(122,184,146,0.3); }
+  .hyp-not-validated { background:rgba(200,124,32,0.08); border-color:rgba(200,124,32,0.3); }
+  .hyp-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; }
+  .hyp-validated .hyp-label { color:#7ab892; }
+  .hyp-not-validated .hyp-label { color:#c87c20; }
+  .hyp-text { font-size:14px; line-height:1.75; color:var(--muted); }
+  .hyp-result { font-size:13px; line-height:1.65; color:var(--muted); margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); }
+
+  .tag-strip { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+  .tag { font-family:'IBM Plex Mono',monospace; font-size:10px; border:1px solid var(--border-neutral); border-radius:4px; padding:3px 10px; color:rgba(255,255,255,0.4); }
+
+  /* placeholder */
+  .placeholder-section {
+    border:1px dashed rgba(200,169,110,0.28);
+    border-radius:12px; padding:32px;
+    background:rgba(200,169,110,0.03);
+    margin-top:20px;
+  }
+  .ph-badge {
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px;
+    color:#c87c20; background:rgba(200,124,32,0.12); border:1px solid rgba(200,124,32,0.3);
+    border-radius:4px; padding:3px 10px; display:inline-block; margin-bottom:14px;
+  }
+  .placeholder-section h3 { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:10px; }
+  .placeholder-section p { font-size:14px; line-height:1.78; color:var(--muted); }
+  .ph-slots { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; margin-top:16px; }
+  .ph-slot { border:1px dashed rgba(255,255,255,0.12); border-radius:8px; padding:16px; min-height:80px; display:flex; flex-direction:column; gap:6px; }
+  .ph-slot-label { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.25); }
+  .ph-slot-name { font-size:13px; color:rgba(255,255,255,0.4); }
+
+  footer { border-top:1px solid var(--border-neutral); padding:28px 64px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+  .footer-text { font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.22); }
+
+  @media(max-width:700px){
+    nav,footer,.hero,.content-wrap { padding-left:24px; padding-right:24px; }
+    .grid-2,.grid-3,.grid-4 { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-back" href="index.html">← Lab Home</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-current">SCALE REGRESSION · FIELD + REMOTE SENSING</span>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-kicker">Scale Integration · Field Samples + Multi-Sensor Remote Sensing</div>
+    <div class="aag-badge">🏛 Presented at AAG Annual Meeting · Detroit, MI · 2025</div>
+    <h1>Assessing Roseau Cane Health via <em>Scale Insect</em> Density &amp; Multi-Sensor NDVI Regression</h1>
+    <p class="hero-desc">Regression analysis correlating field-measured scale insect (<em>Nipponaclerda biwakoensis</em>) density with NDVI derived from four sensors — Landsat, Sentinel-2, PlanetScope, and drone orthophotos — across 65 sampling plots spanning the lower Mississippi River Delta.</p>
+    <div class="hero-authors">Bijaylaxmi Sahoo · Xuelian Meng · Basant Awasthi · Manisha K C · Sudeep Kuikel · Department of Geography &amp; Anthropology, LSU</div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-val">65 Plots</div><div class="hstat-label">Field Sampling Sites</div></div>
+      <div class="hstat"><div class="hstat-val">4 Sensors</div><div class="hstat-label">Landsat · S2 · Planet · Drone</div></div>
+      <div class="hstat"><div class="hstat-val">2000 km²</div><div class="hstat-label">Lower MRD Study Area</div></div>
+      <div class="hstat"><div class="hstat-val">2023</div><div class="hstat-label">Summer &amp; Fall Seasons</div></div>
+    </div>
+    <div class="tag-strip" style="margin-top:28px;">
+      <span class="tag">NDVI Regression</span>
+      <span class="tag">Scale Insect Density</span>
+      <span class="tag">Nipponaclerda biwakoensis</span>
+      <span class="tag">Multi-Sensor</span>
+      <span class="tag">Field Survey</span>
+      <span class="tag">AAG 2025</span>
+    </div>
+  </div>
+</section>
+
+<div class="content-wrap">
+
+  <!-- 01: BACKGROUND -->
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2>Background &amp; Study Gap</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="info-card" style="margin-bottom:0;">
+      <h3>Why Roseau Cane Is Declining</h3>
+      <p>Die-off of Roseau cane stands has been observed in the lower Mississippi River Delta since 2016. High density of a scale insect, <em>Nipponaclerda biwakoensis</em>, was discovered on stems — the insects feed on stem sap, ultimately killing the plant and leaving dead standing stems. Meanwhile, Louisiana loses approximately a football field of land every hour, and Roseau cane's extensive rhizome network has historically been critical for trapping sediment and stabilizing wetland soils.</p>
+    </div>
+    <div class="info-card" style="margin-bottom:0;">
+      <h3>Why This Study Was Needed</h3>
+      <p>Previous research on Roseau cane scale insects was limited to single garden sites or small field plots. There was no established mathematical correlation between field-measured scale density and remotely sensed plant health indices across larger areas. This study aimed to fill that gap by building regression relationships between scale survey data and NDVI derived from multiple sensors at different spatial resolutions — spanning 2000 km² of the lower MRD.</p>
+    </div>
+  </div>
+
+  <!-- 02: HYPOTHESES -->
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2>Hypotheses</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="hyp-card hyp-validated">
+      <div class="hyp-label">✓ Hypothesis 1 — Validated</div>
+      <div class="hyp-text">With increasing scale insect density, Roseau cane health degrades — leading to a decrease in greenness and therefore a decrease in Normalized Difference Vegetation Index (NDVI).</div>
+      <div class="hyp-result">Confirmed: A negative correlation between scale density and NDVI was found across all four sensor types and both seasons.</div>
+    </div>
+    <div class="hyp-card hyp-not-validated">
+      <div class="hyp-label">✗ Hypothesis 2 — Not Validated</div>
+      <div class="hyp-text">Higher resolution remote sensing imagery will better classify individual plant health, producing a stronger correlation between plant health and scale infestation.</div>
+      <div class="hyp-result">Contrary to expectation: coarser-resolution sensors (Landsat 30 m) showed stronger correlations than the finest resolution (drone ~8 cm). Mixed pixel effects at very high resolution require subpixel-level analysis before comparison is valid.</div>
+    </div>
+  </div>
+
+  <!-- 03: DATA -->
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2>Data Acquisition</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="info-card">
+    <h3>Satellite &amp; Drone Sensors</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>Sensor</th><th>Source</th><th>Summer Acquisition</th><th>Fall Acquisition</th><th>Spatial Resolution</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Landsat</td><td>USGS</td><td class="val-accent">May 13, 2023</td><td class="val-accent">October 20, 2023</td><td>30 m</td></tr>
+        <tr><td>Sentinel-2</td><td>ESA</td><td class="val-accent">May 12, 2023</td><td class="val-accent">September 24, 2023</td><td>10 m</td></tr>
+        <tr><td>PlanetScope</td><td>Planet Labs</td><td class="val-accent">June 02–03, 2023</td><td class="val-accent">October 01, 2023</td><td>3 m</td></tr>
+        <tr><td>UAV Orthophoto</td><td>DJI 600 Pro / MicaSense</td><td class="val-accent">June 7, 2023</td><td class="val-accent">October 9, 2023</td><td>~8 cm</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-card">
+    <h3>Field Scale Count Method</h3>
+    <p>Roseau cane stems were randomly selected from inside a ring of 1.77 m perimeter (area = 0.25 m²) at each of 65 sampling plots spanning the lower MRD (~2000 km² coverage) and at 37 plots within the 0.2 km² Pass-A-Loutre drone site. Leaf sheaths were peeled off each stem to count medium, large, parasitized, and dead scales underneath. The total count per plot was averaged to yield average scale count per stem — the field metric used in all regressions.</p>
+    <p><strong>Equipment:</strong> DJI Matrice 600 Pro with MicaSense RedEdge-MX dual camera (10 spectral bands). Flights at 120 m altitude, 75% overlap, 8 m/s. Orthomosaics at ~8 cm. Reflectance calibration via calibration panel before and after each flight. Agisoft Metashape for photogrammetric processing; ArcGIS Pro for NDVI derivation.</p>
+  </div>
+
+  <!-- 04: STUDY AREA -->
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2>Study Area</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="stat-block">
+      <div class="sb-val">28 plots</div>
+      <div class="sb-label">Large-Scale Sample (MRD-wide)</div>
+      <div class="sb-desc">Sampling sites distributed across ~2000 km² of the lower Mississippi River Delta — capturing broad spatial variation in scale density and vegetation health.</div>
+    </div>
+    <div class="stat-block">
+      <div class="sb-val">37 plots</div>
+      <div class="sb-label">Fine-Scale Sample (Drone Site)</div>
+      <div class="sb-desc">Sampling concentrated within the 0.2 km² Pass-A-Loutre drone site — both Site B and Site C dominated by Delta phenotype Roseau cane.</div>
+    </div>
+  </div>
+
+  <!-- 05: RESULTS -->
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2>Results — Scale Density vs. NDVI Regression</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="info-card">
+    <h3>Key Findings Across Sensors &amp; Seasons</h3>
+    <p>For all sensor types and both seasons (Summer and Fall 2023), increased scale insect density was associated with reduced NDVI — validating Hypothesis 1. Outlier removal (points obviously on water; subsequently, points on water and mixed pixels) improved regression fits across all sensors.</p>
+    <p><strong>Landsat (30 m) showed the strongest correlation</strong> among the four sensors, contrary to the expectation that finer resolution would outperform. This is explained by the mixed pixel problem at very high resolution: the ~8 cm drone orthophoto captures individual stem-level variation, but plots cover 0.25 m² — meaning drone pixels may contain mixed vegetation types rather than pure Roseau cane, weakening the correlation signal.</p>
+    <p><strong>Seasonal pattern:</strong> Fall 2023 produced stronger correlations than Summer 2023 across most sensors, consistent with end-of-season stress accumulation from scale feeding.</p>
+  </div>
+
+  <div class="info-card">
+    <h3>Sensor Comparison Summary — NDVI vs. Scale Density Correlation</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>Sensor</th><th>Resolution</th><th>Summer 2023 Correlation</th><th>Fall 2023 Correlation</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr class="row-hl"><td><strong>Landsat</strong></td><td>30 m</td><td class="val-accent">Strongest</td><td class="val-accent">Strongest</td><td>Best overall performance — coarser resolution reduces mixed-pixel noise at plot scale</td></tr>
+        <tr><td>Sentinel-2</td><td>10 m</td><td>Moderate</td><td>Moderate–Strong</td><td>Intermediate performance; good spatial detail without extreme mixed-pixel effects</td></tr>
+        <tr><td>PlanetScope</td><td>3 m</td><td>Moderate</td><td>Moderate</td><td>—</td></tr>
+        <tr><td>UAV / Drone</td><td>~8 cm</td><td>Weakest</td><td>Weakest–Moderate</td><td>Very fine resolution introduces mixed-pixel problem at 0.25 m² plot scale — requires subpixel analysis</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px; color:rgba(255,255,255,0.3); margin-top:8px;">Specific R² values to be added from final analysis figures. Correlation described directionally per AAG 2025 presentation results.</p>
+  </div>
+
+  <div class="info-card">
+    <h3>Per-Phenotype Analysis — Drone NDVI (Summer &amp; Fall 2023)</h3>
+    <p>Separate regression analyses were conducted for each Roseau cane phenotype (Delta and European Phragmites) using drone-derived NDVI at the Pass-A-Loutre site. Results showed phenotype-level variation in the scale density–NDVI relationship, though both phenotypes followed the general negative trend. The data represent a single year (2023) which was an extreme drought year — potentially introducing bias. Expanded multi-year sampling would improve generalizability.</p>
+  </div>
+
+  <!-- 06: CONCLUSION -->
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2>Conclusions</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="hyp-card hyp-validated">
+      <div class="hyp-label">✓ Confirmed Finding</div>
+      <div class="hyp-text">Scale insect density and NDVI are negatively correlated — higher scale density corresponds to lower Roseau cane greenness and health across all sensor types and both seasons.</div>
+    </div>
+    <div class="hyp-card hyp-not-validated">
+      <div class="hyp-label">⚠ Requires Further Investigation</div>
+      <div class="hyp-text">Higher spatial resolution does not automatically yield stronger scale–NDVI correlations. Mixed pixel effects at very fine resolution require subpixel-level analysis before pure Roseau cane NDVI can be reliably extracted for correlation.</div>
+    </div>
+  </div>
+
+  <!-- 07: FUTURE WORK -->
+  <div class="sec-head">
+    <span class="sec-num">07</span>
+    <h2>Future Work</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="info-card">
+    <p>Future work will address the mixed pixel problem and expand the scope of the regression analysis:</p>
+    <p>1. <strong>Subpixel-level classification</strong> to find the percentage of area covered by pure Phragmites within each sensor pixel before computing NDVI for regression.</p>
+    <p>2. <strong>Analysis of pure Roseau cane distributions</strong> — sites such as Rockefeller Wildlife Refuge have minimal understory vegetation, making them ideal for testing the resolution hypothesis without mixed pixel interference.</p>
+    <p>3. <strong>Investigation of additional environmental factors</strong> — elevation, flooding frequency, and their effects on scale insect density in a remote sensing framework.</p>
+  </div>
+
+  <!-- 08: PLANNED WORK (PLACEHOLDER) -->
+  <div class="sec-head">
+    <span class="sec-num">08</span>
+    <h2>Work Planned — Subpixel &amp; Expanded Analysis</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="placeholder-section">
+    <div class="ph-badge">📋 Planned — Work not yet started</div>
+    <h3>Subpixel Classification &amp; Environmental Factor Analysis</h3>
+    <p>This section will be populated once subpixel-level analysis and expanded field campaigns are completed. Work has not yet started; results will be added here as they become available.</p>
+    <div class="ph-slots">
+      <div class="ph-slot">
+        <div class="ph-slot-label">Add Here</div>
+        <div class="ph-slot-name">Subpixel Phragmites Fraction Maps</div>
+      </div>
+      <div class="ph-slot">
+        <div class="ph-slot-label">Add Here</div>
+        <div class="ph-slot-name">Corrected NDVI–Scale Regression (Subpixel)</div>
+      </div>
+      <div class="ph-slot">
+        <div class="ph-slot-label">Add Here</div>
+        <div class="ph-slot-name">Rockefeller Site Regression Results</div>
+      </div>
+      <div class="ph-slot">
+        <div class="ph-slot-label">Add Here</div>
+        <div class="ph-slot-name">Elevation vs. Scale Density Analysis</div>
+      </div>
+      <div class="ph-slot">
+        <div class="ph-slot-label">Add Here</div>
+        <div class="ph-slot-name">Flood Frequency vs. Scale Density Analysis</div>
+      </div>
+      <div class="ph-slot">
+        <div class="ph-slot-label">Add Here</div>
+        <div class="ph-slot-name">Updated Multi-Year Regression Summary</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span class="footer-text">← <a href="index.html" style="color:var(--accent2);text-decoration:none;">Lab Home</a></span>
+  <span class="footer-text">Louisiana State University · Dr. Xuelian Meng · AP23PPQS&amp;T00C161</span>
+</footer>
+
+</body>
+</html>

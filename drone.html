@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drone Monitoring — LSU Meng Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Hanken+Grotesk:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark: #0a100c;
+    --card-bg: #111a14;
+    --accent: #7ab892;
+    --amber: #c87c20;
+    --text: #f0ece4;
+    --muted: rgba(240,236,228,0.58);
+    --border: rgba(122,184,146,0.2);
+    --border-neutral: rgba(122,184,146,0.14);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Hanken Grotesk',sans-serif; background:var(--dark); color:var(--text); }
+
+  nav {
+    padding:18px 64px; border-bottom:1px solid var(--border-neutral);
+    display:flex; align-items:center; gap:16px;
+  }
+  .nav-back { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--accent); text-decoration:none; display:flex; align-items:center; gap:8px; }
+  .nav-back:hover { color:var(--text); }
+  .nav-sep { color:rgba(255,255,255,0.2); }
+  .nav-current { font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.35); letter-spacing:1px; }
+
+  /* Jump nav */
+  .jump-nav {
+    background:#101810; border-bottom:1px solid var(--border-neutral);
+    padding:14px 64px; display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+  }
+  .jump-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-right:8px; }
+  .jump-btn {
+    font-family:'IBM Plex Mono',monospace; font-size:11px;
+    background:rgba(122,184,146,0.08); border:1px solid var(--border);
+    border-radius:4px; padding:5px 14px; color:var(--accent);
+    text-decoration:none; letter-spacing:1px;
+    transition:background 0.15s;
+  }
+  .jump-btn:hover { background:rgba(122,184,146,0.18); }
+  .jump-btn.placeholder { color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.03); border-color:rgba(255,255,255,0.1); pointer-events:none; }
+
+  .hero {
+    background:linear-gradient(150deg, #050e08 0%, #0a1a0e 40%, #0a100c 100%);
+    padding:72px 64px 60px;
+    border-bottom:1px solid var(--border);
+    position:relative; overflow:hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse at 80% 50%, rgba(122,184,146,0.1) 0%, transparent 65%);
+  }
+  .hero-inner { max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+  .hero-kicker {
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase;
+    color:var(--accent); margin-bottom:16px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .hero-kicker::before { content:''; width:28px; height:1px; background:var(--accent); display:block; }
+  h1 { font-family:'Playfair Display',serif; font-size:clamp(30px,4vw,50px); font-weight:700; line-height:1.2; color:var(--text); max-width:820px; margin-bottom:20px; }
+  h1 em { font-style:italic; color:var(--accent); }
+  .hero-desc { font-size:15px; line-height:1.78; color:var(--muted); max-width:720px; margin-bottom:36px; }
+  .hero-stats { display:flex; gap:28px; flex-wrap:wrap; }
+  .hstat { border-left:2px solid var(--border); padding-left:14px; }
+  .hstat-val { font-family:'IBM Plex Mono',monospace; font-size:20px; font-weight:500; color:var(--accent); }
+  .hstat-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-top:2px; }
+
+  .content-wrap { max-width:1200px; margin:0 auto; padding:64px 64px 80px; }
+
+  /* sub-section divider */
+  .sub-section {
+    margin-top:64px; padding-top:48px;
+    border-top:1px solid var(--border-neutral);
+    scroll-margin-top:70px;
+  }
+  .sub-section:first-child { margin-top:0; padding-top:0; border-top:none; }
+
+  .sec-head { display:flex; align-items:center; gap:14px; margin-bottom:32px; }
+  .sec-num {
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:2px;
+    color:var(--accent); background:rgba(122,184,146,0.1); border:1px solid var(--border);
+    border-radius:4px; padding:3px 10px;
+  }
+  h2 { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:var(--text); }
+  .sec-rule { flex:1; height:1px; background:var(--border-neutral); }
+
+  /* external link card */
+  .ext-link-card {
+    display:flex; align-items:center; justify-content:space-between;
+    background:rgba(122,184,146,0.07); border:1px solid var(--border);
+    border-radius:10px; padding:16px 22px; margin-bottom:24px;
+    text-decoration:none; color:inherit;
+    transition:background 0.2s, border-color 0.2s;
+    gap:16px;
+  }
+  .ext-link-card:hover { background:rgba(122,184,146,0.14); border-color:rgba(122,184,146,0.45); }
+  .elc-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.35); margin-bottom:4px; }
+  .elc-title { font-size:14px; font-weight:500; color:var(--text); }
+  .elc-arrow { color:var(--accent); font-size:18px; flex-shrink:0; }
+
+  .info-card {
+    background:var(--card-bg); border:1px solid var(--border-neutral);
+    border-radius:12px; padding:28px 32px; margin-bottom:20px;
+  }
+  .info-card h3 { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:10px; }
+  .info-card p { font-size:14px; line-height:1.78; color:var(--muted); }
+  .info-card p+p { margin-top:10px; }
+
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+
+  .stat-block { background:var(--card-bg); border:1px solid var(--border-neutral); border-radius:12px; padding:22px 24px; }
+  .sb-val { font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:500; color:var(--accent); line-height:1; margin-bottom:6px; }
+  .sb-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.35); }
+  .sb-desc { font-size:13px; line-height:1.65; color:var(--muted); margin-top:10px; }
+
+  /* site cards (4 sites) */
+  .sites-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin-bottom:20px; }
+  .site-card { background:var(--card-bg); border:1px solid var(--border-neutral); border-radius:12px; padding:20px 22px; }
+  .site-num { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--accent); margin-bottom:6px; }
+  .site-name { font-size:15px; font-weight:600; color:var(--text); margin-bottom:8px; }
+  .site-desc { font-size:13px; line-height:1.65; color:var(--muted); }
+
+  .data-table { width:100%; border-collapse:collapse; font-size:13px; margin-top:14px; }
+  .data-table th { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.4); text-align:left; padding:8px 14px; border-bottom:1px solid var(--border-neutral); }
+  .data-table td { padding:9px 14px; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--muted); }
+  .data-table tr:last-child td { border-bottom:none; }
+  .val-accent { color:var(--accent); font-family:'IBM Plex Mono',monospace; }
+  .row-hl td { color:var(--text); font-weight:500; }
+
+  .tag-strip { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+  .tag { font-family:'IBM Plex Mono',monospace; font-size:10px; border:1px solid var(--border-neutral); border-radius:4px; padding:3px 10px; color:rgba(255,255,255,0.4); }
+
+  /* placeholder */
+  .placeholder-section {
+    border:1px dashed rgba(122,184,146,0.28);
+    border-radius:12px; padding:32px;
+    background:rgba(122,184,146,0.03);
+    scroll-margin-top:70px;
+  }
+  .ph-badge {
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px;
+    color:#c87c20; background:rgba(200,124,32,0.12); border:1px solid rgba(200,124,32,0.3);
+    border-radius:4px; padding:3px 10px; display:inline-block; margin-bottom:14px;
+  }
+  .placeholder-section h3 { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:10px; }
+  .placeholder-section p { font-size:14px; line-height:1.78; color:var(--muted); }
+  .ph-slots { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; margin-top:16px; }
+  .ph-slot { border:1px dashed rgba(255,255,255,0.12); border-radius:8px; padding:16px; min-height:80px; display:flex; flex-direction:column; gap:6px; }
+  .ph-slot-label { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.25); }
+  .ph-slot-name { font-size:13px; color:rgba(255,255,255,0.4); }
+
+  footer { border-top:1px solid var(--border-neutral); padding:28px 64px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+  .footer-text { font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.22); }
+
+  @media(max-width:700px){
+    nav,footer,.hero,.content-wrap,.jump-nav { padding-left:24px; padding-right:24px; }
+    .grid-2,.grid-3,.grid-4,.sites-grid { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-back" href="index.html">← Lab Home</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-current">DRONE / UAV · FINE-SCALE MONITORING</span>
+</nav>
+
+<!-- Jump nav -->
+<div class="jump-nav">
+  <span class="jump-label">Jump to</span>
+  <a class="jump-btn" href="#fragmented-mapping">D1 · Fragmented Mapping Method</a>
+  <a class="jump-btn" href="#four-regions">D2 · Four Regions</a>
+  <a class="jump-btn" href="#five-year">D3 · Five-Year Monitoring</a>
+  <a class="jump-btn placeholder" href="#five-year-final">D4 · Final Analysis (Pending)</a>
+</div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-kicker">Scale 03 · Drone / UAV · 8 cm Resolution</div>
+    <h1>Fine-Scale Drone Monitoring of <em>Roseau Cane</em> Habitat</h1>
+    <p class="hero-desc">High-resolution UAV surveys across four Louisiana coastal sites (2021–2025) using deep learning classification. Covers habitat mapping methodology, multi-site characterization, and continuous five-year temporal monitoring for disturbance-resilience analysis at Pass-A-Loutre in the lower Mississippi River Delta.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-val">4 Sites</div><div class="hstat-label">Coastal Regions</div></div>
+      <div class="hstat"><div class="hstat-val">8 cm</div><div class="hstat-label">Drone Spatial Resolution</div></div>
+      <div class="hstat"><div class="hstat-val">92%</div><div class="hstat-label">Best Classification OA</div></div>
+      <div class="hstat"><div class="hstat-val">κ = 0.89</div><div class="hstat-label">Kappa (Oct 2024)</div></div>
+      <div class="hstat"><div class="hstat-val">2021–2025</div><div class="hstat-label">Monitoring Period</div></div>
+    </div>
+    <div class="tag-strip" style="margin-top:28px;">
+      <span class="tag">DJI 600 Pro</span><span class="tag">MicaSense RedEdge-MX</span><span class="tag">U-Net</span><span class="tag">Agisoft Metashape</span><span class="tag">8 Land Cover Classes</span><span class="tag">Pass-A-Loutre</span>
+    </div>
+  </div>
+</section>
+
+<div class="content-wrap">
+
+  <!-- ══ D1: FRAGMENTED MAPPING ══ -->
+  <div class="sub-section" id="fragmented-mapping">
+    <div class="sec-head">
+      <span class="sec-num">D1 · Milestone 2</span>
+      <h2>Fragmented Wetland Mapping Method</h2>
+      <div class="sec-rule"></div>
+    </div>
+
+    <a class="ext-link-card" href="https://lsu-its.hub.arcgis.com/pages/wetland-mapping-1~f80469aaaffe4bf89bcbb7a222578351" target="_blank">
+      <div>
+        <div class="elc-label">StoryMaps · Full Interactive Results</div>
+        <div class="elc-title">View Fragmented Wetland Mapping — Interactive ArcGIS StoryMap</div>
+      </div>
+      <div class="elc-arrow">↗</div>
+    </a>
+
+    <div class="info-card">
+      <h3>Overview</h3>
+      <p>This work developed a comprehensive multi-scale classification methodology combining large-area satellite mapping (Landsat, Sentinel-2) with fine-scale drone validation at Pass-A-Loutre. A novel drone sampling strategy was developed specifically to address the limited accessibility challenge in coastal wetland environments — enabling adequate sampling even in areas not reachable by boat.</p>
+      <p>SVM classification of drone imagery produced reliable habitat maps at over 85% accuracy, with detailed separation of Delta vs. European <em>Phragmites</em> and six additional land cover classes. This method forms the methodological foundation for all subsequent drone monitoring work.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="stat-block">
+        <div class="sb-val">&gt; 85%</div>
+        <div class="sb-label">Drone SVM Accuracy</div>
+        <div class="sb-desc">Reliable habitat classification at Pass-A-Loutre using drone imagery and SVM — validated against ground truth samples.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-val">8 Classes</div>
+        <div class="sb-label">Land Cover Categories</div>
+        <div class="sb-desc">Delta Phragmites, European Phragmites, Dead Vegetation, Marsh Grass, Mud, Open Water, Shrub/Woody, Shadow.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-val">92%</div>
+        <div class="sb-label">Satellite Agreement</div>
+        <div class="sb-desc">Drone-derived classification showed ~79% agreement with Landsat/WV-2 results — validating multi-scale consistency.</div>
+      </div>
+    </div>
+
+    <div class="info-card" style="margin-top:20px;">
+      <h3>Key Methodological Contributions</h3>
+      <p><strong>Novel drone sampling strategy:</strong> A customized stake-mounted target system was developed to stabilize survey control points in soft mud and shallow water — solving the core accessibility limitation in wetland drone mapping.</p>
+      <p><strong>Multi-scale integration:</strong> Drone results directly validated Landsat and WorldView-2 classifications, establishing the consistency and reliability of the broader mapping framework from 30 m down to 8 cm resolution.</p>
+      <p><strong>Temporal baseline:</strong> Initial drone surveys (Fall 2020 to May 2022) at Pass-A-Loutre established the habitat change baseline that underpins the 5-year monitoring work (D3).</p>
+    </div>
+
+    <div class="tag-strip">
+      <span class="tag">Landsat</span><span class="tag">Sentinel-2</span><span class="tag">UAV</span><span class="tag">SVM</span><span class="tag">2010–2022</span><span class="tag">Pass-A-Loutre</span><span class="tag">Accessibility Solution</span>
+    </div>
+  </div><!-- /D1 -->
+
+
+  <!-- ══ D2: FOUR REGIONS ══ -->
+  <div class="sub-section" id="four-regions">
+    <div class="sec-head">
+      <span class="sec-num">D2 · Milestone 2B</span>
+      <h2>Drone Monitoring Across Four Coastal Regions</h2>
+      <div class="sec-rule"></div>
+    </div>
+
+    <a class="ext-link-card" href="https://lsu-its.hub.arcgis.com/pages/drone-monitoring~b700dd0b474b4f2a9e7a734c331e5153" target="_blank">
+      <div>
+        <div class="elc-label">Experience Builder · Full Interactive Map</div>
+        <div class="elc-title">Explore Drone Monitoring — All Four Regions Interactive App</div>
+      </div>
+      <div class="elc-arrow">↗</div>
+    </a>
+
+    <div class="info-card">
+      <h3>Overview</h3>
+      <p>UAV surveys were conducted across four ecologically distinct Louisiana coastal sites to characterize Roseau cane distribution and habitat conditions at fine scale. A deep learning (U-Net) classifier was applied to high-resolution drone orthomosaics at each site, producing 8-class land cover maps. Site-specific challenges (shallow water, sun glint, launch logistics) were addressed through iterative field protocol optimization.</p>
+    </div>
+
+    <div class="sites-grid">
+      <div class="site-card">
+        <div class="site-num">SITE 01</div>
+        <div class="site-name">Lower MRD — Pass-A-Loutre</div>
+        <div class="site-desc">Primary long-term monitoring site. Dense Roseau cane stands dominated by Delta phenotype. Deep-water access via two-boat operation.</div>
+      </div>
+      <div class="site-card">
+        <div class="site-num">SITE 02</div>
+        <div class="site-name">Rockefeller Wildlife Refuge</div>
+        <div class="site-desc">Extremely shallow water levels required airboat support from refuge director. Largest drone coverage area; expanded mapping plan optimized over five test flights.</div>
+      </div>
+      <div class="site-card">
+        <div class="site-num">SITE 03</div>
+        <div class="site-name">Atchafalaya Basin</div>
+        <div class="site-desc">Shallow water and no boat launch for industrial drones. Phantom 4 with natural color camera deployed from boat. Plant types confirmed by angle observation.</div>
+      </div>
+      <div class="site-card">
+        <div class="site-num">SITE 04</div>
+        <div class="site-name">Vermilion Bay</div>
+        <div class="site-desc">Significant open water presence causing sun-glint and rolling artifacts. Flight parameters adapted based on sun angle; strategies refined for fall 2025.</div>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="stat-block">
+        <div class="sb-val">U-Net</div>
+        <div class="sb-label">Deep Learning Classifier</div>
+        <div class="sb-desc">Pixel-level classification across all four sites — outperforming traditional SVM for complex multi-site mapping.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-val">κ = 0.89</div>
+        <div class="sb-label">Kappa Coefficient</div>
+        <div class="sb-desc">High agreement between classified maps and validation data across all four regions.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-val">8 Classes</div>
+        <div class="sb-label">Land Cover per Site</div>
+        <div class="sb-desc">Consistent 8-class scheme: Delta Phragmites, European Phragmites, Dead Veg., Marsh Grass, Mud, Water, Shadow, Shrub.</div>
+      </div>
+    </div>
+
+    <div class="info-card" style="margin-top:20px;">
+      <h3>Equipment &amp; Field Methods</h3>
+      <p><strong>Platform:</strong> DJI Matrice 600 Pro with MicaSense RedEdge-MX dual camera system (10 spectral bands). Flights conducted at 120 m altitude, 75% overlap, 8 m/s speed. Orthomosaics generated at ~8 cm spatial resolution via Agisoft Metashape photogrammetric processing.</p>
+      <p><strong>Control targets:</strong> Customized stake-mounted targets (24-inch and 36-inch stakes) for stable ground control in soft mud. Larger target dimensions adopted starting Fall 2023 to improve recognition accuracy.</p>
+      <p><strong>Reflectance calibration:</strong> Calibration panel measurements taken immediately before and after each flight to ensure radiometric consistency across dates.</p>
+    </div>
+
+    <div class="tag-strip">
+      <span class="tag">4 Sites</span><span class="tag">U-Net</span><span class="tag">DJI 600 Pro</span><span class="tag">MicaSense 10-band</span><span class="tag">κ = 0.89</span>
+    </div>
+  </div><!-- /D2 -->
+
+
+  <!-- ══ D3: FIVE-YEAR ══ -->
+  <div class="sub-section" id="five-year">
+    <div class="sec-head">
+      <span class="sec-num">D3 · Milestone 3</span>
+      <h2>Five-Year Drone Monitoring — Roseau Cane Resilience, Lower MRD (2021–2025)</h2>
+      <div class="sec-rule"></div>
+    </div>
+
+    <a class="ext-link-card" href="https://lsu-its.hub.arcgis.com/pages/five-year-monitoring~5dd894b2badd4e1d9ff9284c93905356" target="_blank">
+      <div>
+        <div class="elc-label">StoryMaps · Full Interactive Timeline</div>
+        <div class="elc-title">View Five-Year Monitoring — Temporal Change Interactive StoryMap</div>
+      </div>
+      <div class="elc-arrow">↗</div>
+    </a>
+
+    <div class="info-card">
+      <h3>Overview</h3>
+      <p>Since Spring 2021, continuous fine-scale drone monitoring has been conducted at the Pass-A-Loutre site in the lower MRD. The goal is mid-term Roseau cane resilience analysis — quantifying habitat changes in response to freeze events, storm surges, hurricanes, and drought. The same platform, settings, and classification approach are used across all surveys to ensure temporal comparability.</p>
+      <p>The most recent classified survey (October 2024) achieved 92% overall accuracy (κ = 0.89) using a U-Net model with 8 land cover classes. The June 2025 orthomosaic has been processed; training sample creation is currently underway.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="stat-block">
+        <div class="sb-val">92%</div>
+        <div class="sb-label">OA — October 2024</div>
+        <div class="sb-desc">U-Net 8-class classification of Oct 2024 drone survey. Confusion matrix generated for full per-class accuracy assessment.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-val">κ = 0.89</div>
+        <div class="sb-label">Kappa — October 2024</div>
+        <div class="sb-desc">High classification agreement confirms reliability of Oct 2024 habitat map for change analysis.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-val">Jun 2025</div>
+        <div class="sb-label">Most Recent Acquisition</div>
+        <div class="sb-desc">Orthomosaic processed. Training sample creation in progress — classification to follow.</div>
+      </div>
+    </div>
+
+    <div class="info-card" style="margin-top:20px;">
+      <h3>Accuracy Assessment — October 2024 Survey</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>Class</th><th>Total Ref. Points</th><th>User Accuracy</th><th>Producer Accuracy</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Dead Vegetation (C1)</td><td>15</td><td class="val-accent">1.00</td><td class="val-accent">1.00</td></tr>
+          <tr><td>Delta Phragmites (C2)</td><td>117</td><td class="val-accent">0.90</td><td class="val-accent">1.00</td></tr>
+          <tr><td>European Phragmites (C3)</td><td>13</td><td class="val-accent">0.92</td><td>0.50</td></tr>
+          <tr><td>Marsh Grass (C4)</td><td>98</td><td class="val-accent">0.95</td><td class="val-accent">0.90</td></tr>
+          <tr><td>Mud (C5)</td><td>7</td><td class="val-accent">1.00</td><td class="val-accent">1.00</td></tr>
+          <tr><td>Water (C6)</td><td>22</td><td class="val-accent">0.95</td><td class="val-accent">1.00</td></tr>
+          <tr><td>Shadow (C7)</td><td>15</td><td class="val-accent">1.00</td><td class="val-accent">1.00</td></tr>
+          <tr><td>Shrub (C8)</td><td>27</td><td>0.78</td><td>0.88</td></tr>
+          <tr class="row-hl"><td colspan="2"><strong>Overall Accuracy</strong></td><td colspan="2" class="val-accent"><strong>0.92 (92%)</strong></td></tr>
+          <tr class="row-hl"><td colspan="2"><strong>Kappa</strong></td><td colspan="2" class="val-accent"><strong>0.89</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-card">
+      <h3>Survey Timeline</h3>
+      <table class="data-table">
+        <thead><tr><th>Survey Date</th><th>Status</th><th>Processing</th><th>Classification</th></tr></thead>
+        <tbody>
+          <tr><td>Spring 2021 (baseline)</td><td>Complete</td><td class="val-accent">Complete</td><td class="val-accent">Complete</td></tr>
+          <tr><td>Fall 2021</td><td>Complete</td><td class="val-accent">Complete</td><td class="val-accent">Complete</td></tr>
+          <tr><td>Spring / Fall 2022</td><td>Complete</td><td class="val-accent">Complete</td><td class="val-accent">Complete</td></tr>
+          <tr><td>2023 Surveys</td><td>Complete</td><td class="val-accent">Complete</td><td class="val-accent">Complete</td></tr>
+          <tr><td>October 2024</td><td>Complete</td><td class="val-accent">Complete</td><td class="val-accent">Complete · 92% OA</td></tr>
+          <tr><td>June 2025</td><td>Acquired</td><td class="val-accent">Complete</td><td style="color:#c87c20;">Training samples in progress</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tag-strip">
+      <span class="tag">2021–2025</span><span class="tag">Temporal Change</span><span class="tag">Resilience</span><span class="tag">Freeze 2021</span><span class="tag">Hurricane Ida</span><span class="tag">Drought 2023</span>
+    </div>
+  </div><!-- /D3 -->
+
+
+  <!-- ══ D4: FINAL ANALYSIS (PLACEHOLDER) ══ -->
+  <div class="sub-section" id="five-year-final">
+    <div class="sec-head">
+      <span class="sec-num">D4 · Milestone 3B</span>
+      <h2>Five-Year Mid-Term Habitat Change &amp; Resilience Analysis — Final Report</h2>
+      <div class="sec-rule"></div>
+    </div>
+
+    <div class="placeholder-section">
+      <div class="ph-badge">⏳ In Progress — Work not yet complete</div>
+      <h3>Comprehensive Mid-Term Change Detection &amp; Resilience Analysis (2021–2027)</h3>
+      <p>This section will present the complete mid-term analysis integrating all drone surveys from 2021 through project end (Aug 2027). It will quantify habitat shifts, coverage trajectories from disturbance events (2021 freeze, hurricanes, extreme drought 2023), and long-term trends in Roseau cane coverage and condition at the lower MRD site. To be completed once the full 5-year dataset is assembled and all surveys are classified.</p>
+      <div class="ph-slots">
+        <div class="ph-slot">
+          <div class="ph-slot-label">Add Here</div>
+          <div class="ph-slot-name">5-Year Area Change Summary Chart</div>
+        </div>
+        <div class="ph-slot">
+          <div class="ph-slot-label">Add Here</div>
+          <div class="ph-slot-name">Per-Class Change Maps (All Years)</div>
+        </div>
+        <div class="ph-slot">
+          <div class="ph-slot-label">Add Here</div>
+          <div class="ph-slot-name">Disturbance–Recovery Trajectory Analysis</div>
+        </div>
+        <div class="ph-slot">
+          <div class="ph-slot-label">Add Here</div>
+          <div class="ph-slot-name">Final Classification (Jun 2025 + later surveys)</div>
+        </div>
+        <div class="ph-slot">
+          <div class="ph-slot-label">Add Here</div>
+          <div class="ph-slot-name">Resilience Index / Recovery Rate Metrics</div>
+        </div>
+        <div class="ph-slot">
+          <div class="ph-slot-label">Add Here</div>
+          <div class="ph-slot-name">Summary Statistics Table (All Survey Dates)</div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /D4 -->
+
+</div>
+
+<footer>
+  <span class="footer-text">← <a href="index.html" style="color:var(--accent);text-decoration:none;">Lab Home</a></span>
+  <span class="footer-text">Louisiana State University · Dr. Xuelian Meng · AP23PPQS&amp;T00C161</span>
+</footer>
+
+</body>
+</html>

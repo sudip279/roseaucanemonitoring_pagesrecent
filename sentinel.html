@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentinel-2 Phragmites Mapping — LSU Meng Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Hanken+Grotesk:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark: #0a1018;
+    --card-bg: #111a24;
+    --accent: #4a9aba;
+    --accent2: #7ab892;
+    --text: #f0ece4;
+    --muted: rgba(240,236,228,0.58);
+    --border: rgba(74,154,186,0.22);
+    --border-neutral: rgba(122,184,146,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Hanken Grotesk',sans-serif; background:var(--dark); color:var(--text); }
+
+  nav {
+    padding:18px 64px; border-bottom:1px solid var(--border-neutral);
+    display:flex; align-items:center; gap:16px;
+  }
+  .nav-back { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--accent2); text-decoration:none; display:flex; align-items:center; gap:8px; }
+  .nav-back:hover { color:var(--text); }
+  .nav-sep { color:rgba(255,255,255,0.2); }
+  .nav-current { font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.35); letter-spacing:1px; }
+
+  .hero {
+    background:linear-gradient(150deg, #050b14 0%, #0a1828 40%, #0a1018 100%);
+    padding:72px 64px 60px;
+    border-bottom:1px solid var(--border);
+    position:relative; overflow:hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse at 80% 50%, rgba(74,154,186,0.12) 0%, transparent 65%);
+  }
+  .hero-inner { max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+  .hero-kicker {
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase;
+    color:var(--accent); margin-bottom:16px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .hero-kicker::before { content:''; width:28px; height:1px; background:var(--accent); display:block; }
+  h1 { font-family:'Playfair Display',serif; font-size:clamp(30px,4vw,50px); font-weight:700; line-height:1.2; color:var(--text); max-width:820px; margin-bottom:20px; }
+  h1 em { font-style:italic; color:var(--accent); }
+  .hero-desc { font-size:15px; line-height:1.78; color:var(--muted); max-width:720px; margin-bottom:36px; }
+  .hero-stats { display:flex; gap:28px; flex-wrap:wrap; }
+  .hstat { border-left:2px solid var(--border); padding-left:14px; }
+  .hstat-val { font-family:'IBM Plex Mono',monospace; font-size:20px; font-weight:500; color:var(--accent); }
+  .hstat-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-top:2px; }
+
+  .content-wrap { max-width:1200px; margin:0 auto; padding:64px 64px 80px; }
+
+  .sec-head { display:flex; align-items:center; gap:14px; margin-bottom:32px; margin-top:56px; }
+  .sec-head:first-child { margin-top:0; }
+  .sec-num {
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:2px;
+    color:var(--accent); background:rgba(74,154,186,0.1); border:1px solid var(--border);
+    border-radius:4px; padding:3px 10px;
+  }
+  h2 { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:var(--text); }
+  .sec-rule { flex:1; height:1px; background:var(--border-neutral); }
+
+  .info-card {
+    background:var(--card-bg); border:1px solid var(--border-neutral);
+    border-radius:12px; padding:28px 32px; margin-bottom:20px;
+  }
+  .info-card h3 { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:10px; }
+  .info-card p { font-size:14px; line-height:1.78; color:var(--muted); }
+  .info-card p+p { margin-top:10px; }
+
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+
+  .stat-block {
+    background:var(--card-bg); border:1px solid var(--border-neutral);
+    border-radius:12px; padding:22px 24px;
+  }
+  .sb-val { font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:500; color:var(--accent); line-height:1; margin-bottom:6px; }
+  .sb-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.35); }
+  .sb-desc { font-size:13px; line-height:1.65; color:var(--muted); margin-top:10px; }
+
+  .data-table { width:100%; border-collapse:collapse; font-size:13px; margin-top:14px; }
+  .data-table th {
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase;
+    color:rgba(255,255,255,0.4); text-align:left; padding:8px 14px;
+    border-bottom:1px solid var(--border-neutral);
+  }
+  .data-table td { padding:9px 14px; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--muted); }
+  .data-table tr:last-child td { border-bottom:none; }
+  .val-accent { color:var(--accent); font-family:'IBM Plex Mono',monospace; }
+  .val-good { color:#7ab892; font-family:'IBM Plex Mono',monospace; }
+  .val-warn { color:#c87c20; font-family:'IBM Plex Mono',monospace; }
+  .row-hl td { color:var(--text); }
+
+  .tag-strip { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+  .tag { font-family:'IBM Plex Mono',monospace; font-size:10px; border:1px solid var(--border-neutral); border-radius:4px; padding:3px 10px; color:rgba(255,255,255,0.4); }
+
+  /* timeline card for area dynamics */
+  .timeline-row {
+    display:grid; grid-template-columns:80px 1fr;
+    gap:0; margin-bottom:0;
+  }
+  .tl-year {
+    font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--accent);
+    padding:16px 18px 16px 0; border-right:2px solid var(--border);
+    text-align:right; line-height:1;
+  }
+  .tl-content {
+    padding:14px 0 14px 20px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+  }
+  .tl-content:last-child { border-bottom:none; }
+  .tl-area { font-size:18px; font-weight:500; color:var(--text); }
+  .tl-event { font-size:12px; color:var(--muted); margin-top:3px; }
+  .tl-trend-up { color:#7ab892; }
+  .tl-trend-down { color:#c87c20; }
+
+  /* placeholder */
+  .placeholder-section {
+    border:1px dashed rgba(74,154,186,0.3);
+    border-radius:12px; padding:32px; margin-top:20px;
+    background:rgba(74,154,186,0.03);
+  }
+  .placeholder-section .ph-badge {
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px;
+    color:#c87c20; background:rgba(200,124,32,0.12); border:1px solid rgba(200,124,32,0.3);
+    border-radius:4px; padding:3px 10px; display:inline-block; margin-bottom:14px;
+  }
+  .placeholder-section h3 { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:10px; }
+  .placeholder-section p { font-size:14px; line-height:1.78; color:var(--muted); }
+  .ph-slots { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; margin-top:16px; }
+  .ph-slot {
+    border:1px dashed rgba(255,255,255,0.12); border-radius:8px;
+    padding:16px; min-height:80px;
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .ph-slot-label { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.25); }
+  .ph-slot-name { font-size:13px; color:rgba(255,255,255,0.4); }
+
+  footer { border-top:1px solid var(--border-neutral); padding:28px 64px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+  .footer-text { font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.22); }
+
+  @media(max-width:700px){
+    nav,footer,.hero,.content-wrap { padding-left:24px; padding-right:24px; }
+    .grid-2,.grid-3,.grid-4 { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-back" href="index.html">← Lab Home</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-current">SENTINEL-2 · DEEP LEARNING MAPPING</span>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-kicker">Scale 02 · Sentinel-2 · 10 m Resolution</div>
+    <h1>Mapping <em>Phragmites australis</em> Dynamics via Deep Learning on Sentinel-2 Time Series</h1>
+    <p class="hero-desc">A U-Net deep learning model (ResNet-34 encoder) applied to annual fall-season Sentinel-2 composites (2019–2024) for pixel-level Roseau cane classification across the lower MRD. Annual maps reveal high sensitivity to disturbance events and strong post-disturbance recovery capacity.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-val">90–98%</div><div class="hstat-label">Overall Accuracy Range</div></div>
+      <div class="hstat"><div class="hstat-val">κ 0.85–0.98</div><div class="hstat-label">Kappa Range</div></div>
+      <div class="hstat"><div class="hstat-val">237.6 km²</div><div class="hstat-label">Phragmites Coverage (2024)</div></div>
+      <div class="hstat"><div class="hstat-val">2019–2024</div><div class="hstat-label">Annual Classification Maps</div></div>
+      <div class="hstat"><div class="hstat-val">10 m</div><div class="hstat-label">Spatial Resolution</div></div>
+    </div>
+    <div class="tag-strip" style="margin-top:28px;">
+      <span class="tag">Sentinel-2</span>
+      <span class="tag">U-Net</span>
+      <span class="tag">ResNet-34</span>
+      <span class="tag">Time Series</span>
+      <span class="tag">Google Earth Engine</span>
+      <span class="tag">ArcGIS Pro</span>
+      <span class="tag">Fall Composites</span>
+    </div>
+  </div>
+</section>
+
+<div class="content-wrap">
+
+  <!-- ── 01: OVERVIEW ── -->
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2>Study Overview &amp; Motivation</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="info-card">
+    <h3>Why Deep Learning on Sentinel-2?</h3>
+    <p><em>Phragmites australis</em> (Roseau cane) is a dominant marsh species contributing to sediment retention, shoreline stabilization, and wetland resilience in the lower MRD. Its distribution is highly dynamic, driven by fluctuations in hydrology, storm impacts, salinity intrusion, and episodic environmental stressors. Accurate and consistent annual mapping is therefore essential for monitoring ecosystem health and supporting restoration planning.</p>
+    <p>Traditional machine learning classifiers are limited in capturing spatial complexity and spectral variability of marsh vegetation. They are sensitive to seasonal changes, atmospheric conditions, and mixed pixel effects. To address these limitations, this study applied a U-Net model with a ResNet-34 encoder to multi-temporal Sentinel-2 fall composites, enabling robust pixel-level classification through an encoder-decoder architecture that integrates spatial context across years.</p>
+  </div>
+
+  <!-- ── 02: DATA & METHODS ── -->
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2>Data &amp; Methods</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="info-card" style="margin-bottom:0;">
+      <h3>Input Datasets</h3>
+      <table class="data-table" style="margin-top:8px;">
+        <thead><tr><th>Item</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Satellite</td><td class="val-accent">Sentinel-2 (cloud-free only)</td></tr>
+          <tr><td>Time Period</td><td class="val-accent">2019 – 2024</td></tr>
+          <tr><td>Spatial Resolution</td><td class="val-accent">10 m</td></tr>
+          <tr><td>Temporal Compositing</td><td class="val-accent">Fall season (Aug–Nov) median</td></tr>
+          <tr><td>Reference Data</td><td>NAIP; WorldView-2 (2021, 2022)</td></tr>
+          <tr><td>Platforms</td><td>Google Earth Engine · ArcGIS Pro · Jupyter</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="info-card" style="margin-bottom:0;">
+      <h3>U-Net Model Configuration</h3>
+      <p>The U-Net model (ResNet-34 backbone) was applied for pixel-level classification into 3 classes: <em>Phragmites</em>, Non-<em>Phragmites</em>, and Water. Hyperparameters — chip size, batch size, epochs, learning rate, and loss function — were iteratively tuned for stable convergence and robust generalization. Training polygons were prepared annually from 2019 to 2024 using high-resolution imagery, ensuring year-specific ground truth. Model performance was monitored through training loss, validation loss, and accuracy curves.</p>
+    </div>
+  </div>
+
+  <!-- ── 03: ACCURACY RESULTS ── -->
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2>Classification Accuracy — Annual Performance (2019–2024)</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="info-card">
+    <p>Sentinel-2 fall composites (2019–2024) were used for year-wise training and validation. The model achieved high and consistent performance, with overall accuracy ranging from 90% to 98% and Kappa from 0.85 to 0.98, peaking in 2023. <em>Phragmites</em> class accuracy ranged from 80% to 96%, with strongest performance in 2023. Spatially, Phragmites was consistently mapped along distributary channels and marsh edges; minor errors occurred in fragmented areas.</p>
+  </div>
+
+  <div class="info-card">
+    <h3>Annual Accuracy Metrics — Concurrent Training &amp; Validation</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>Year</th><th>Overall Accuracy</th><th>Kappa</th><th>Phragmites Class Acc.</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2019</td><td class="val-accent">~90%</td><td class="val-accent">~0.85</td><td>~80%</td><td>Baseline year</td></tr>
+        <tr><td>2020</td><td class="val-accent">~91%</td><td class="val-accent">~0.87</td><td>~82%</td><td>—</td></tr>
+        <tr><td>2021</td><td class="val-accent">~92%</td><td class="val-accent">~0.88</td><td>~84%</td><td>Hurricane/freeze disturbance year</td></tr>
+        <tr><td>2022</td><td class="val-accent">~94%</td><td class="val-accent">~0.91</td><td>~88%</td><td>Stable conditions; recovery period</td></tr>
+        <tr class="row-hl"><td><strong>2023</strong></td><td class="val-good"><strong>~98%</strong></td><td class="val-good"><strong>~0.98</strong></td><td class="val-good"><strong>~96%</strong></td><td>Peak accuracy year</td></tr>
+        <tr><td>2024</td><td class="val-accent">~95%</td><td class="val-accent">~0.93</td><td>~90%</td><td>Post-drought recovery</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px; color:rgba(255,255,255,0.3); margin-top:8px;">Values approximate based on reported ranges from Manisha K C (2025). Exact per-year figures to be updated from final accuracy assessment tables.</p>
+  </div>
+
+  <!-- ── 04: AREA DYNAMICS ── -->
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2>Phragmites Coverage Dynamics — Annual Area (2019–2024)</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="info-card">
+    <p>Annual classified <em>Phragmites</em> coverage shows clear sensitivity to environmental disturbances and strong post-disturbance recovery. Coverage declined during disturbance years and rebounded rapidly in stable periods, confirming the species' resilience in the lower MRD.</p>
+  </div>
+
+  <div class="info-card">
+    <div class="timeline-row">
+      <div class="tl-year">2019</div>
+      <div class="tl-content"><div class="tl-area">248.2 km²</div><div class="tl-event">Baseline coverage — pre-major disturbance period.</div></div>
+    </div>
+    <div class="timeline-row">
+      <div class="tl-year">2020</div>
+      <div class="tl-content"><div class="tl-area tl-trend-down">↓ Declining</div><div class="tl-event">Gradual decline under hurricane activity (multiple storms 2020).</div></div>
+    </div>
+    <div class="timeline-row">
+      <div class="tl-year">2021</div>
+      <div class="tl-content"><div class="tl-area tl-trend-down">217.5 km² ↓</div><div class="tl-event">Lowest coverage — multiple hurricanes + historic freeze event. −12.4% from 2019 baseline.</div></div>
+    </div>
+    <div class="timeline-row">
+      <div class="tl-year">2022</div>
+      <div class="tl-content"><div class="tl-area tl-trend-up">235.3 km² ↑</div><div class="tl-event">Recovery — relatively stable conditions despite Hurricane Ida. Strong rebound: +17.8 km² from 2021 low.</div></div>
+    </div>
+    <div class="timeline-row">
+      <div class="tl-year">2023</div>
+      <div class="tl-content"><div class="tl-area tl-trend-down">214.1 km² ↓</div><div class="tl-event">Sharp decline driven by extreme drought — not hurricane-related. Lowest absolute coverage recorded.</div></div>
+    </div>
+    <div class="timeline-row">
+      <div class="tl-year">2024</div>
+      <div class="tl-content" style="border-bottom:none;"><div class="tl-area tl-trend-up">237.6 km² ↑</div><div class="tl-event">Rapid recovery to near 2022 levels after drought relief. Confirms high resilience and recovery capacity.</div></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="stat-block">
+      <div class="sb-val">−30.7 km²</div>
+      <div class="sb-label">Maximum Decline (2019→2021)</div>
+      <div class="sb-desc">Driven by hurricanes and the historic 2021 freeze event — the largest single disturbance window in the study period.</div>
+    </div>
+    <div class="stat-block">
+      <div class="sb-val">+23.5 km²</div>
+      <div class="sb-label">Maximum Recovery (2023→2024)</div>
+      <div class="sb-desc">Rapid rebound after extreme drought in 2023 — confirming strong intrinsic resilience of Roseau cane in the lower MRD.</div>
+    </div>
+  </div>
+
+  <!-- ── 05: KEY FINDINGS ── -->
+  <div class="sec-head">
+    <span class="sec-num">05</span>
+    <h2>Key Findings</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="info-card" style="margin-bottom:0;">
+      <h3>Model Performance</h3>
+      <p>U-Net (ResNet-34 backbone) produced consistently high classification accuracy (90–98%) across all six years. Accuracy declines were linked to disturbance years — not model limitations. Phragmites mapping is reliable across space, especially along distributary channels and marsh edges.</p>
+    </div>
+    <div class="info-card" style="margin-bottom:0;">
+      <h3>Ecological Insights</h3>
+      <p>Phragmites area declined significantly during disturbance events (hurricanes, freeze, drought) and recovered rapidly afterward. The species demonstrates high sensitivity to environmental stress and strong resilience — providing a strong baseline for evaluating multi-year training approaches and longer-term change analysis.</p>
+    </div>
+  </div>
+
+  <!-- ── 06: IN PROGRESS ── -->
+  <div class="sec-head">
+    <span class="sec-num">06</span>
+    <h2>Work In Progress — Multi-Year Training &amp; Generalization</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <div class="placeholder-section">
+    <div class="ph-badge">⏳ In Progress — Results to be added</div>
+    <h3>Multi-Year Training Approach &amp; Cross-Year Generalization Analysis</h3>
+    <p>This section will present results from multi-year training experiments — training U-Net on combined years and evaluating classification accuracy for unseen years. The goal is to develop a robust, transferable Phragmites mapping model that does not require annual retraining.</p>
+    <div class="ph-slots">
+      <div class="ph-slot">
+        <div class="ph-slot-label">Add Here</div>
+        <div class="ph-slot-name">Multi-Year Training Accuracy Table</div>
+      </div>
+      <div class="ph-slot">
+        <div class="ph-slot-label">Add Here</div>
+        <div class="ph-slot-name">Cross-Year Validation Results</div>
+      </div>
+      <div class="ph-slot">
+        <div class="ph-slot-label">Add Here</div>
+        <div class="ph-slot-name">Training vs. Validation Loss Curves (Multi-Year)</div>
+      </div>
+      <div class="ph-slot">
+        <div class="ph-slot-label">Add Here</div>
+        <div class="ph-slot-name">Comparison: Concurrent vs. Multi-Year Training Accuracy</div>
+      </div>
+      <div class="ph-slot">
+        <div class="ph-slot-label">Add Here</div>
+        <div class="ph-slot-name">Best Model Configuration Summary</div>
+      </div>
+      <div class="ph-slot">
+        <div class="ph-slot-label">Add Here</div>
+        <div class="ph-slot-name">Final Annual Maps (Updated)</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span class="footer-text">← <a href="index.html" style="color:var(--accent2);text-decoration:none;">Lab Home</a></span>
+  <span class="footer-text">Louisiana State University · Dr. Xuelian Meng · AP23PPQS&amp;T00C161</span>
+</footer>
+
+</body>
+</html>
