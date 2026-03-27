@@ -151,6 +151,32 @@
   .lb-close { position:fixed; top:20px; right:28px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:2px; cursor:pointer; background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:6px 14px; }
   .lb-cap { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); font-size:12px; color:rgba(255,255,255,0.4); font-style:italic; background:rgba(0,0,0,0.55); padding:6px 18px; border-radius:4px; max-width:800px; text-align:center; }
 
+  /* figure fallback when image fails to load */
+  .fig-fallback {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 200px;
+    padding: 40px 24px;
+    text-align: center;
+    border: 1px dashed rgba(74,154,186,0.25);
+    border-radius: 8px;
+    background: rgba(74,154,186,0.04);
+  }
+  .fb-icon { font-size: 32px; opacity: 0.4; }
+  .fb-text { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.55); }
+  .fb-link {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+    color: var(--accent2); background: rgba(122,184,146,0.1);
+    border: 1px solid rgba(122,184,146,0.25); border-radius: 4px;
+    padding: 8px 18px; text-decoration: none; letter-spacing: 1px;
+    transition: background 0.15s;
+  }
+  .fb-link:hover { background: rgba(122,184,146,0.22); }
+  .fb-hint { font-size: 11px; color: rgba(255,255,255,0.2); max-width: 420px; line-height: 1.6; }
+
   footer { border-top:1px solid var(--border-neutral); padding:28px 64px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
   .footer-text { font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.22); }
 
@@ -265,19 +291,24 @@
       <div class="figure-header">
         <div class="fig-label">Figure 1</div>
         <div class="fig-title">Classification Accuracy — Same-Year Single-Year Training &amp; Validation (2019–2024)</div>
-        <button class="fig-zoom-btn" onclick="openLb(
-          'https://lsu-its.maps.arcgis.com/sharing/rest/content/items/dfe0c21a596e44de8ddc070beb4345f2/data',
-          'Figure 1. Overall Accuracy (purple, 90–98%), Phragmites class accuracy (green, 80–96%), and Kappa (red, 0.85–0.98) for concurrent same-year training and validation, 2019–2024.')">
-          ⤢ Enlarge
-        </button>
+        <button class="fig-zoom-btn" onclick="openLb('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/dfe0c21a596e44de8ddc070beb4345f2/data','Figure 1. Overall Accuracy (purple, 90–98%), Phragmites class accuracy (green, 80–96%), and Kappa (red, 0.85–0.98) for concurrent same-year training and validation, 2019–2024.')">⤢ Enlarge</button>
       </div>
-      <div class="fig-mat chart-bg" onclick="openLb(
-        'https://lsu-its.maps.arcgis.com/sharing/rest/content/items/dfe0c21a596e44de8ddc070beb4345f2/data',
-        'Figure 1. Classification accuracy for same-year single-year training and validation 2019–2024.')">
-        <div class="zoom-ov"><div class="zoom-ov-inner">Click to Enlarge</div></div>
+      <div class="fig-mat chart-bg">
+        <div class="zoom-ov" onclick="openLb('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/dfe0c21a596e44de8ddc070beb4345f2/data','Figure 1. Classification accuracy for same-year training and validation 2019–2024. Purple = Overall Accuracy; Green = Phragmites class accuracy; Red = Kappa.')"><div class="zoom-ov-inner">Click to Enlarge</div></div>
         <img src="https://lsu-its.maps.arcgis.com/sharing/rest/content/items/dfe0c21a596e44de8ddc070beb4345f2/data"
-             alt="Classification accuracy graph 2019-2024" loading="lazy"
-             onerror="this.style.opacity='0.3'">
+             alt="Classification accuracy graph 2019-2024"
+             crossorigin="anonymous"
+             referrerpolicy="no-referrer"
+             loading="lazy"
+             style="cursor:zoom-in;"
+             onclick="openLb(this.src,'Figure 1. Classification accuracy for same-year training and validation 2019–2024.')"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="fig-fallback">
+          <div class="fb-icon">🔗</div>
+          <div class="fb-text">Figure 1 — Classification Accuracy Graph (2019–2024)</div>
+          <a class="fb-link" href="https://lsu-its.maps.arcgis.com/sharing/rest/content/items/dfe0c21a596e44de8ddc070beb4345f2/data" target="_blank">Open full resolution image ↗</a>
+          <div class="fb-hint">If the image does not load, ensure the ArcGIS item sharing is set to Everyone (Public)</div>
+        </div>
       </div>
       <div class="fig-caption">
         <strong>Figure 1.</strong> Classification accuracy for same-year single-year training and validation (2019–2024). <strong>Purple</strong> = Overall Accuracy (%); <strong>Green</strong> = Phragmites class accuracy (%); <strong>Red</strong> = Kappa coefficient. Peak performance in 2023 (OA 98%, Phragmites acc. 96%, κ 0.98). Accuracy dip in 2021 reflects disturbance-induced habitat complexity during Hurricane Ida and freeze year.
@@ -339,19 +370,24 @@
       <div class="figure-header">
         <div class="fig-label">Figure 2</div>
         <div class="fig-title">U-Net Classified Maps — Lower MRD · (a) Fall 2019 · (b) Fall 2020 · (c) Fall 2021 · (d) Fall 2022 · (e) Fall 2023 · (f) Fall 2024</div>
-        <button class="fig-zoom-btn" onclick="openLb(
-          'https://lsu-its.maps.arcgis.com/sharing/rest/content/items/2e568c620b5240248d5228f9cb1976eb/data',
-          'Figure 2. U-Net classified maps for Fall 2019–2024. Dark green = Phragmites; Tan = Non-Phragmites; Light blue = Water.')">
-          ⤢ Enlarge
-        </button>
+        <button class="fig-zoom-btn" onclick="openLb('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/2e568c620b5240248d5228f9cb1976eb/data','Figure 2. U-Net classified maps for Fall 2019–2024. Dark green = Phragmites; Tan = Non-Phragmites; Light blue = Water.')">⤢ Enlarge</button>
       </div>
-      <div class="fig-mat" onclick="openLb(
-        'https://lsu-its.maps.arcgis.com/sharing/rest/content/items/2e568c620b5240248d5228f9cb1976eb/data',
-        'Figure 2. U-Net classified maps for Fall 2019–2024. (a) 248.2 km²; (b) 230.6 km²; (c) 217.5 km²; (d) 235.3 km²; (e) 214.1 km²; (f) 237.6 km².')">
-        <div class="zoom-ov"><div class="zoom-ov-inner">Click to Enlarge</div></div>
+      <div class="fig-mat">
+        <div class="zoom-ov" onclick="openLb('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/2e568c620b5240248d5228f9cb1976eb/data','Figure 2. U-Net classified maps for Fall 2019–2024.')"><div class="zoom-ov-inner">Click to Enlarge</div></div>
         <img src="https://lsu-its.maps.arcgis.com/sharing/rest/content/items/2e568c620b5240248d5228f9cb1976eb/data"
-             alt="Annual Phragmites Classification Maps 2019-2024" loading="lazy"
-             onerror="this.style.opacity='0.3'">
+             alt="Annual Phragmites Classification Maps 2019-2024"
+             crossorigin="anonymous"
+             referrerpolicy="no-referrer"
+             loading="lazy"
+             style="cursor:zoom-in;"
+             onclick="openLb(this.src,'Figure 2. U-Net classified maps for Fall 2019–2024. Dark green = Phragmites; Tan = Non-Phragmites; Light blue = Water.')"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="fig-fallback">
+          <div class="fb-icon">🔗</div>
+          <div class="fb-text">Figure 2 — Annual Classification Maps Panel (2019–2024)</div>
+          <a class="fb-link" href="https://lsu-its.maps.arcgis.com/sharing/rest/content/items/2e568c620b5240248d5228f9cb1976eb/data" target="_blank">Open full resolution image ↗</a>
+          <div class="fb-hint">If the image does not load, ensure the ArcGIS item sharing is set to Everyone (Public)</div>
+        </div>
       </div>
       <div class="panel-strip">
         <div class="ps">(a) Fall 2019<span class="base">248.2 km²</span></div>
@@ -380,19 +416,24 @@
       <div class="figure-header">
         <div class="fig-label">Figure 3</div>
         <div class="fig-title">Phragmites Area — Fall Season &amp; Major Disturbance Events (2019–2024)</div>
-        <button class="fig-zoom-btn" onclick="openLb(
-          'https://lsu-its.maps.arcgis.com/sharing/rest/content/items/9eb6d80251d1458eb7b82a91f2e6f7df/data',
-          'Figure 3. Phragmites area (km²) for each fall season 2019–2024. Red dashed lines = major disturbance events.')">
-          ⤢ Enlarge
-        </button>
+        <button class="fig-zoom-btn" onclick="openLb('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/9eb6d80251d1458eb7b82a91f2e6f7df/data','Figure 3. Phragmites area (km²) for each fall season 2019–2024. Red dashed lines = major disturbance events.')">⤢ Enlarge</button>
       </div>
-      <div class="fig-mat chart-bg" onclick="openLb(
-        'https://lsu-its.maps.arcgis.com/sharing/rest/content/items/9eb6d80251d1458eb7b82a91f2e6f7df/data',
-        'Figure 3. Phragmites area (km²) for each fall season 2019–2024 with disturbance event markers.')">
-        <div class="zoom-ov"><div class="zoom-ov-inner">Click to Enlarge</div></div>
+      <div class="fig-mat chart-bg">
+        <div class="zoom-ov" onclick="openLb('https://lsu-its.maps.arcgis.com/sharing/rest/content/items/9eb6d80251d1458eb7b82a91f2e6f7df/data','Figure 3. Phragmites area for fall seasons 2019–2024 with disturbance event markers.')"><div class="zoom-ov-inner">Click to Enlarge</div></div>
         <img src="https://lsu-its.maps.arcgis.com/sharing/rest/content/items/9eb6d80251d1458eb7b82a91f2e6f7df/data"
-             alt="Phragmites area chart 2019-2024" loading="lazy"
-             onerror="this.style.opacity='0.3'">
+             alt="Phragmites area chart 2019-2024"
+             crossorigin="anonymous"
+             referrerpolicy="no-referrer"
+             loading="lazy"
+             style="cursor:zoom-in;"
+             onclick="openLb(this.src,'Figure 3. Phragmites area (km²) for each fall season 2019–2024. Red dashed lines = major disturbance events.')"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="fig-fallback">
+          <div class="fb-icon">🔗</div>
+          <div class="fb-text">Figure 3 — Phragmites Area &amp; Disturbance Events (2019–2024)</div>
+          <a class="fb-link" href="https://lsu-its.maps.arcgis.com/sharing/rest/content/items/9eb6d80251d1458eb7b82a91f2e6f7df/data" target="_blank">Open full resolution image ↗</a>
+          <div class="fb-hint">If the image does not load, ensure the ArcGIS item sharing is set to Everyone (Public)</div>
+        </div>
       </div>
       <div class="fig-caption">
         <strong>Figure 3.</strong> Phragmites area (km²) for each fall season 2019–2024. Red dashed vertical lines mark major disturbance events: Hurricane Barry flooding (2019), Hurricanes Laura, Delta &amp; Zeta with massive wind surge damage (2020), Hurricane Ida with catastrophic wetland damage (2021), and extreme drought causing freshwater habitat stress (2023). Strong recovery in 2022 (+17.8 km²) and 2024 (+23.5 km²).
