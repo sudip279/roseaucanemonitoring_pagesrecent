@@ -13,7 +13,6 @@
     --accent: #4a9aba;
     --accent2: #7ab892;
     --amber: #c87a3a;
-    --red: #c84040;
     --text: #f0ece4;
     --muted: rgba(240,236,228,0.58);
     --border: rgba(74,154,186,0.22);
@@ -22,12 +21,14 @@
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'Hanken Grotesk',sans-serif; background:var(--dark); color:var(--text); }
 
+  /* NAV */
   nav { padding:18px 64px; border-bottom:1px solid var(--border-neutral); display:flex; align-items:center; gap:16px; }
   .nav-back { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--accent2); text-decoration:none; }
   .nav-back:hover { color:var(--text); }
   .nav-sep { color:rgba(255,255,255,0.2); }
   .nav-current { font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.35); letter-spacing:1px; }
 
+  /* JUMP NAV */
   .jump-nav { background:#0a1218; border-bottom:1px solid var(--border-neutral); padding:14px 64px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
   .jump-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.28); margin-right:6px; }
   .jump-btn { font-family:'IBM Plex Mono',monospace; font-size:11px; background:rgba(74,154,186,0.08); border:1px solid var(--border); border-radius:4px; padding:5px 14px; color:var(--accent); text-decoration:none; letter-spacing:1px; transition:background 0.15s; }
@@ -59,27 +60,27 @@
   h2 { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:var(--text); }
   .sec-rule { flex:1; height:1px; background:var(--border-neutral); }
 
+  /* CARDS */
   .info-card { background:var(--card-bg); border:1px solid var(--border-neutral); border-radius:12px; padding:28px 32px; margin-bottom:20px; }
   .info-card h3 { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:10px; }
   .info-card p { font-size:14px; line-height:1.78; color:var(--muted); }
   .info-card p+p { margin-top:10px; }
-
   .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
   .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
-
   .stat-block { background:var(--card-bg); border:1px solid var(--border-neutral); border-radius:12px; padding:22px 24px; }
   .sb-val { font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:500; color:var(--accent); line-height:1; margin-bottom:6px; }
   .sb-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.35); }
   .sb-desc { font-size:13px; line-height:1.65; color:var(--muted); margin-top:10px; }
 
+  /* TABLE */
   .data-table { width:100%; border-collapse:collapse; margin-top:14px; font-size:13px; }
   .data-table th { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.4); text-align:left; padding:8px 14px; border-bottom:1px solid var(--border-neutral); }
   .data-table td { padding:9px 14px; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--muted); }
   .data-table tr:last-child td { border-bottom:none; }
   .data-table .hl td { color:var(--text); font-weight:500; }
-  .val-accent { color:var(--accent); font-family:'IBM Plex Mono',monospace; }
-  .val-green { color:var(--accent2); font-family:'IBM Plex Mono',monospace; }
-  .val-red { color:#e06060; font-family:'IBM Plex Mono',monospace; }
+  .va { color:var(--accent); font-family:'IBM Plex Mono',monospace; }
+  .vg { color:var(--accent2); font-family:'IBM Plex Mono',monospace; }
+  .vr { color:#e06060; font-family:'IBM Plex Mono',monospace; }
 
   /* CHART */
   .chart-card { background:var(--card-bg); border:1px solid var(--border-neutral); border-radius:12px; padding:28px 32px; margin-bottom:20px; }
@@ -88,68 +89,55 @@
 
   /* FIGURE BLOCKS */
   .figure-block { background:#0e1820; border:1px solid var(--border-neutral); border-radius:14px; overflow:hidden; margin-bottom:24px; box-shadow:0 8px 32px rgba(0,0,0,0.35); }
-  .figure-header { padding:14px 20px; border-bottom:1px solid var(--border-neutral); display:flex; align-items:center; gap:12px; background:rgba(0,0,0,0.2); }
-  .figure-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); background:rgba(74,154,186,0.1); border:1px solid var(--border); border-radius:3px; padding:2px 8px; flex-shrink:0; }
-  .figure-title { font-size:13px; font-weight:500; color:var(--text); line-height:1.4; }
-  .figure-zoom-btn { margin-left:auto; flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; color:var(--accent2); background:rgba(122,184,146,0.1); border:1px solid rgba(122,184,146,0.25); border-radius:4px; padding:4px 12px; cursor:pointer; white-space:nowrap; transition:background 0.15s; }
-  .figure-zoom-btn:hover { background:rgba(122,184,146,0.22); }
-  .figure-mat { background:#142030; padding:16px; cursor:zoom-in; position:relative; }
-  .figure-mat:hover .zoom-overlay { opacity:1; }
-  .zoom-overlay { position:absolute; inset:16px; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s; pointer-events:none; border-radius:4px; }
-  .zoom-inner { background:rgba(0,0,0,0.55); border:1px solid rgba(255,255,255,0.2); border-radius:6px; padding:8px 18px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.85); text-transform:uppercase; }
-  .figure-mat img { width:100%; height:auto; display:block; border-radius:4px; border:1px solid rgba(255,255,255,0.06); box-shadow:0 4px 20px rgba(0,0,0,0.4); }
-  .figure-caption { padding:12px 20px 14px; font-size:12px; line-height:1.7; color:rgba(255,255,255,0.35); font-style:italic; border-top:1px solid var(--border-neutral); background:rgba(0,0,0,0.15); }
-  .figure-caption strong { color:rgba(255,255,255,0.55); font-style:normal; }
+  .figure-header { padding:14px 20px; border-bottom:1px solid var(--border-neutral); display:flex; align-items:center; gap:12px; background:rgba(0,0,0,0.2); flex-wrap:wrap; }
+  .fig-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); background:rgba(74,154,186,0.1); border:1px solid var(--border); border-radius:3px; padding:2px 8px; flex-shrink:0; }
+  .fig-title { font-size:13px; font-weight:500; color:var(--text); line-height:1.4; flex:1; }
+  .fig-zoom-btn { flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; color:var(--accent2); background:rgba(122,184,146,0.1); border:1px solid rgba(122,184,146,0.25); border-radius:4px; padding:4px 12px; cursor:pointer; transition:background 0.15s; }
+  .fig-zoom-btn:hover { background:rgba(122,184,146,0.22); }
+  .fig-mat { background:#132030; padding:16px; cursor:zoom-in; position:relative; }
+  .fig-mat:hover .zoom-ov { opacity:1; }
+  .zoom-ov { position:absolute; inset:16px; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s; pointer-events:none; border-radius:4px; }
+  .zoom-ov-inner { background:rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.2); border-radius:6px; padding:8px 18px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:2px; color:#fff; text-transform:uppercase; }
+  .fig-mat img { width:100%; height:auto; display:block; border-radius:4px; border:1px solid rgba(255,255,255,0.05); box-shadow:0 4px 20px rgba(0,0,0,0.4); background:#fff; }
+  .fig-mat.chart-bg { background:#14201a; padding:12px; }
+  .fig-caption { padding:12px 20px 14px; font-size:12px; line-height:1.7; color:rgba(255,255,255,0.35); font-style:italic; border-top:1px solid var(--border-neutral); background:rgba(0,0,0,0.15); }
+  .fig-caption strong { color:rgba(255,255,255,0.55); font-style:normal; }
 
-  /* arcgis note */
-  .arcgis-note { display:flex; align-items:center; gap:10px; background:rgba(74,154,186,0.07); border:1px solid rgba(74,154,186,0.18); border-radius:8px; padding:10px 16px; margin-bottom:20px; font-size:12px; color:rgba(240,236,228,0.45); line-height:1.5; }
-  .arcgis-note strong { color:rgba(74,154,186,0.85); font-size:10px; font-family:'IBM Plex Mono',monospace; letter-spacing:1.5px; flex-shrink:0; }
+  /* PANEL STRIP — 6 year labels */
+  .panel-strip { display:grid; grid-template-columns:repeat(6,1fr); border-top:1px solid var(--border-neutral); background:rgba(0,0,0,0.25); }
+  .ps { padding:8px 4px; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:10px; color:rgba(255,255,255,0.38); border-right:1px solid var(--border-neutral); }
+  .ps:last-child { border-right:none; }
+  .ps span { display:block; font-size:9px; margin-top:2px; }
+  .ps .up { color:rgba(122,184,146,0.8); }
+  .ps .dn { color:#e08080; }
+  .ps .base { color:rgba(74,154,186,0.7); }
 
-  /* YEAR SWITCHER */
-  .year-switcher-wrap { background:var(--card-bg); border:1px solid var(--border-neutral); border-radius:14px; overflow:hidden; margin-bottom:24px; }
-  .year-switcher-header { padding:16px 24px; border-bottom:1px solid var(--border-neutral); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; background:rgba(0,0,0,0.2); }
-  .year-switcher-title { font-family:'Playfair Display',serif; font-size:16px; font-weight:700; color:var(--text); }
-  .year-switcher-subtitle { font-size:12px; color:var(--muted); margin-top:2px; }
-  .year-btns { display:flex; gap:6px; flex-wrap:wrap; }
-  .year-btn { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:1px; padding:7px 16px; border-radius:6px; cursor:pointer; border:1px solid var(--border); background:rgba(74,154,186,0.06); color:rgba(255,255,255,0.45); transition:all 0.15s; }
-  .year-btn:hover { background:rgba(74,154,186,0.14); color:var(--text); }
-  .year-btn.active { background:rgba(74,154,186,0.25); border-color:var(--accent); color:var(--accent); font-weight:500; }
-  .year-display { padding:20px 24px; }
-  .year-map-slot { border-radius:8px; overflow:hidden; position:relative; }
-  .year-map-slot iframe { width:100%; height:520px; border:none; display:block; }
+  /* ARCGIS NOTE */
+  .ag-note { display:flex; align-items:center; gap:10px; background:rgba(74,154,186,0.07); border:1px solid rgba(74,154,186,0.18); border-radius:8px; padding:10px 16px; margin-bottom:20px; font-size:12px; color:rgba(240,236,228,0.45); line-height:1.5; }
+  .ag-note strong { color:rgba(74,154,186,0.85); font-size:10px; font-family:'IBM Plex Mono',monospace; letter-spacing:1.5px; flex-shrink:0; }
 
-  /* pending map slot */
-  .map-pending { height:420px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; background:rgba(74,154,186,0.04); border:1px dashed rgba(74,154,186,0.2); border-radius:8px; }
-  .map-pending-year { font-family:'IBM Plex Mono',monospace; font-size:28px; font-weight:500; color:rgba(74,154,186,0.35); }
-  .map-pending-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.2); }
-  .map-pending-hint { font-size:12px; color:rgba(255,255,255,0.18); text-align:center; max-width:420px; line-height:1.65; padding:0 20px; }
-  .year-stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:16px; }
-  .year-stat { background:rgba(0,0,0,0.2); border:1px solid var(--border-neutral); border-radius:8px; padding:12px 16px; }
-  .year-stat-val { font-family:'IBM Plex Mono',monospace; font-size:18px; font-weight:500; color:var(--accent); }
-  .year-stat-label { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.28); margin-top:3px; }
-
-  /* disturbance timeline */
-  .disturbance-timeline { display:flex; flex-direction:column; gap:0; margin-bottom:20px; }
-  .dt-row { display:grid; grid-template-columns:80px 16px 1fr; align-items:start; gap:0 12px; }
-  .dt-year { font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--accent); text-align:right; padding:14px 0; }
-  .dt-line-wrap { display:flex; flex-direction:column; align-items:center; padding-top:18px; }
+  /* DISTURBANCE TIMELINE */
+  .dtl { display:flex; flex-direction:column; }
+  .dt-row { display:grid; grid-template-columns:72px 18px 1fr; gap:0 14px; align-items:start; }
+  .dt-yr { font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--accent); text-align:right; padding:14px 0; }
+  .dt-line { display:flex; flex-direction:column; align-items:center; padding-top:19px; }
   .dt-dot { width:10px; height:10px; border-radius:50%; background:var(--accent2); border:2px solid var(--dark); flex-shrink:0; }
-  .dt-dot.disturbance { background:#e06060; }
-  .dt-connector { width:2px; flex:1; background:rgba(74,154,186,0.2); min-height:20px; }
-  .dt-content { padding:12px 0 12px 4px; border-bottom:1px solid rgba(255,255,255,0.05); }
-  .dt-row:last-child .dt-content { border-bottom:none; }
-  .dt-area { font-size:16px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:10px; }
-  .dt-trend { font-family:'IBM Plex Mono',monospace; font-size:11px; padding:2px 8px; border-radius:3px; }
-  .dt-trend.up { color:#7ab892; background:rgba(122,184,146,0.12); }
-  .dt-trend.down { color:#e06060; background:rgba(224,96,96,0.12); }
-  .dt-event { font-size:12px; color:rgba(255,255,255,0.38); margin-top:4px; line-height:1.55; }
-  .dt-event .ev-badge { display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; padding:2px 7px; border-radius:3px; margin-right:6px; background:rgba(224,96,96,0.15); color:#e08080; border:1px solid rgba(224,96,96,0.25); }
+  .dt-dot.d { background:#e06060; }
+  .dt-conn { width:2px; flex:1; background:rgba(74,154,186,0.18); min-height:22px; }
+  .dt-body { padding:12px 0 12px 2px; border-bottom:1px solid rgba(255,255,255,0.04); }
+  .dt-row:last-child .dt-body { border-bottom:none; }
+  .dt-area { font-size:16px; font-weight:600; color:var(--text); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .badge { font-family:'IBM Plex Mono',monospace; font-size:10px; padding:2px 8px; border-radius:3px; }
+  .bdist { color:#e08080; background:rgba(224,96,96,0.12); border:1px solid rgba(224,96,96,0.22); }
+  .brec  { color:var(--accent2); background:rgba(122,184,146,0.1); border:1px solid rgba(122,184,146,0.22); }
+  .bbase { color:var(--accent); background:rgba(74,154,186,0.1); border:1px solid rgba(74,154,186,0.22); }
+  .dt-desc { font-size:12px; color:rgba(255,255,255,0.35); margin-top:5px; line-height:1.6; }
 
   /* PLACEHOLDER */
-  .placeholder-section { border:1px dashed rgba(74,154,186,0.28); border-radius:12px; padding:32px; background:rgba(74,154,186,0.03); }
+  .ph-section { border:1px dashed rgba(74,154,186,0.25); border-radius:12px; padding:32px; background:rgba(74,154,186,0.02); }
   .ph-badge { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--amber); background:rgba(200,122,58,0.12); border:1px solid rgba(200,122,58,0.3); border-radius:4px; padding:3px 10px; display:inline-block; margin-bottom:14px; }
-  .placeholder-section h3 { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:10px; }
-  .placeholder-section p { font-size:14px; line-height:1.78; color:var(--muted); }
+  .ph-section h3 { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:10px; }
+  .ph-section p { font-size:14px; line-height:1.78; color:var(--muted); }
   .ph-slots { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; margin-top:16px; }
   .ph-slot { border:1px dashed rgba(255,255,255,0.1); border-radius:8px; padding:16px; min-height:90px; display:flex; flex-direction:column; gap:5px; }
   .ph-slot-label { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.22); }
@@ -157,29 +145,29 @@
   .ph-slot-hint { font-size:11px; color:rgba(255,255,255,0.18); margin-top:2px; line-height:1.5; }
 
   /* LIGHTBOX */
-  .lightbox { display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.93); align-items:center; justify-content:center; cursor:zoom-out; }
-  .lightbox.active { display:flex; }
-  .lightbox img { max-width:94vw; max-height:92vh; object-fit:contain; border-radius:4px; box-shadow:0 32px 80px rgba(0,0,0,0.6); }
-  .lb-close { position:fixed; top:20px; right:28px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:2px; cursor:pointer; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:6px 14px; }
-  .lb-caption { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); font-size:12px; color:rgba(255,255,255,0.4); font-style:italic; background:rgba(0,0,0,0.5); padding:6px 18px; border-radius:4px; max-width:760px; text-align:center; }
+  .lb { display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.94); align-items:center; justify-content:center; cursor:zoom-out; }
+  .lb.on { display:flex; }
+  .lb img { max-width:94vw; max-height:92vh; object-fit:contain; border-radius:4px; box-shadow:0 32px 80px rgba(0,0,0,0.7); }
+  .lb-close { position:fixed; top:20px; right:28px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:2px; cursor:pointer; background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:6px 14px; }
+  .lb-cap { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); font-size:12px; color:rgba(255,255,255,0.4); font-style:italic; background:rgba(0,0,0,0.55); padding:6px 18px; border-radius:4px; max-width:800px; text-align:center; }
 
   footer { border-top:1px solid var(--border-neutral); padding:28px 64px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
   .footer-text { font-family:'IBM Plex Mono',monospace; font-size:11px; color:rgba(255,255,255,0.22); }
 
   @media(max-width:800px){
     nav,.jump-nav,.hero,.content-wrap,footer { padding-left:24px; padding-right:24px; }
-    .grid-2,.grid-3,.year-stats-row { grid-template-columns:1fr 1fr; }
-    .dt-row { grid-template-columns:64px 14px 1fr; }
+    .grid-2,.grid-3 { grid-template-columns:1fr; }
+    .panel-strip { grid-template-columns:repeat(3,1fr); }
   }
 </style>
 </head>
 <body>
 
 <!-- LIGHTBOX -->
-<div class="lightbox" id="lb" onclick="closeLb()">
+<div class="lb" id="lb" onclick="closeLb()">
   <div class="lb-close" onclick="closeLb()">ESC · CLOSE</div>
   <img id="lb-img" src="" alt="">
-  <div class="lb-caption" id="lb-cap"></div>
+  <div class="lb-cap" id="lb-cap"></div>
 </div>
 
 <nav>
@@ -191,10 +179,10 @@
 <div class="jump-nav">
   <span class="jump-label">Jump to</span>
   <a class="jump-btn" href="#overview">01 · Overview</a>
-  <a class="jump-btn" href="#data-methods">02 · Data &amp; Methods</a>
-  <a class="jump-btn" href="#accuracy">03 · Classification Accuracy</a>
-  <a class="jump-btn" href="#annual-maps">04 · Annual Maps</a>
-  <a class="jump-btn" href="#area-dynamics">05 · Area Dynamics</a>
+  <a class="jump-btn" href="#methods">02 · Data &amp; Methods</a>
+  <a class="jump-btn" href="#accuracy">03 · Accuracy</a>
+  <a class="jump-btn" href="#maps">04 · Annual Maps</a>
+  <a class="jump-btn" href="#area">05 · Area Dynamics</a>
   <a class="jump-btn" href="#findings">06 · Key Findings</a>
   <a class="jump-btn pending">07 · Multi-Year Training (Pending)</a>
 </div>
@@ -215,7 +203,7 @@
     <div class="tag-strip">
       <span class="tag">Sentinel-2</span><span class="tag">U-Net</span><span class="tag">ResNet-34</span>
       <span class="tag">Time Series</span><span class="tag">Google Earth Engine</span>
-      <span class="tag">ArcGIS Pro</span><span class="tag">Jupyter Notebook</span><span class="tag">10 m Resolution</span>
+      <span class="tag">ArcGIS Pro</span><span class="tag">Jupyter Notebook</span><span class="tag">10 m</span>
     </div>
   </div>
 </section>
@@ -227,35 +215,34 @@
     <div class="sec-head"><span class="sec-num">01</span><h2>Research Overview</h2><div class="sec-rule"></div></div>
     <div class="info-card">
       <h3>Motivation &amp; Approach</h3>
-      <p><em>Phragmites australis</em> (Roseau cane) is a dominant marsh species contributing substantially to sediment retention, shoreline stabilization, and overall wetland resilience in the lower MRD. Its distribution is highly dynamic, driven by fluctuations in hydrology, storm impacts, salinity intrusion, and episodic environmental stressors. Accurate and consistent annual mapping is essential for monitoring ecosystem health and supporting restoration planning.</p>
-      <p>Traditional machine learning classifiers are limited in capturing the spatial complexity and spectral variability of marsh vegetation — they are sensitive to seasonal changes, atmospheric conditions, and mixed pixel effects, producing inconsistent classifications across time. To address these limitations, this study applied a U-Net deep learning model (ResNet-34 encoder) to annual fall-season Sentinel-2 composites (2019–2024). U-Net's encoder-decoder architecture integrates spatial context at multiple scales, enabling robust pixel-level classification even under complex environmental conditions.</p>
+      <p><em>Phragmites australis</em> (Roseau cane) is a dominant marsh species contributing substantially to sediment retention, shoreline stabilization, and wetland resilience in the lower MRD. Its distribution is highly dynamic, driven by fluctuations in hydrology, storm impacts, salinity intrusion, and episodic environmental stressors. Accurate and consistent annual mapping is therefore essential for monitoring ecosystem health and supporting restoration planning.</p>
+      <p>Traditional machine learning classifiers are limited in capturing the spatial complexity and spectral variability of marsh vegetation across time. To address these limitations, this study applied a U-Net deep learning model (ResNet-34 encoder) to annual fall-season Sentinel-2 composites (2019–2024). U-Net's encoder-decoder architecture integrates spatial context at multiple scales, enabling robust pixel-level classification even under complex environmental conditions and improving consistency across years.</p>
     </div>
   </div>
 
   <!-- ══ 02: DATA & METHODS ══ -->
-  <div class="sub-section" id="data-methods">
+  <div class="sub-section" id="methods">
     <div class="sec-head"><span class="sec-num">02</span><h2>Data &amp; Methods</h2><div class="sec-rule"></div></div>
-
     <div class="grid-2">
       <div class="info-card" style="margin-bottom:0;">
         <h3>Input Datasets</h3>
         <table class="data-table" style="margin-top:8px;">
           <thead><tr><th>Item</th><th>Detail</th></tr></thead>
           <tbody>
-            <tr><td>Satellite</td><td class="val-accent">Sentinel-2 (cloud-free only)</td></tr>
-            <tr><td>Time Period</td><td class="val-accent">2019–2024 (6 years)</td></tr>
-            <tr><td>Spatial Resolution</td><td class="val-accent">10 m</td></tr>
+            <tr><td>Satellite</td><td class="va">Sentinel-2 (cloud-free only)</td></tr>
+            <tr><td>Time Period</td><td class="va">2019–2024 (6 years)</td></tr>
+            <tr><td>Spatial Resolution</td><td class="va">10 m</td></tr>
             <tr><td>Compositing</td><td>Fall season (Aug–Nov) median composite</td></tr>
-            <tr><td>Reference Data</td><td>NAIP · WorldView-2 (2021, 2022)</td></tr>
-            <tr><td>Platforms</td><td>Google Earth Engine · ArcGIS Pro · Jupyter</td></tr>
-            <tr><td>Classes</td><td>Phragmites · Non-Phragmites · Water</td></tr>
+            <tr><td>Reference Data</td><td>NAIP · WorldView-2 (2021 &amp; 2022, Main Pass &amp; South Pass)</td></tr>
+            <tr><td>Platforms</td><td>Google Earth Engine · ArcGIS Pro · Jupyter Notebook</td></tr>
+            <tr><td>Output Classes</td><td>Phragmites · Non-Phragmites · Water</td></tr>
           </tbody>
         </table>
       </div>
       <div class="info-card" style="margin-bottom:0;">
         <h3>U-Net Model Configuration</h3>
         <p>A U-Net model with a ResNet-34 encoder was applied for pixel-level classification. Hyperparameters — chip size, batch size, epochs, learning rate, and loss function — were iteratively tuned for stable convergence and robust generalization.</p>
-        <p style="margin-top:10px;">Training data consisted of validated polygons for three classes prepared annually (2019–2024) using high-resolution NAIP and WorldView-2 imagery. Model performance was monitored through training loss, validation loss, and accuracy curves — showing consistent loss reduction and close alignment between training and validation trends across all years.</p>
+        <p style="margin-top:10px;">Training data consisted of validated polygons for three classes prepared annually (2019–2024) using high-resolution NAIP and WorldView-2 imagery. Model performance was monitored through training loss, validation loss, and accuracy — showing consistent loss reduction and close alignment between training and validation trends across all years.</p>
       </div>
     </div>
   </div>
@@ -265,69 +252,57 @@
     <div class="sec-head"><span class="sec-num">03</span><h2>Classification Accuracy — Annual Performance (2019–2024)</h2><div class="sec-rule"></div></div>
 
     <div class="info-card">
-      <p>The U-Net model achieved high and consistent performance across all six years. Overall accuracy ranged from 90% (2019) to 98% (2023), with Kappa from 0.85 to 0.98. <em>Phragmites</em> class accuracy ranged from 80% (2021 — disturbance year) to 96% (2023). Accuracy declines in 2021 and 2024 were linked to disturbance-induced habitat stress, not model limitations. Spatially, Phragmites was consistently mapped along distributary channels and marsh edges; minor errors occurred in fragmented interior areas.</p>
+      <p>The U-Net model achieved high and consistent performance across all six years. Overall accuracy ranged from 90% (2019) to 98% (2023), with Kappa from 0.85 to 0.98. <em>Phragmites</em> class accuracy ranged from 80% (2021 — major disturbance year) to 96% (2023). Accuracy declines in disturbance years were linked to habitat changes, not model limitations. Spatially, Phragmites was consistently mapped along distributary channels and marsh edges; minor errors occurred in fragmented interior areas.</p>
     </div>
 
-    <!-- Figure 1: Accuracy graph from ArcGIS -->
-    <div class="arcgis-note">
+    <div class="ag-note">
       <strong>ARCGIS ONLINE</strong>
-      Figures hosted on LSU ArcGIS Online. Click any figure to open full resolution.
-      <!-- REPLACE this note text with actual item URLs once uploaded -->
+      All figures hosted on LSU ArcGIS Online · Images load directly from the platform · Click any figure to open full resolution
     </div>
 
+    <!-- Figure 1: Accuracy graph -->
     <div class="figure-block">
       <div class="figure-header">
-        <div class="figure-label">Figure 1</div>
-        <div class="figure-title">Classification Accuracy — Same-Year Single-Year Training &amp; Validation (2019–2024)</div>
-        <!--
-        ══════════════════════════════════════════════════════
-        ADD ZOOM BUTTON WHEN IMAGE IS ON ARCGIS:
-        <button class="figure-zoom-btn" onclick="openLb('ARCGIS_URL','Figure 1 caption')">⤢ Enlarge</button>
-        ══════════════════════════════════════════════════════
-        -->
-        <button class="figure-zoom-btn" style="opacity:0.4;cursor:default;">⤢ Upload to ArcGIS</button>
+        <div class="fig-label">Figure 1</div>
+        <div class="fig-title">Classification Accuracy — Same-Year Single-Year Training &amp; Validation (2019–2024)</div>
+        <button class="fig-zoom-btn" onclick="openLb(
+          'https://lsu-its.maps.arcgis.com/sharing/rest/content/items/dfe0c21a596e44de8ddc070beb4345f2/data',
+          'Figure 1. Overall Accuracy (purple, 90–98%), Phragmites class accuracy (green, 80–96%), and Kappa (red, 0.85–0.98) for concurrent same-year training and validation, 2019–2024.')">
+          ⤢ Enlarge
+        </button>
       </div>
-      <div class="figure-mat">
-        <div class="zoom-overlay"><div class="zoom-inner">Click to Enlarge</div></div>
-        <!--
-        ══════════════════════════════════════════════════════
-        REPLACE img src WITH ARCGIS URL:
-        Upload 2019to2024_SYwithroseau_v4.png to ArcGIS Online as image item
-        → Share → Everyone → copy item data URL
-        → Replace src below with: https://www.arcgis.com/sharing/rest/content/items/ITEM_ID/data
-        ══════════════════════════════════════════════════════
-        -->
-        <img src="2019to2024_SYwithroseau_v4.png"
-             alt="Classification Accuracy Graph 2019-2024"
-             onclick="openLb(this.src,'Figure 1. Classification accuracy for same-year single-year training and validation (2019–2024). Overall Accuracy (purple), Phragmites Class Accuracy (green), Kappa Coefficient (red).')"
-             style="cursor:zoom-in;">
+      <div class="fig-mat chart-bg" onclick="openLb(
+        'https://lsu-its.maps.arcgis.com/sharing/rest/content/items/dfe0c21a596e44de8ddc070beb4345f2/data',
+        'Figure 1. Classification accuracy for same-year single-year training and validation 2019–2024.')">
+        <div class="zoom-ov"><div class="zoom-ov-inner">Click to Enlarge</div></div>
+        <img src="https://lsu-its.maps.arcgis.com/sharing/rest/content/items/dfe0c21a596e44de8ddc070beb4345f2/data"
+             alt="Classification accuracy graph 2019-2024" loading="lazy"
+             onerror="this.style.opacity='0.3'">
       </div>
-      <div class="figure-caption">
-        <strong>Figure 1.</strong> Classification accuracy for same-year single-year training and validation (2019–2024). <strong>Purple</strong> = Overall Accuracy (%); <strong>Green</strong> = Phragmites class accuracy (%); <strong>Red</strong> = Kappa coefficient. Peak performance in 2023 (OA 98%, κ 0.98). Phragmites accuracy dip in 2021 corresponds to hurricane and freeze disturbance year.
+      <div class="fig-caption">
+        <strong>Figure 1.</strong> Classification accuracy for same-year single-year training and validation (2019–2024). <strong>Purple</strong> = Overall Accuracy (%); <strong>Green</strong> = Phragmites class accuracy (%); <strong>Red</strong> = Kappa coefficient. Peak performance in 2023 (OA 98%, Phragmites acc. 96%, κ 0.98). Accuracy dip in 2021 reflects disturbance-induced habitat complexity during Hurricane Ida and freeze year.
       </div>
     </div>
 
-    <!-- Interactive Chart.js version — built from exact values read from Figure 1 -->
+    <!-- Interactive Chart.js version -->
     <div class="chart-card">
-      <h3>Interactive Accuracy Chart — Exact Values (2019–2024)</h3>
-      <div class="chart-subtitle">Hover any point for values · Built from same-year concurrent training and validation results</div>
-      <div style="position:relative;height:320px;"><canvas id="chartAccuracy"></canvas></div>
+      <h3>Interactive Accuracy Chart — Exact Per-Year Values</h3>
+      <div class="chart-subtitle">Hover any point for exact values · Three metrics: Overall Accuracy, Phragmites Class Accuracy, Kappa Coefficient</div>
+      <div style="position:relative;height:320px;"><canvas id="chartAcc"></canvas></div>
     </div>
 
-    <!-- Accuracy table with exact values -->
+    <!-- Accuracy table -->
     <div class="info-card">
       <h3>Annual Accuracy Summary — Concurrent Training &amp; Validation</h3>
       <table class="data-table">
-        <thead>
-          <tr><th>Year</th><th>Overall Accuracy</th><th>Phragmites Accuracy</th><th>Kappa</th><th>Notes</th></tr>
-        </thead>
+        <thead><tr><th>Year</th><th>Overall Accuracy</th><th>Phragmites Acc.</th><th>Kappa</th><th>Disturbance Context</th></tr></thead>
         <tbody>
-          <tr><td>2019</td><td class="val-accent">90%</td><td>83%</td><td class="val-accent">0.85</td><td>Baseline — Hurricane Barry flooding prior</td></tr>
-          <tr><td>2020</td><td class="val-accent">93%</td><td>90%</td><td class="val-accent">0.90</td><td>Hurricanes Laura, Delta, Zeta — wind surge damage</td></tr>
-          <tr><td>2021</td><td class="val-accent">91%</td><td class="val-red">80%</td><td class="val-accent">0.86</td><td>Hurricane Ida — catastrophic wetland damage</td></tr>
-          <tr><td>2022</td><td class="val-accent">95%</td><td>93%</td><td class="val-accent">0.93</td><td>Recovery year — stable conditions</td></tr>
-          <tr class="hl"><td><strong>2023</strong></td><td class="val-green"><strong>98%</strong></td><td class="val-green"><strong>96%</strong></td><td class="val-green"><strong>0.98</strong></td><td>Peak accuracy — drought year, high contrast</td></tr>
-          <tr><td>2024</td><td class="val-accent">95%</td><td>88%</td><td class="val-accent">0.93</td><td>Post-drought recovery</td></tr>
+          <tr><td>2019</td><td class="va">90%</td><td>83%</td><td class="va">0.85</td><td>Hurricane Barry flooding prior to fall season</td></tr>
+          <tr><td>2020</td><td class="va">93%</td><td>90%</td><td class="va">0.90</td><td>Hurricanes Laura, Delta &amp; Zeta — massive wind surge damage</td></tr>
+          <tr><td>2021</td><td class="va">91%</td><td class="vr">80%</td><td class="va">0.86</td><td>Hurricane Ida + historic freeze — lowest Phragmites accuracy</td></tr>
+          <tr><td>2022</td><td class="va">95%</td><td>93%</td><td class="va">0.93</td><td>Stable recovery year — strong model performance</td></tr>
+          <tr class="hl"><td><strong>2023</strong></td><td class="vg"><strong>98%</strong></td><td class="vg"><strong>96%</strong></td><td class="vg"><strong>0.98</strong></td><td>Peak accuracy — drought creates high spectral contrast</td></tr>
+          <tr><td>2024</td><td class="va">95%</td><td>88%</td><td class="va">0.93</td><td>Post-drought recovery year</td></tr>
         </tbody>
       </table>
     </div>
@@ -336,199 +311,157 @@
       <div class="stat-block">
         <div class="sb-val">98%</div>
         <div class="sb-label">Peak Overall Accuracy (2023)</div>
-        <div class="sb-desc">Highest classification performance — drought year created strong spectral contrast between Phragmites and non-vegetated areas.</div>
+        <div class="sb-desc">Drought year created strong spectral contrast between Phragmites and surrounding stressed vegetation — highest model performance in the study period.</div>
       </div>
       <div class="stat-block">
-        <div class="sb-val">90–98%</div>
-        <div class="sb-label">Accuracy Range All Years</div>
-        <div class="sb-desc">Consistently high across all 6 years — model robustness confirmed across disturbance and non-disturbance conditions.</div>
+        <div class="sb-val">80%</div>
+        <div class="sb-label">Lowest Phragmites Acc. (2021)</div>
+        <div class="sb-desc">Hurricane Ida combined with historic freeze caused complex habitat changes that challenged Phragmites-specific classification — not a model limitation.</div>
       </div>
       <div class="stat-block">
         <div class="sb-val">κ 0.85–0.98</div>
         <div class="sb-label">Kappa Range All Years</div>
-        <div class="sb-desc">Strong agreement between classified maps and reference data in all years including major disturbance years.</div>
+        <div class="sb-desc">Strong agreement between classified maps and reference data in all 6 years — confirms robust model generalization across disturbance and stable conditions.</div>
       </div>
     </div>
   </div>
 
   <!-- ══ 04: ANNUAL MAPS ══ -->
-  <div class="sub-section" id="annual-maps">
+  <div class="sub-section" id="maps">
     <div class="sec-head"><span class="sec-num">04</span><h2>Annual Classification Maps — Lower MRD (2019–2024)</h2><div class="sec-rule"></div></div>
 
     <div class="info-card">
-      <p>Annual classified maps show <em>Phragmites</em> (dark green), Non-<em>Phragmites</em> vegetation (tan), and Water (light blue) across the lower MRD for each fall season from 2019 to 2024. Phragmites is consistently distributed along the main distributary channels and marsh fringes. Visible changes between years reflect responses to major disturbance events — notably the dramatic contraction in 2020–2021 following multiple hurricanes and the historic freeze, and the reduced extent in 2023 under extreme drought.</p>
+      <p>Annual classified maps show <em>Phragmites</em> (dark green), Non-<em>Phragmites</em> vegetation (tan), and Water (light blue) across the lower MRD for each fall season from 2019 to 2024. Phragmites is consistently distributed along main distributary channels and marsh fringes. Changes between years reflect responses to major disturbance events — notably the contraction in 2020–2021 following multiple hurricanes and a historic freeze, and reduced extent in 2023 under extreme drought.</p>
     </div>
 
-    <!-- Figure 2: Full 6-panel map -->
+    <!-- Figure 2: 6-panel composite -->
     <div class="figure-block">
       <div class="figure-header">
-        <div class="figure-label">Figure 2</div>
-        <div class="figure-title">U-Net Classified Maps — Phragmites, Non-Phragmites, Water &nbsp;·&nbsp; (a) 2019 &nbsp;·&nbsp; (b) 2020 &nbsp;·&nbsp; (c) 2021 &nbsp;·&nbsp; (d) 2022 &nbsp;·&nbsp; (e) 2023 &nbsp;·&nbsp; (f) 2024</div>
-        <!--
-        ADD WHEN ON ARCGIS:
-        <button class="figure-zoom-btn" onclick="openLb('ARCGIS_URL','...')">⤢ Enlarge</button>
-        -->
-        <button class="figure-zoom-btn" onclick="openLb(document.getElementById('fig2img').src,'Figure 2. U-Net classified maps for Fall 2019–2024. Dark green = Phragmites; Tan = Non-Phragmites; Light blue = Water.')">⤢ Enlarge</button>
+        <div class="fig-label">Figure 2</div>
+        <div class="fig-title">U-Net Classified Maps — Lower MRD · (a) Fall 2019 · (b) Fall 2020 · (c) Fall 2021 · (d) Fall 2022 · (e) Fall 2023 · (f) Fall 2024</div>
+        <button class="fig-zoom-btn" onclick="openLb(
+          'https://lsu-its.maps.arcgis.com/sharing/rest/content/items/2e568c620b5240248d5228f9cb1976eb/data',
+          'Figure 2. U-Net classified maps for Fall 2019–2024. Dark green = Phragmites; Tan = Non-Phragmites; Light blue = Water.')">
+          ⤢ Enlarge
+        </button>
       </div>
-      <div class="figure-mat">
-        <div class="zoom-overlay"><div class="zoom-inner">Click to Enlarge</div></div>
-        <!--
-        REPLACE src WITH ARCGIS URL when ready:
-        Upload 2019to2024.jpg → ArcGIS Online image item → public URL
-        -->
-        <img id="fig2img" src="2019to2024.jpg"
-             alt="Annual Phragmites Classification Maps 2019-2024"
-             onclick="openLb(this.src,'Figure 2. U-Net-based classified maps for Fall 2019–2024. (a) 2019: 248.2 km²; (b) 2020: 230.6 km²; (c) 2021: 217.5 km²; (d) 2022: 235.3 km²; (e) 2023: 214.1 km²; (f) 2024: 237.6 km². Dark green = Phragmites; Tan = Non-Phragmites; Light blue = Water.')"
-             style="cursor:zoom-in;">
+      <div class="fig-mat" onclick="openLb(
+        'https://lsu-its.maps.arcgis.com/sharing/rest/content/items/2e568c620b5240248d5228f9cb1976eb/data',
+        'Figure 2. U-Net classified maps for Fall 2019–2024. (a) 248.2 km²; (b) 230.6 km²; (c) 217.5 km²; (d) 235.3 km²; (e) 214.1 km²; (f) 237.6 km².')">
+        <div class="zoom-ov"><div class="zoom-ov-inner">Click to Enlarge</div></div>
+        <img src="https://lsu-its.maps.arcgis.com/sharing/rest/content/items/2e568c620b5240248d5228f9cb1976eb/data"
+             alt="Annual Phragmites Classification Maps 2019-2024" loading="lazy"
+             onerror="this.style.opacity='0.3'">
       </div>
-      <!-- Panel year labels -->
-      <div style="display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid var(--border-neutral);background:rgba(0,0,0,0.25);">
-        <div style="padding:8px 0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);border-right:1px solid var(--border-neutral);">(a) Fall 2019<span style="display:block;font-size:9px;color:rgba(74,154,186,0.7);margin-top:1px;">248.2 km²</span></div>
-        <div style="padding:8px 0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);border-right:1px solid var(--border-neutral);">(b) Fall 2020<span style="display:block;font-size:9px;color:#e08080;margin-top:1px;">230.6 km² ↓</span></div>
-        <div style="padding:8px 0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);border-right:1px solid var(--border-neutral);">(c) Fall 2021<span style="display:block;font-size:9px;color:#e08080;margin-top:1px;">217.5 km² ↓</span></div>
-        <div style="padding:8px 0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);border-right:1px solid var(--border-neutral);">(d) Fall 2022<span style="display:block;font-size:9px;color:rgba(122,184,146,0.8);margin-top:1px;">235.3 km² ↑</span></div>
-        <div style="padding:8px 0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);border-right:1px solid var(--border-neutral);">(e) Fall 2023<span style="display:block;font-size:9px;color:#e08080;margin-top:1px;">214.1 km² ↓</span></div>
-        <div style="padding:8px 0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,0.4);">(f) Fall 2024<span style="display:block;font-size:9px;color:rgba(122,184,146,0.8);margin-top:1px;">237.6 km² ↑</span></div>
+      <div class="panel-strip">
+        <div class="ps">(a) Fall 2019<span class="base">248.2 km²</span></div>
+        <div class="ps">(b) Fall 2020<span class="dn">230.6 km² ↓</span></div>
+        <div class="ps">(c) Fall 2021<span class="dn">217.5 km² ↓</span></div>
+        <div class="ps">(d) Fall 2022<span class="up">235.3 km² ↑</span></div>
+        <div class="ps">(e) Fall 2023<span class="dn">214.1 km² ↓</span></div>
+        <div class="ps">(f) Fall 2024<span class="up">237.6 km² ↑</span></div>
       </div>
-      <div class="figure-caption">
-        <strong>Figure 2.</strong> U-Net classified maps for fall seasons 2019–2024 across the lower MRD. <strong>Dark green</strong> = Phragmites australis; <strong>Tan</strong> = Non-Phragmites vegetation; <strong>Light blue</strong> = Water. Phragmites consistently distributed along main distributary channels and marsh fringes. Contraction visible in 2020–2021 following multiple hurricanes and freeze; sharp decline in 2023 under extreme drought; recovery in 2022 and 2024.
-      </div>
-    </div>
-
-    <!-- Interactive year-by-year map switcher -->
-    <div class="year-switcher-wrap">
-      <div class="year-switcher-header">
-        <div>
-          <div class="year-switcher-title">Interactive Year-by-Year Classified Maps</div>
-          <div class="year-switcher-subtitle">Select a year to view the full-resolution classified map — hosted on ArcGIS Online</div>
-        </div>
-        <div class="year-btns">
-          <button class="year-btn active" onclick="switchYear(2019)">2019</button>
-          <button class="year-btn" onclick="switchYear(2020)">2020</button>
-          <button class="year-btn" onclick="switchYear(2021)">2021</button>
-          <button class="year-btn" onclick="switchYear(2022)">2022</button>
-          <button class="year-btn" onclick="switchYear(2023)">2023</button>
-          <button class="year-btn" onclick="switchYear(2024)">2024</button>
-        </div>
-      </div>
-      <div class="year-display">
-        <div class="year-map-slot" id="year-map-slot">
-          <!-- Year map renders here — pending ArcGIS Web Map embed URLs -->
-          <div class="map-pending" id="map-pending-display">
-            <div class="map-pending-year" id="pending-year-label">2019</div>
-            <div class="map-pending-label">Interactive Map — Coming Soon</div>
-            <div class="map-pending-hint">
-              Upload <code>S2_MRD_Fall2019_Classified.tif</code> to ArcGIS Online as Imagery Layer →
-              style with Unique Values (Phragmites / Non-Phragmites / Water) →
-              save as Web Map → Share → Embed → paste URL here.
-            </div>
-          </div>
-        </div>
-        <!-- Per-year stats -->
-        <div class="year-stats-row" id="year-stats-row">
-          <div class="year-stat"><div class="year-stat-val" id="yst-area">248.2 km²</div><div class="year-stat-label">Phragmites Area</div></div>
-          <div class="year-stat"><div class="year-stat-val" id="yst-oa">90%</div><div class="year-stat-label">Overall Accuracy</div></div>
-          <div class="year-stat"><div class="year-stat-val" id="yst-phAcc">83%</div><div class="year-stat-label">Phragmites Accuracy</div></div>
-          <div class="year-stat"><div class="year-stat-val" id="yst-kappa">κ 0.85</div><div class="year-stat-label">Kappa</div></div>
-        </div>
+      <div class="fig-caption">
+        <strong>Figure 2.</strong> U-Net classified maps for fall seasons 2019–2024 across the lower MRD. <strong>Dark green</strong> = Phragmites australis; <strong>Tan</strong> = Non-Phragmites vegetation; <strong>Light blue</strong> = Water. Phragmites consistently distributed along main distributary channels and marsh fringes. Contraction visible 2020–2021 (multiple hurricanes + historic freeze); sharp decline 2023 (extreme drought); recovery in 2022 and 2024 confirming strong resilience.
       </div>
     </div>
   </div>
 
   <!-- ══ 05: AREA DYNAMICS ══ -->
-  <div class="sub-section" id="area-dynamics">
+  <div class="sub-section" id="area">
     <div class="sec-head"><span class="sec-num">05</span><h2>Phragmites Area Dynamics — Disturbance &amp; Recovery (2019–2024)</h2><div class="sec-rule"></div></div>
 
     <div class="info-card">
-      <p>Annual classified <em>Phragmites</em> coverage shows clear sensitivity to environmental disturbances and strong post-disturbance recovery. Coverage declined significantly during disturbance years — driven by hurricanes, a historic freeze, and extreme drought — and rebounded rapidly in stable periods, confirming the species' intrinsic resilience in the lower MRD.</p>
+      <p>Annual classified <em>Phragmites</em> coverage shows clear sensitivity to environmental disturbances and strong post-disturbance recovery. Coverage declined significantly during disturbance years — driven by hurricanes, a historic freeze, and extreme drought — and rebounded rapidly in stable periods. This pattern is consistent across both hurricane-type and drought-type disturbances, suggesting an intrinsic recovery mechanism in Roseau cane regardless of disturbance type.</p>
     </div>
 
     <!-- Figure 3: Area chart -->
     <div class="figure-block">
       <div class="figure-header">
-        <div class="figure-label">Figure 3</div>
-        <div class="figure-title">Phragmites Area for Fall Season &amp; Major Disturbance Events (2019–2024)</div>
-        <button class="figure-zoom-btn" onclick="openLb(document.getElementById('fig3img').src,'Figure 3. Phragmites area (km²) for each fall season 2019–2024 with disturbance event markers.')">⤢ Enlarge</button>
+        <div class="fig-label">Figure 3</div>
+        <div class="fig-title">Phragmites Area — Fall Season &amp; Major Disturbance Events (2019–2024)</div>
+        <button class="fig-zoom-btn" onclick="openLb(
+          'https://lsu-its.maps.arcgis.com/sharing/rest/content/items/9eb6d80251d1458eb7b82a91f2e6f7df/data',
+          'Figure 3. Phragmites area (km²) for each fall season 2019–2024. Red dashed lines = major disturbance events.')">
+          ⤢ Enlarge
+        </button>
       </div>
-      <div class="figure-mat">
-        <div class="zoom-overlay"><div class="zoom-inner">Click to Enlarge</div></div>
-        <!--
-        REPLACE src WITH ARCGIS URL when ready:
-        Upload Roseau_cane_area_v3.png → ArcGIS Online image item → public URL
-        -->
-        <img id="fig3img" src="Roseau_cane_area_v3.png"
-             alt="Phragmites Area Chart 2019-2024 with disturbance events"
-             onclick="openLb(this.src,'Figure 3. Phragmites area (km²) for each fall season from 2019 to 2024. Red dashed lines mark major disturbance events: Hurricane Barry (2019), Hurricanes Laura/Delta/Zeta (2020), Hurricane Ida (2021), Drought (2023).')"
-             style="cursor:zoom-in;background:#fff;">
+      <div class="fig-mat chart-bg" onclick="openLb(
+        'https://lsu-its.maps.arcgis.com/sharing/rest/content/items/9eb6d80251d1458eb7b82a91f2e6f7df/data',
+        'Figure 3. Phragmites area (km²) for each fall season 2019–2024 with disturbance event markers.')">
+        <div class="zoom-ov"><div class="zoom-ov-inner">Click to Enlarge</div></div>
+        <img src="https://lsu-its.maps.arcgis.com/sharing/rest/content/items/9eb6d80251d1458eb7b82a91f2e6f7df/data"
+             alt="Phragmites area chart 2019-2024" loading="lazy"
+             onerror="this.style.opacity='0.3'">
       </div>
-      <div class="figure-caption">
-        <strong>Figure 3.</strong> Phragmites area (km²) for each fall season from 2019 to 2024. Red dashed lines indicate major disturbance events: Hurricane Barry flooding (2019), Hurricanes Laura, Delta &amp; Zeta with massive wind surge damage (2020), Hurricane Ida with catastrophic wetland damage (2021), and extreme drought causing freshwater habitat stress (2023). Rapid recovery in 2022 and 2024 demonstrates strong resilience.
+      <div class="fig-caption">
+        <strong>Figure 3.</strong> Phragmites area (km²) for each fall season 2019–2024. Red dashed vertical lines mark major disturbance events: Hurricane Barry flooding (2019), Hurricanes Laura, Delta &amp; Zeta with massive wind surge damage (2020), Hurricane Ida with catastrophic wetland damage (2021), and extreme drought causing freshwater habitat stress (2023). Strong recovery in 2022 (+17.8 km²) and 2024 (+23.5 km²).
       </div>
     </div>
 
     <!-- Interactive Chart.js area + disturbance -->
     <div class="chart-card">
       <h3>Interactive Area &amp; Disturbance Timeline</h3>
-      <div class="chart-subtitle">Hover points for exact area values · Red vertical lines = major disturbance events</div>
+      <div class="chart-subtitle">Hover each point for exact area value and disturbance context · Red points = disturbance years · Green points = recovery/stable</div>
       <div style="position:relative;height:340px;"><canvas id="chartArea"></canvas></div>
     </div>
 
     <!-- Disturbance timeline -->
     <div class="info-card">
       <h3>Year-by-Year Coverage &amp; Disturbance Context</h3>
-      <div class="disturbance-timeline" style="margin-top:14px;">
+      <div class="dtl" style="margin-top:14px;">
 
         <div class="dt-row">
-          <div class="dt-year">2019</div>
-          <div class="dt-line-wrap"><div class="dt-dot disturbance"></div><div class="dt-connector"></div></div>
-          <div class="dt-content">
-            <div class="dt-area">248.2 km² <span class="dt-trend down">Baseline</span></div>
-            <div class="dt-event"><span class="ev-badge">Disturbance</span> Hurricane Barry — flooding prior to fall season. Despite disturbance, 2019 represents the highest coverage in the study period.</div>
+          <div class="dt-yr">2019</div>
+          <div class="dt-line"><div class="dt-dot d"></div><div class="dt-conn"></div></div>
+          <div class="dt-body">
+            <div class="dt-area">248.2 km² <span class="badge bbase">Baseline</span></div>
+            <div class="dt-desc">Highest coverage in the study period despite Hurricane Barry flooding prior to the fall season. Establishes the 2019 baseline for all subsequent change analysis.</div>
           </div>
         </div>
 
         <div class="dt-row">
-          <div class="dt-year">2020</div>
-          <div class="dt-line-wrap"><div class="dt-dot disturbance"></div><div class="dt-connector"></div></div>
-          <div class="dt-content">
-            <div class="dt-area">230.6 km² <span class="dt-trend down">↓ −17.6 km²</span></div>
-            <div class="dt-event"><span class="ev-badge">Disturbance</span> Hurricanes Laura, Delta &amp; Zeta — massive wind surge damage across the lower MRD. Phragmites area declines 7.1% from 2019 baseline.</div>
+          <div class="dt-yr">2020</div>
+          <div class="dt-line"><div class="dt-dot d"></div><div class="dt-conn"></div></div>
+          <div class="dt-body">
+            <div class="dt-area">230.6 km² <span class="badge bdist">↓ −17.6 km²</span></div>
+            <div class="dt-desc">Hurricanes Laura, Delta, and Zeta caused massive wind surge damage across the lower MRD. Phragmites area declines 7.1% from 2019 baseline.</div>
           </div>
         </div>
 
         <div class="dt-row">
-          <div class="dt-year">2021</div>
-          <div class="dt-line-wrap"><div class="dt-dot disturbance"></div><div class="dt-connector"></div></div>
-          <div class="dt-content">
-            <div class="dt-area">217.5 km² <span class="dt-trend down">↓ −13.1 km²</span></div>
-            <div class="dt-event"><span class="ev-badge">Disturbance</span> Hurricane Ida — catastrophic wetland damage. Combined with the 2021 historic freeze event, this year records the second-lowest coverage and the lowest Phragmites classification accuracy (80%).</div>
+          <div class="dt-yr">2021</div>
+          <div class="dt-line"><div class="dt-dot d"></div><div class="dt-conn"></div></div>
+          <div class="dt-body">
+            <div class="dt-area">217.5 km² <span class="badge bdist">↓ −13.1 km²</span></div>
+            <div class="dt-desc">Hurricane Ida caused catastrophic wetland damage, combined with the 2021 historic freeze event. Second-lowest coverage and lowest Phragmites class accuracy (80%) in the study period.</div>
           </div>
         </div>
 
         <div class="dt-row">
-          <div class="dt-year">2022</div>
-          <div class="dt-line-wrap"><div class="dt-dot"></div><div class="dt-connector"></div></div>
-          <div class="dt-content">
-            <div class="dt-area">235.3 km² <span class="dt-trend up">↑ +17.8 km²</span></div>
-            <div class="dt-event">Relatively stable conditions — strong recovery. +17.8 km² rebound from 2021 low. Classification accuracy improves to 95% OA, confirming the recovery is real and not a mapping artifact.</div>
+          <div class="dt-yr">2022</div>
+          <div class="dt-line"><div class="dt-dot"></div><div class="dt-conn"></div></div>
+          <div class="dt-body">
+            <div class="dt-area">235.3 km² <span class="badge brec">↑ +17.8 km²</span></div>
+            <div class="dt-desc">Relatively stable conditions — strong recovery. Classification accuracy improves to 95% OA, confirming the area rebound is real and not a mapping artifact.</div>
           </div>
         </div>
 
         <div class="dt-row">
-          <div class="dt-year">2023</div>
-          <div class="dt-line-wrap"><div class="dt-dot disturbance"></div><div class="dt-connector"></div></div>
-          <div class="dt-content">
-            <div class="dt-area">214.1 km² <span class="dt-trend down">↓ −21.2 km²</span></div>
-            <div class="dt-event"><span class="ev-badge">Disturbance</span> Extreme drought — freshwater habitat stress. Lowest absolute coverage in the study period. Despite severe drought, model accuracy peaks at 98% OA — drought creates high spectral contrast between Phragmites and surrounding areas.</div>
+          <div class="dt-yr">2023</div>
+          <div class="dt-line"><div class="dt-dot d"></div><div class="dt-conn"></div></div>
+          <div class="dt-body">
+            <div class="dt-area">214.1 km² <span class="badge bdist">↓ −21.2 km²</span></div>
+            <div class="dt-desc">Extreme drought caused freshwater habitat stress — lowest absolute coverage in the study period. Despite severe conditions, model accuracy peaks at 98% OA because drought creates unusually high spectral contrast between Phragmites and stressed surroundings.</div>
           </div>
         </div>
 
         <div class="dt-row">
-          <div class="dt-year">2024</div>
-          <div class="dt-line-wrap"><div class="dt-dot"></div></div>
-          <div class="dt-content" style="border-bottom:none;">
-            <div class="dt-area">237.6 km² <span class="dt-trend up">↑ +23.5 km²</span></div>
-            <div class="dt-event">Rapid recovery after 2023 drought — largest single-year area gain in the study period (+23.5 km²). Coverage returns near 2022 levels, confirming strong resilience and recovery capacity.</div>
+          <div class="dt-yr">2024</div>
+          <div class="dt-line"><div class="dt-dot"></div></div>
+          <div class="dt-body" style="border-bottom:none;">
+            <div class="dt-area">237.6 km² <span class="badge brec">↑ +23.5 km²</span></div>
+            <div class="dt-desc">Rapid recovery after 2023 drought — largest single-year area gain in the study period (+23.5 km²). Coverage returns near 2022 levels, confirming strong intrinsic resilience and recovery capacity of Roseau cane in the lower MRD.</div>
           </div>
         </div>
 
@@ -539,12 +472,12 @@
       <div class="stat-block">
         <div class="sb-val">−34.1 km²</div>
         <div class="sb-label">Maximum Cumulative Decline</div>
-        <div class="sb-desc">2019 peak (248.2 km²) to 2023 minimum (214.1 km²) — driven by successive disturbance events including hurricanes, freeze, and extreme drought.</div>
+        <div class="sb-desc">2019 peak (248.2 km²) to 2023 minimum (214.1 km²) — driven by successive hurricanes, historic freeze, and extreme drought over 4 years.</div>
       </div>
       <div class="stat-block">
         <div class="sb-val">+23.5 km²</div>
         <div class="sb-label">Largest Single-Year Recovery</div>
-        <div class="sb-desc">2023→2024 rebound — the fastest recovery in the study period, confirming strong intrinsic resilience of Roseau cane in the lower MRD.</div>
+        <div class="sb-desc">2023→2024 rebound — fastest recovery in the study period, confirming strong intrinsic resilience of Roseau cane in the lower MRD regardless of disturbance type.</div>
       </div>
     </div>
   </div>
@@ -552,41 +485,38 @@
   <!-- ══ 06: KEY FINDINGS ══ -->
   <div class="sub-section" id="findings">
     <div class="sec-head"><span class="sec-num">06</span><h2>Key Findings</h2><div class="sec-rule"></div></div>
-
     <div class="grid-2">
       <div class="info-card" style="margin-bottom:0;">
         <h3>Model Performance</h3>
-        <p>U-Net (ResNet-34 backbone) produced consistently high classification accuracy (90–98%) across all six years. Accuracy declines were linked to disturbance-induced habitat changes — not model limitations. Phragmites mapping is spatially reliable, especially along distributary channels and marsh edges where the species forms dense monoculture stands.</p>
+        <p>U-Net (ResNet-34 backbone) produced consistently high classification accuracy (90–98% OA, κ 0.85–0.98) across all six years. Accuracy declines were linked to disturbance-induced habitat changes — not model limitations. Phragmites mapping is spatially reliable especially along distributary channels and marsh edges where the species forms dense monoculture stands.</p>
       </div>
       <div class="info-card" style="margin-bottom:0;">
         <h3>Ecological Insights</h3>
-        <p>Phragmites area declined significantly during disturbance events (hurricanes, historic freeze, extreme drought) and recovered rapidly in stable periods. The species demonstrates high sensitivity to environmental stress and strong resilience — a pattern consistent across both hurricane-type and drought-type disturbances, suggesting an intrinsic recovery mechanism independent of disturbance type.</p>
+        <p>Phragmites area declined significantly during disturbance events (hurricanes, historic freeze, extreme drought) and recovered rapidly in stable periods. The species demonstrates high sensitivity to environmental stress and strong resilience — consistent across both hurricane-type and drought-type disturbances, suggesting an intrinsic recovery mechanism independent of disturbance type.</p>
       </div>
     </div>
-
     <div class="info-card" style="margin-top:20px;">
       <h3>Summary of Key Findings</h3>
       <table class="data-table">
         <thead><tr><th>Finding</th><th>Evidence</th></tr></thead>
         <tbody>
-          <tr><td>High, consistent model accuracy</td><td class="val-accent">90–98% OA · κ 0.85–0.98 across all 6 years</td></tr>
-          <tr><td>Accuracy linked to ecology, not model failure</td><td>Lowest OA (91%) and Phragmites acc. (80%) in disturbance year 2021</td></tr>
-          <tr><td>Reliable spatial mapping</td><td>Consistent detection along channels and marsh edges in all years</td></tr>
-          <tr><td>High disturbance sensitivity</td><td>−34.1 km² cumulative decline across disturbance events</td></tr>
-          <tr class="hl"><td>Strong recovery capacity</td><td class="val-green">+23.5 km² rebound in 2024 — fastest recovery in study period</td></tr>
+          <tr><td>High, consistent model accuracy</td><td class="va">90–98% OA · κ 0.85–0.98 across all 6 years</td></tr>
+          <tr><td>Accuracy declines linked to ecology not model</td><td>Lowest Phragmites acc. (80%) in major disturbance year 2021</td></tr>
+          <tr><td>Reliable spatial mapping</td><td>Consistent Phragmites detection along channels and marsh edges all 6 years</td></tr>
+          <tr><td>High disturbance sensitivity</td><td>−34.1 km² cumulative decline across successive disturbance events 2019–2023</td></tr>
+          <tr class="hl"><td>Strong recovery capacity</td><td class="vg">+23.5 km² rebound 2024 — largest single-year gain in study period</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <!-- ══ 07: MULTI-YEAR TRAINING (PLACEHOLDER) ══ -->
+  <!-- ══ 07: PLACEHOLDER ══ -->
   <div class="sub-section" id="multiyear">
     <div class="sec-head"><span class="sec-num">07</span><h2>Work In Progress — Multi-Year Training &amp; Cross-Year Generalization</h2><div class="sec-rule"></div></div>
-
-    <div class="placeholder-section">
+    <div class="ph-section">
       <div class="ph-badge">⏳ In Progress — Results to be added</div>
       <h3>Multi-Year Training Approach &amp; Cross-Year Validation</h3>
-      <p>Investigation of multi-year training strategies — training U-Net on combined years and evaluating accuracy for unseen years. The goal is a robust, transferable Phragmites mapping model that does not require annual retraining. These results will be added once multi-year training experiments are completed.</p>
+      <p>Investigation of multi-year training strategies — training U-Net on combined years and evaluating classification accuracy for unseen years. The goal is a robust, transferable Phragmites mapping model that does not require annual retraining. Results will be added upon completion of these experiments.</p>
       <div class="ph-slots">
         <div class="ph-slot">
           <div class="ph-slot-label">📊 Table — Add Here</div>
@@ -596,7 +526,7 @@
         <div class="ph-slot">
           <div class="ph-slot-label">📈 Chart — Add Here</div>
           <div class="ph-slot-name">Cross-Year Validation Results</div>
-          <div class="ph-slot-hint">Accuracy when model trained on year X is applied to year Y</div>
+          <div class="ph-slot-hint">Accuracy when model trained on year X is applied to year Y — upload chart to ArcGIS then embed here</div>
         </div>
         <div class="ph-slot">
           <div class="ph-slot-label">📈 Chart — Add Here</div>
@@ -606,17 +536,17 @@
         <div class="ph-slot">
           <div class="ph-slot-label">📊 Chart — Add Here</div>
           <div class="ph-slot-name">Concurrent vs. Multi-Year Accuracy Comparison</div>
-          <div class="ph-slot-hint">Side-by-side accuracy comparison: single-year vs. multi-year training strategy</div>
+          <div class="ph-slot-hint">Side-by-side accuracy: single-year vs. multi-year training strategy</div>
         </div>
         <div class="ph-slot">
           <div class="ph-slot-label">🗺️ Maps — Add Here</div>
-          <div class="ph-slot-name">Final Updated Annual Maps</div>
-          <div class="ph-slot-hint">Classification maps using the best multi-year model — upload to ArcGIS, embed here</div>
+          <div class="ph-slot-name">Final Updated Annual Maps (Multi-Year Model)</div>
+          <div class="ph-slot-hint">Upload individual year JPGs to ArcGIS → add as figure blocks here</div>
         </div>
         <div class="ph-slot">
           <div class="ph-slot-label">📋 Summary — Add Here</div>
           <div class="ph-slot-name">Best Model Configuration</div>
-          <div class="ph-slot-hint">Final hyperparameters, training strategy, recommended workflow</div>
+          <div class="ph-slot-hint">Final hyperparameters, training strategy, recommended workflow for future use</div>
         </div>
       </div>
     </div>
@@ -629,134 +559,119 @@
   <span class="footer-text">Louisiana State University · Dr. Xuelian Meng · AP23PPQS&amp;T00C161</span>
 </footer>
 
-<!-- CHARTS + INTERACTIVITY -->
+<!-- CHARTS & LIGHTBOX SCRIPTS -->
 <script>
-// ── Year data ──
-const yearData = {
-  2019: { area:'248.2 km²', oa:'90%', phAcc:'83%', kappa:'κ 0.85',
-          embedUrl: null /* PASTE ArcGIS Web Map embed URL here when ready */ },
-  2020: { area:'230.6 km²', oa:'93%', phAcc:'90%', kappa:'κ 0.90', embedUrl: null },
-  2021: { area:'217.5 km²', oa:'91%', phAcc:'80%', kappa:'κ 0.86', embedUrl: null },
-  2022: { area:'235.3 km²', oa:'95%', phAcc:'93%', kappa:'κ 0.93', embedUrl: null },
-  2023: { area:'214.1 km²', oa:'98%', phAcc:'96%', kappa:'κ 0.98', embedUrl: null },
-  2024: { area:'237.6 km²', oa:'95%', phAcc:'88%', kappa:'κ 0.93', embedUrl: null },
-};
-
-let activeYear = 2019;
-
-function switchYear(yr) {
-  activeYear = yr;
-  // update buttons
-  document.querySelectorAll('.year-btn').forEach(b => {
-    b.classList.toggle('active', parseInt(b.textContent) === yr);
-  });
-  const d = yearData[yr];
-  // update stats
-  document.getElementById('yst-area').textContent   = d.area;
-  document.getElementById('yst-oa').textContent     = d.oa;
-  document.getElementById('yst-phAcc').textContent  = d.phAcc;
-  document.getElementById('yst-kappa').textContent  = d.kappa;
-  // update map slot
-  const slot = document.getElementById('year-map-slot');
-  if (d.embedUrl) {
-    slot.innerHTML = `<iframe src="${d.embedUrl}" style="width:100%;height:520px;border:none;" allowfullscreen></iframe>`;
-  } else {
-    slot.innerHTML = `
-      <div class="map-pending">
-        <div class="map-pending-year">${yr}</div>
-        <div class="map-pending-label">Interactive Map — Coming Soon</div>
-        <div class="map-pending-hint">
-          Upload <code>S2_MRD_Fall${yr}_Classified.tif</code> to ArcGIS Online as Imagery Layer →
-          style with Unique Values → save as Web Map → Share → Embed →
-          paste URL into <code>yearData[${yr}].embedUrl</code> in this file's script.
-        </div>
-      </div>`;
-  }
-}
-
-// ── Chart defaults ──
 Chart.defaults.color = 'rgba(240,236,228,0.55)';
 Chart.defaults.font.family = "'IBM Plex Mono', monospace";
 Chart.defaults.font.size = 11;
-const gridCol = 'rgba(255,255,255,0.06)';
+const gc = 'rgba(255,255,255,0.06)';
 
 // ── Chart 1: Accuracy ──
-new Chart(document.getElementById('chartAccuracy'), {
+new Chart(document.getElementById('chartAcc'), {
   type: 'line',
   data: {
     labels: ['2019','2020','2021','2022','2023','2024'],
     datasets: [
-      { label:'Overall Accuracy (%)', data:[90,93,91,95,98,95],
-        borderColor:'#7b6fcf', backgroundColor:'rgba(123,111,207,0.1)',
-        pointBackgroundColor:'#7b6fcf', pointRadius:6, pointHoverRadius:9,
-        tension:0.3, fill:true, yAxisID:'y' },
-      { label:'Phragmites Accuracy (%)', data:[83,90,80,93,96,88],
-        borderColor:'#7ab892', backgroundColor:'rgba(122,184,146,0.08)',
-        pointBackgroundColor:'#7ab892', pointRadius:6, pointHoverRadius:9,
-        tension:0.3, fill:false, yAxisID:'y' },
-      { label:'Kappa Coefficient', data:[0.85,0.90,0.86,0.93,0.98,0.93],
-        borderColor:'#c84040', backgroundColor:'rgba(200,64,64,0.08)',
-        pointBackgroundColor:'#c84040', pointRadius:6, pointHoverRadius:9,
-        tension:0.3, fill:false, yAxisID:'y2' }
+      {
+        label: 'Overall Accuracy (%)',
+        data: [90, 93, 91, 95, 98, 95],
+        borderColor: '#7b6fcf',
+        backgroundColor: 'rgba(123,111,207,0.1)',
+        pointBackgroundColor: '#7b6fcf',
+        pointRadius: 6, pointHoverRadius: 9,
+        tension: 0.3, fill: true, yAxisID: 'y'
+      },
+      {
+        label: 'Phragmites Accuracy (%)',
+        data: [83, 90, 80, 93, 96, 88],
+        borderColor: '#7ab892',
+        backgroundColor: 'rgba(122,184,146,0.06)',
+        pointBackgroundColor: '#7ab892',
+        pointRadius: 6, pointHoverRadius: 9,
+        tension: 0.3, fill: false, yAxisID: 'y'
+      },
+      {
+        label: 'Kappa Coefficient',
+        data: [0.85, 0.90, 0.86, 0.93, 0.98, 0.93],
+        borderColor: '#c84040',
+        backgroundColor: 'rgba(200,64,64,0.06)',
+        pointBackgroundColor: '#c84040',
+        pointRadius: 6, pointHoverRadius: 9,
+        tension: 0.3, fill: false, yAxisID: 'y2'
+      }
     ]
   },
   options: {
-    responsive:true, maintainAspectRatio:false,
-    interaction:{ mode:'index', intersect:false },
-    plugins:{
-      legend:{ position:'bottom', labels:{ boxWidth:12, padding:16 } },
-      tooltip:{ callbacks:{
-        label: ctx => {
-          if(ctx.dataset.yAxisID==='y2') return ` Kappa: ${ctx.parsed.y}`;
-          return ` ${ctx.dataset.label}: ${ctx.parsed.y}%`;
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16 } },
+      tooltip: {
+        callbacks: {
+          label: ctx => ctx.dataset.yAxisID === 'y2'
+            ? ` Kappa: ${ctx.parsed.y}`
+            : ` ${ctx.dataset.label}: ${ctx.parsed.y}%`,
+          afterBody: items => {
+            const notes = ['Pre-season: Hurricane Barry flooding',
+              'Hurricanes Laura, Delta & Zeta — wind surge',
+              'Hurricane Ida + historic freeze',
+              'Stable recovery year',
+              'Extreme drought — peak spectral contrast',
+              'Post-drought recovery'];
+            return ['', '⚠ ' + notes[items[0].dataIndex]];
+          }
         }
-      }}
+      }
     },
-    scales:{
-      y:{ grid:{color:gridCol}, min:78, max:100, ticks:{callback:v=>v+'%'}, title:{display:true,text:'Accuracy (%)'} },
-      y2:{ position:'right', grid:{drawOnChartArea:false}, min:0.78, max:1.00, title:{display:true,text:'Kappa'} },
-      x:{ grid:{color:gridCol} }
+    scales: {
+      y: { grid:{color:gc}, min:78, max:100, ticks:{callback:v=>v+'%'}, title:{display:true,text:'Accuracy (%)'} },
+      y2: { position:'right', grid:{drawOnChartArea:false}, min:0.78, max:1.0, title:{display:true,text:'Kappa'} },
+      x: { grid:{color:gc} }
     }
   }
 });
 
 // ── Chart 2: Area + Disturbance ──
-// Disturbance year annotation via plugin-free approach using vertical lines dataset
 new Chart(document.getElementById('chartArea'), {
   type: 'line',
   data: {
     labels: ['2019','2020','2021','2022','2023','2024'],
-    datasets: [
-      { label:'Phragmites Area (km²)', data:[248.2,230.6,217.5,235.3,214.1,237.6],
-        borderColor:'#7ab892', backgroundColor:'rgba(122,184,146,0.12)',
-        pointBackgroundColor: ['#c84040','#c84040','#c84040','#7ab892','#c84040','#7ab892'],
-        pointBorderColor:'#0a1018', pointBorderWidth:2,
-        pointRadius:8, pointHoverRadius:11,
-        tension:0.3, fill:true }
-    ]
+    datasets: [{
+      label: 'Phragmites Area (km²)',
+      data: [248.2, 230.6, 217.5, 235.3, 214.1, 237.6],
+      borderColor: '#7ab892',
+      backgroundColor: 'rgba(122,184,146,0.1)',
+      pointBackgroundColor: ['#c84040','#c84040','#c84040','#7ab892','#c84040','#7ab892'],
+      pointBorderColor: '#0a1018',
+      pointBorderWidth: 2,
+      pointRadius: 8, pointHoverRadius: 11,
+      tension: 0.3, fill: true
+    }]
   },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    plugins:{
-      legend:{ position:'bottom' },
-      tooltip:{ callbacks:{
-        label: ctx => ` ${ctx.parsed.y} km²`,
-        afterLabel: ctx => {
-          const events = {
-            0:'⚠ Hurricane Barry (flooding)',
-            1:'⚠ Hurricanes Laura, Delta, Zeta',
-            2:'⚠ Hurricane Ida + Historic Freeze',
-            3:'✓ Stable — recovery year',
-            4:'⚠ Extreme Drought',
-            5:'✓ Post-drought recovery'
-          };
-          return events[ctx.dataIndex] || '';
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.parsed.y} km²`,
+          afterLabel: ctx => {
+            const ev = [
+              '⚠ Hurricane Barry (flooding)',
+              '⚠ Hurricanes Laura, Delta & Zeta',
+              '⚠ Hurricane Ida + Historic Freeze',
+              '✓ Stable — recovery year',
+              '⚠ Extreme Drought',
+              '✓ Post-drought recovery'
+            ];
+            return ev[ctx.dataIndex];
+          }
         }
-      }}
+      }
     },
-    scales:{
-      y:{ grid:{color:gridCol}, min:205, max:255, ticks:{callback:v=>v+' km²'}, title:{display:true,text:'Phragmites Area (km²)'} },
-      x:{ grid:{color:gridCol} }
+    scales: {
+      y: { grid:{color:gc}, min:205, max:255, ticks:{callback:v=>v+' km²'}, title:{display:true,text:'Phragmites Area (km²)'} },
+      x: { grid:{color:gc} }
     }
   }
 });
@@ -765,15 +680,15 @@ new Chart(document.getElementById('chartArea'), {
 function openLb(src, cap) {
   document.getElementById('lb-img').src = src;
   document.getElementById('lb-cap').textContent = cap;
-  document.getElementById('lb').classList.add('active');
+  document.getElementById('lb').classList.add('on');
   document.body.style.overflow = 'hidden';
 }
 function closeLb() {
-  document.getElementById('lb').classList.remove('active');
+  document.getElementById('lb').classList.remove('on');
   document.getElementById('lb-img').src = '';
   document.body.style.overflow = '';
 }
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeLb(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLb(); });
 </script>
 
 </body>
