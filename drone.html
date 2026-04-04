@@ -136,6 +136,200 @@
   .tag-strip { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
   .tag { font-family:'IBM Plex Mono',monospace; font-size:10px; border:1px solid var(--border-neutral); border-radius:4px; padding:3px 10px; color:rgba(255,255,255,0.4); }
 
+  /* ══ D3 INTERACTIVE TIMELINE ══ */
+  .tl-wrapper {
+    background:var(--card-bg); border:1px solid var(--border-neutral);
+    border-radius:14px; padding:28px 28px 0; margin-bottom:20px; overflow:hidden;
+  }
+  .tl-wrapper h3 {
+    font-family:'Playfair Display',serif; font-size:17px; font-weight:700;
+    color:var(--text); margin-bottom:24px;
+  }
+
+  /* The horizontal rail */
+  .tl-rail {
+    display:flex; align-items:flex-start; position:relative;
+    overflow-x:auto; padding-bottom:4px; gap:0;
+  }
+  /* connector line behind the dots */
+  .tl-rail::before {
+    content:''; position:absolute; top:17px; left:0; right:0; height:2px;
+    background:var(--border-neutral); z-index:0;
+  }
+
+  .tl-node {
+    display:flex; flex-direction:column; align-items:center;
+    flex:1; min-width:96px; cursor:pointer; position:relative; z-index:1;
+    padding-bottom:20px;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  /* progress line fills left-to-right as active node advances */
+  .tl-rail .tl-node.visited::before {
+    content:''; position:absolute; top:17px; left:0; width:50%; height:2px;
+    background:var(--accent); z-index:0;
+  }
+  .tl-rail .tl-node.visited::after {
+    content:''; position:absolute; top:17px; left:50%; width:50%; height:2px;
+    background:var(--accent); z-index:0;
+  }
+  .tl-rail .tl-node:last-child.visited::after { display:none; }
+
+  .tl-dot {
+    width:34px; height:34px; border-radius:50%;
+    border:2px solid rgba(122,184,146,0.35);
+    background:var(--card-bg);
+    display:flex; align-items:center; justify-content:center;
+    position:relative; z-index:2; flex-shrink:0;
+    transition:border-color 0.25s, background 0.25s, transform 0.2s, box-shadow 0.25s;
+  }
+  .tl-dot-inner {
+    width:10px; height:10px; border-radius:50%;
+    background:rgba(122,184,146,0.4);
+    transition:background 0.25s, transform 0.2s;
+  }
+  .tl-node:hover .tl-dot {
+    border-color:var(--accent);
+    transform:scale(1.12);
+  }
+  .tl-node:hover .tl-dot-inner { background:var(--accent); }
+
+  /* Active state */
+  .tl-node.active .tl-dot {
+    border-color:var(--accent);
+    background:var(--accent);
+    box-shadow:0 0 0 4px rgba(122,184,146,0.18), 0 0 14px rgba(122,184,146,0.35);
+    transform:scale(1.18);
+  }
+  .tl-node.active .tl-dot-inner { background:var(--dark); transform:scale(0.7); }
+
+  /* Featured star node (Fall 2024) */
+  .tl-node.featured .tl-dot {
+    border-color:rgba(122,184,146,0.6);
+  }
+  .tl-node.featured .tl-dot-inner {
+    background:rgba(122,184,146,0.6);
+  }
+  .tl-node.featured.active .tl-dot {
+    box-shadow:0 0 0 4px rgba(122,184,146,0.22), 0 0 20px rgba(122,184,146,0.5);
+  }
+
+  .tl-season {
+    font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px;
+    text-transform:uppercase; color:rgba(255,255,255,0.45);
+    margin-top:10px; text-align:center; line-height:1.4;
+    transition:color 0.2s;
+  }
+  .tl-node:hover .tl-season,
+  .tl-node.active .tl-season { color:var(--accent); }
+
+  .tl-date {
+    font-family:'IBM Plex Mono',monospace; font-size:9px;
+    color:rgba(255,255,255,0.25); margin-top:3px; text-align:center;
+    transition:color 0.2s;
+  }
+  .tl-node.active .tl-date { color:rgba(255,255,255,0.55); }
+
+  .tl-click-hint {
+    font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:1px;
+    text-transform:uppercase; color:rgba(122,184,146,0.5);
+    margin-top:5px; text-align:center;
+    transition:color 0.2s;
+  }
+  .tl-node:hover .tl-click-hint { color:var(--accent); }
+  .tl-node.active .tl-click-hint { color:rgba(122,184,146,0.3); }
+
+  .tl-star {
+    font-size:9px; color:var(--accent); margin-top:3px; text-align:center;
+    font-family:'IBM Plex Mono',monospace; letter-spacing:1px;
+  }
+
+  /* ── Result panel ── */
+  .result-panel {
+    border-top:1px solid var(--border-neutral);
+    margin:0 -28px;
+    overflow:hidden;
+    max-height:0;
+    transition:max-height 0.45s cubic-bezier(0.4,0,0.2,1);
+  }
+  .result-panel.open { max-height:680px; }
+
+  .result-panel-inner {
+    padding:0 28px 28px;
+  }
+
+  /* Panel header bar */
+  .rp-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 0 14px; flex-wrap:wrap; gap:10px;
+  }
+  .rp-title-group { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .rp-badge {
+    font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px;
+    text-transform:uppercase; padding:3px 10px; border-radius:4px;
+    background:rgba(122,184,146,0.15); color:var(--accent); border:1px solid var(--border);
+  }
+  .rp-badge.featured-badge {
+    background:var(--accent); color:var(--dark); border-color:var(--accent);
+  }
+  .rp-title {
+    font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--text);
+  }
+  .rp-acc {
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--accent);
+    background:rgba(122,184,146,0.08); border:1px solid var(--border);
+    border-radius:4px; padding:3px 10px;
+  }
+  .rp-acc.tbd {
+    color:rgba(255,255,255,0.25); background:rgba(255,255,255,0.03);
+    border-color:rgba(255,255,255,0.08);
+  }
+
+  /* Map iframe inside panel */
+  .rp-map-wrap {
+    border-radius:10px; overflow:hidden;
+    border:1px solid var(--border-neutral);
+    background:#0a1a0e;
+    position:relative;
+  }
+  .rp-map-wrap iframe {
+    width:100%; height:480px; border:none; display:block;
+  }
+  .rp-map-label {
+    position:absolute; bottom:10px; left:12px;
+    font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px;
+    text-transform:uppercase; color:rgba(255,255,255,0.5);
+    background:rgba(10,16,12,0.75); border-radius:4px; padding:3px 8px;
+    pointer-events:none;
+  }
+  .rp-close {
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px;
+    color:rgba(255,255,255,0.3); cursor:pointer; background:none; border:none;
+    padding:4px 0; transition:color 0.2s; text-transform:uppercase;
+  }
+  .rp-close:hover { color:rgba(255,255,255,0.7); }
+
+  /* ── Featured accuracy card ── */
+  .featured-acc-card {
+    background:var(--card-bg); border:1px solid var(--border);
+    border-radius:14px; overflow:hidden; margin-bottom:20px;
+  }
+  .featured-acc-head {
+    background:rgba(122,184,146,0.07); padding:16px 24px;
+    border-bottom:1px solid var(--border-neutral);
+    display:flex; align-items:center; gap:12px;
+  }
+  .featured-badge-standalone {
+    font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px;
+    text-transform:uppercase; color:var(--dark); background:var(--accent);
+    border-radius:4px; padding:3px 9px;
+  }
+  .featured-acc-title {
+    font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--text);
+  }
+  .featured-acc-body { padding:20px 24px; }
+
   /* placeholder */
   .placeholder-section {
     border:1px dashed rgba(122,184,146,0.28);
@@ -333,7 +527,7 @@
   <div class="sub-section" id="five-year">
     <div class="sec-head">
       <span class="sec-num">D3 · Milestone 3</span>
-      <h2>Five-Year Drone Monitoring — Roseau Cane Resilience, Lower MRD (2021–2025)</h2>
+      <h2>Five-Year Drone Monitoring — Roseau Cane Resilience, Lower MRD (2022–2025)</h2>
       <div class="sec-rule"></div>
     </div>
 
@@ -347,68 +541,264 @@
 
     <div class="info-card">
       <h3>Overview</h3>
-      <p>Since Spring 2021, continuous fine-scale drone monitoring has been conducted at the Pass-A-Loutre site in the lower MRD. The goal is mid-term Roseau cane resilience analysis — quantifying habitat changes in response to freeze events, storm surges, hurricanes, and drought. The same platform, settings, and classification approach are used across all surveys to ensure temporal comparability.</p>
-      <p>The most recent classified survey (October 2024) achieved 92% overall accuracy (κ = 0.89) using a U-Net model with 8 land cover classes. The June 2025 orthomosaic has been processed; training sample creation is currently underway.</p>
+      <p>Since 2022, continuous fine-scale drone monitoring of Roseau cane habitat has been conducted at the Pass-A-Loutre site in the lower Mississippi River Delta (MRD), with surveys each summer and fall season. The goal is mid-term resilience analysis — quantifying habitat changes in response to disturbance events including the 2021 freeze, hurricane impacts, and the extreme drought of 2023. The same DJI Matrice 600 Pro platform with MicaSense RedEdge-MX dual camera system, flight settings, and U-Net deep learning classification (8 land cover classes) are applied consistently across all surveys to ensure full temporal comparability.</p>
+      <p>Seven classified surveys are now available spanning Fall 2022 through Fall 2025. The October 2024 survey achieved the highest documented accuracy at 92% overall accuracy (κ = 0.89), validated via full confusion matrix analysis. Select any survey date on the timeline below to view its classification result.</p>
     </div>
 
-    <div class="grid-3">
+    <!-- Key stats -->
+    <div class="grid-3" style="margin-bottom:24px;">
       <div class="stat-block">
-        <div class="sb-val">92%</div>
-        <div class="sb-label">OA — October 2024</div>
-        <div class="sb-desc">U-Net 8-class classification of Oct 2024 drone survey. Confusion matrix generated for full per-class accuracy assessment.</div>
+        <div class="sb-val">7</div>
+        <div class="sb-label">Classified Surveys</div>
+        <div class="sb-desc">Fall 2022 through Fall 2025 — two surveys per year (summer + fall) at Pass-A-Loutre, lower MRD.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-val">92% OA</div>
+        <div class="sb-label">Best Accuracy (Oct 2024)</div>
+        <div class="sb-desc">U-Net 8-class classification. Full confusion matrix with per-class user and producer accuracies documented.</div>
       </div>
       <div class="stat-block">
         <div class="sb-val">κ = 0.89</div>
-        <div class="sb-label">Kappa — October 2024</div>
-        <div class="sb-desc">High classification agreement confirms reliability of Oct 2024 habitat map for change analysis.</div>
-      </div>
-      <div class="stat-block">
-        <div class="sb-val">Jun 2025</div>
-        <div class="sb-label">Most Recent Acquisition</div>
-        <div class="sb-desc">Orthomosaic processed. Training sample creation in progress — classification to follow.</div>
+        <div class="sb-label">Kappa (Oct 2024)</div>
+        <div class="sb-desc">High inter-rater agreement confirms the reliability of the Oct 2024 map for change analysis benchmarking.</div>
       </div>
     </div>
 
-    <div class="info-card" style="margin-top:20px;">
-      <h3>Accuracy Assessment — October 2024 Survey</h3>
-      <table class="data-table">
-        <thead>
-          <tr><th>Class</th><th>Total Ref. Points</th><th>User Accuracy</th><th>Producer Accuracy</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Dead Vegetation (C1)</td><td>15</td><td class="val-accent">1.00</td><td class="val-accent">1.00</td></tr>
-          <tr><td>Delta Phragmites (C2)</td><td>117</td><td class="val-accent">0.90</td><td class="val-accent">1.00</td></tr>
-          <tr><td>European Phragmites (C3)</td><td>13</td><td class="val-accent">0.92</td><td>0.50</td></tr>
-          <tr><td>Marsh Grass (C4)</td><td>98</td><td class="val-accent">0.95</td><td class="val-accent">0.90</td></tr>
-          <tr><td>Mud (C5)</td><td>7</td><td class="val-accent">1.00</td><td class="val-accent">1.00</td></tr>
-          <tr><td>Water (C6)</td><td>22</td><td class="val-accent">0.95</td><td class="val-accent">1.00</td></tr>
-          <tr><td>Shadow (C7)</td><td>15</td><td class="val-accent">1.00</td><td class="val-accent">1.00</td></tr>
-          <tr><td>Shrub (C8)</td><td>27</td><td>0.78</td><td>0.88</td></tr>
-          <tr class="row-hl"><td colspan="2"><strong>Overall Accuracy</strong></td><td colspan="2" class="val-accent"><strong>0.92 (92%)</strong></td></tr>
-          <tr class="row-hl"><td colspan="2"><strong>Kappa</strong></td><td colspan="2" class="val-accent"><strong>0.89</strong></td></tr>
-        </tbody>
-      </table>
-    </div>
+    <!-- ── INTERACTIVE TIMELINE + RESULT PANEL ── -->
+    <div class="tl-wrapper">
+      <h3>Survey Results — Pass-A-Loutre, Lower MRD <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:400;color:rgba(255,255,255,0.3);margin-left:10px;">Select a date to view map</span></h3>
 
-    <div class="info-card">
-      <h3>Survey Timeline</h3>
-      <table class="data-table">
-        <thead><tr><th>Survey Date</th><th>Status</th><th>Processing</th><th>Classification</th></tr></thead>
-        <tbody>
-          <tr><td>Spring 2021 (baseline)</td><td>Complete</td><td class="val-accent">Complete</td><td class="val-accent">Complete</td></tr>
-          <tr><td>Fall 2021</td><td>Complete</td><td class="val-accent">Complete</td><td class="val-accent">Complete</td></tr>
-          <tr><td>Spring / Fall 2022</td><td>Complete</td><td class="val-accent">Complete</td><td class="val-accent">Complete</td></tr>
-          <tr><td>2023 Surveys</td><td>Complete</td><td class="val-accent">Complete</td><td class="val-accent">Complete</td></tr>
-          <tr><td>October 2024</td><td>Complete</td><td class="val-accent">Complete</td><td class="val-accent">Complete · 92% OA</td></tr>
-          <tr><td>June 2025</td><td>Acquired</td><td class="val-accent">Complete</td><td style="color:#c87c20;">Training samples in progress</td></tr>
-        </tbody>
-      </table>
+      <div class="tl-rail" id="tlRail">
+
+        <div class="tl-node" data-idx="0" onclick="tlSelect(0)">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-season">Fall 2022</div>
+          <div class="tl-date">2022-12-07</div>
+          <div class="tl-click-hint">View map</div>
+        </div>
+
+        <div class="tl-node" data-idx="1" onclick="tlSelect(1)">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-season">Summer 2023</div>
+          <div class="tl-date">2023-06-07</div>
+          <div class="tl-click-hint">View map</div>
+        </div>
+
+        <div class="tl-node" data-idx="2" onclick="tlSelect(2)">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-season">Fall 2023</div>
+          <div class="tl-date">2023-10-09</div>
+          <div class="tl-click-hint">View map</div>
+        </div>
+
+        <div class="tl-node" data-idx="3" onclick="tlSelect(3)">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-season">Summer 2024</div>
+          <div class="tl-date">2024-06-07</div>
+          <div class="tl-click-hint">View map</div>
+        </div>
+
+        <div class="tl-node featured" data-idx="4" onclick="tlSelect(4)">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-season">Fall 2024</div>
+          <div class="tl-date">2024-10-28</div>
+          <div class="tl-click-hint">View map</div>
+          <div class="tl-star">★ Featured</div>
+        </div>
+
+        <div class="tl-node" data-idx="5" onclick="tlSelect(5)">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-season">Summer 2025</div>
+          <div class="tl-date">2025-06-03</div>
+          <div class="tl-click-hint">View map</div>
+        </div>
+
+        <div class="tl-node" data-idx="6" onclick="tlSelect(6)">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-season">Fall 2025</div>
+          <div class="tl-date">2025-10-21</div>
+          <div class="tl-click-hint">View map</div>
+        </div>
+
+      </div><!-- /tl-rail -->
+
+      <!-- Sliding result panel -->
+      <div class="result-panel" id="resultPanel">
+        <div class="result-panel-inner">
+          <div class="rp-header">
+            <div class="rp-title-group">
+              <span class="rp-badge" id="rpBadge"></span>
+              <span class="rp-title" id="rpTitle"></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="rp-acc" id="rpAcc"></span>
+              <button class="rp-close" onclick="tlClose()">✕ Close</button>
+            </div>
+          </div>
+          <div class="rp-map-wrap">
+            <!-- iframe src is set by JS when a node is clicked -->
+            <iframe id="rpIframe" src="about:blank" allowfullscreen title="Survey classification map"></iframe>
+            <div class="rp-map-label" id="rpMapLabel"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tl-wrapper -->
+
+    <!-- Featured Accuracy Table — Oct 2024 -->
+    <div class="featured-acc-card">
+      <div class="featured-acc-head">
+        <span class="featured-badge-standalone">★ Featured Accuracy</span>
+        <span class="featured-acc-title">Accuracy Assessment — Fall 2024 Survey (2024-10-28)</span>
+      </div>
+      <div class="featured-acc-body">
+        <p style="font-size:13px;line-height:1.75;color:var(--muted);margin-bottom:16px;">
+          A comprehensive accuracy assessment was conducted for the October 2024 classification using 314 reference points across all 8 land cover classes. The U-Net model achieved an overall accuracy of 92% (κ = 0.89), confirming the high reliability of this habitat map for change detection benchmarking. Accuracy assessments for all remaining surveys will be added as they are completed.
+        </p>
+        <table class="data-table">
+          <thead>
+            <tr><th>Class</th><th>Ref. Points</th><th>Correctly Classified</th><th>User Accuracy</th><th>Producer Accuracy</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>C1 — Dead Vegetation</td><td>15</td><td>15</td><td class="val-accent">1.00</td><td class="val-accent">1.00</td></tr>
+            <tr><td>C2 — Delta Phragmites</td><td>117</td><td>105</td><td class="val-accent">0.90</td><td class="val-accent">1.00</td></tr>
+            <tr><td>C3 — European Phragmites</td><td>13</td><td>12</td><td class="val-accent">0.92</td><td>0.50</td></tr>
+            <tr><td>C4 — Marsh Grass</td><td>98</td><td>93</td><td class="val-accent">0.95</td><td class="val-accent">0.90</td></tr>
+            <tr><td>C5 — Mud</td><td>7</td><td>7</td><td class="val-accent">1.00</td><td class="val-accent">1.00</td></tr>
+            <tr><td>C6 — Water</td><td>22</td><td>21</td><td class="val-accent">0.95</td><td class="val-accent">1.00</td></tr>
+            <tr><td>C7 — Shadow</td><td>15</td><td>15</td><td class="val-accent">1.00</td><td class="val-accent">1.00</td></tr>
+            <tr><td>C8 — Shrub</td><td>27</td><td>21</td><td>0.78</td><td>0.88</td></tr>
+            <tr class="row-hl"><td colspan="3"><strong>Overall Accuracy</strong></td><td colspan="2" class="val-accent"><strong>0.92 (92%) — 314 reference points</strong></td></tr>
+            <tr class="row-hl"><td colspan="3"><strong>Kappa Coefficient</strong></td><td colspan="2" class="val-accent"><strong>κ = 0.89</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <div class="tag-strip">
-      <span class="tag">2021–2025</span><span class="tag">Temporal Change</span><span class="tag">Resilience</span><span class="tag">Freeze 2021</span><span class="tag">Hurricane Ida</span><span class="tag">Drought 2023</span>
+      <span class="tag">2022–2025</span><span class="tag">7 Surveys</span><span class="tag">Temporal Change</span><span class="tag">Resilience</span><span class="tag">Pass-A-Loutre</span><span class="tag">U-Net</span><span class="tag">ArcGIS Online</span>
     </div>
   </div><!-- /D3 -->
+
+  <script>
+  // ── Survey data — replace each arcgisUrl with your real ArcGIS Online embed URL ──
+  var surveys = [
+    {
+      idx: 0,
+      season: 'Fall 2022',
+      date: '2022-12-07',
+      acc: 'Accuracy TBD',
+      featured: false,
+      // REPLACE with your ArcGIS Online embed URL for Fall 2022
+      arcgisUrl: 'YOUR_ARCGIS_EMBED_URL_FALL2022'
+    },
+    {
+      idx: 1,
+      season: 'Summer 2023',
+      date: '2023-06-07',
+      acc: 'Accuracy TBD',
+      featured: false,
+      arcgisUrl: 'YOUR_ARCGIS_EMBED_URL_SUMMER2023'
+    },
+    {
+      idx: 2,
+      season: 'Fall 2023',
+      date: '2023-10-09',
+      acc: 'Accuracy TBD',
+      featured: false,
+      arcgisUrl: 'YOUR_ARCGIS_EMBED_URL_FALL2023'
+    },
+    {
+      idx: 3,
+      season: 'Summer 2024',
+      date: '2024-06-07',
+      acc: 'Accuracy TBD',
+      featured: false,
+      arcgisUrl: 'YOUR_ARCGIS_EMBED_URL_SUMMER2024'
+    },
+    {
+      idx: 4,
+      season: 'Fall 2024',
+      date: '2024-10-28',
+      acc: 'OA 92%  ·  κ = 0.89',
+      featured: true,
+      arcgisUrl: 'YOUR_ARCGIS_EMBED_URL_FALL2024'
+    },
+    {
+      idx: 5,
+      season: 'Summer 2025',
+      date: '2025-06-03',
+      acc: 'Accuracy TBD',
+      featured: false,
+      arcgisUrl: 'YOUR_ARCGIS_EMBED_URL_SUMMER2025'
+    },
+    {
+      idx: 6,
+      season: 'Fall 2025',
+      date: '2025-10-21',
+      acc: 'Accuracy TBD',
+      featured: false,
+      arcgisUrl: 'YOUR_ARCGIS_EMBED_URL_FALL2025'
+    }
+  ];
+
+  var activeIdx = -1;
+
+  function tlSelect(idx) {
+    var nodes = document.querySelectorAll('.tl-node');
+    var panel = document.getElementById('resultPanel');
+    var survey = surveys[idx];
+
+    // If clicking the already-active node, close it
+    if (activeIdx === idx) {
+      tlClose();
+      return;
+    }
+
+    // Update active node styling
+    nodes.forEach(function(n, i) {
+      n.classList.remove('active', 'visited');
+      if (i < idx) n.classList.add('visited');
+    });
+    nodes[idx].classList.add('active');
+    activeIdx = idx;
+
+    // Populate panel content
+    var badge = document.getElementById('rpBadge');
+    badge.textContent = survey.season;
+    badge.className = survey.featured ? 'rp-badge featured-badge' : 'rp-badge';
+
+    document.getElementById('rpTitle').textContent =
+      'Classification Map — ' + survey.date;
+
+    var accEl = document.getElementById('rpAcc');
+    accEl.textContent = survey.acc;
+    accEl.className = survey.acc === 'Accuracy TBD' ? 'rp-acc tbd' : 'rp-acc';
+
+    document.getElementById('rpMapLabel').textContent =
+      survey.season + ' · ' + survey.date + ' · U-Net 8-class · Pass-A-Loutre';
+
+    // Set iframe src (loads the map)
+    document.getElementById('rpIframe').src = survey.arcgisUrl;
+
+    // Open panel
+    panel.classList.add('open');
+
+    // Smooth scroll so panel is visible
+    setTimeout(function() {
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  function tlClose() {
+    var nodes = document.querySelectorAll('.tl-node');
+    nodes.forEach(function(n) { n.classList.remove('active', 'visited'); });
+    document.getElementById('resultPanel').classList.remove('open');
+    // Blank the iframe to stop any tile loading
+    document.getElementById('rpIframe').src = 'about:blank';
+    activeIdx = -1;
+  }
+  </script>
 
 
   <!-- ══ D4: FINAL ANALYSIS (PLACEHOLDER) ══ -->
