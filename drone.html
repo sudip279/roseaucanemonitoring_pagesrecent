@@ -196,13 +196,7 @@
   .featured-acc-title { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--text); }
   .featured-acc-body { padding:20px 24px; }
 
-  /* Basemap switcher */
-  .basemap-bar { display:flex; gap:6px; flex-wrap:wrap; padding:10px 0 14px; }
-  .basemap-bar-label { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); width:100%; margin-bottom:4px; }
-  .bm-btn { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:5px; padding:5px 13px; color:rgba(255,255,255,0.5); cursor:pointer; transition:all 0.15s; text-transform:uppercase; }
-  .bm-btn:hover { background:rgba(122,184,146,0.12); border-color:var(--border); color:var(--accent); }
-  .bm-btn.active { background:rgba(122,184,146,0.18); border-color:var(--accent); color:var(--accent); }
-  #rpMap { width:100%; height:440px; display:block; }
+  /* Basemap switcher CSS removed — basemap gallery handled natively by ArcGIS Map Viewer */
 
   /* placeholder */
   .placeholder-section {
@@ -584,13 +578,13 @@
 
   <script>
   var surveys = [
-    { idx:0, season:'Fall 2022',   date:'2022-12-07', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'d637391b91d44972b221e3b4f6b7f1f3', useEmbed:true  },
-    { idx:1, season:'Summer 2023', date:'2023-06-07', acc:'Accuracy TBD',         featured:false, legend:'7', webmapId:'f2bccc3308bf4590a543554d06f042ba',  useEmbed:false },
-    { idx:2, season:'Fall 2023',   date:'2023-10-09', acc:'Accuracy TBD',         featured:false, legend:'7', webmapId:'44db2defce66479ab7b2bd605523af48',  useEmbed:false },
-    { idx:3, season:'Summer 2024', date:'2024-06-07', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'090fc7c541ea4476b105318d820a55dc',  useEmbed:false },
-    { idx:4, season:'Fall 2024',   date:'2024-10-28', acc:'OA 92%  ·  κ = 0.89', featured:true,  legend:'8', webmapId:'cc8df8c01ee2469d878fb1f5439fb428',  useEmbed:false },
-    { idx:5, season:'Summer 2025', date:'2025-06-03', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'43a6c44294cf4224825caf86ec4a495a',  useEmbed:false },
-    { idx:6, season:'Fall 2025',   date:'2025-10-21', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'8645879e06e949a287abdbf047f7017f',  useEmbed:false }
+    { idx:0, season:'Fall 2022',   date:'2022-12-07', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'d637391b91d44972b221e3b4f6b7f1f3' },
+    { idx:1, season:'Summer 2023', date:'2023-06-07', acc:'Accuracy TBD',         featured:false, legend:'7', webmapId:'f2bccc3308bf4590a543554d06f042ba'  },
+    { idx:2, season:'Fall 2023',   date:'2023-10-09', acc:'Accuracy TBD',         featured:false, legend:'7', webmapId:'44db2defce66479ab7b2bd605523af48'  },
+    { idx:3, season:'Summer 2024', date:'2024-06-07', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'090fc7c541ea4476b105318d820a55dc'  },
+    { idx:4, season:'Fall 2024',   date:'2024-10-28', acc:'OA 92%  ·  κ = 0.89', featured:true,  legend:'8', webmapId:'cc8df8c01ee2469d878fb1f5439fb428'  },
+    { idx:5, season:'Summer 2025', date:'2025-06-03', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'43a6c44294cf4224825caf86ec4a495a'  },
+    { idx:6, season:'Fall 2025',   date:'2025-10-21', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'8645879e06e949a287abdbf047f7017f'  }
   ];
 
   // ArcGIS basemap IDs mapped to Map Viewer basemap parameter
@@ -629,32 +623,15 @@
   var MAP_SCALE  = '17587.984538975445';
 
   function buildUrl(survey) {
-    if (survey.useEmbed) {
-      return PORTAL + '/apps/mapviewer/index.html'
-        + '?configurableview=true'
-        + '&webmap=' + survey.webmapId
-        + '&theme=dark'
-        + '&heading=true'
-        + '&share=false'
-        + '&scroll=false'
-        + '&basemaps=true'
-        + '&center=' + MAP_CENTER
-        + '&scale=' + MAP_SCALE;
-    } else {
-      return PORTAL + '/apps/mapviewer/index.html'
-        + '?webmap=' + survey.webmapId
-        + '&embed=true';
-    }
-  }
-
-  function setBasemap(basemap) {
-    currentBasemap = basemap;
-    document.querySelectorAll('.bm-btn').forEach(function(b) {
-      b.classList.toggle('active', b.getAttribute('onclick') === "setBasemap('" + basemap + "')");
-    });
-    if (activeIdx >= 0) {
-      document.getElementById('rpIframe').src = buildUrl(surveys[activeIdx]);
-    }
+    var base = PORTAL + '/apps/mapviewer/index.html'
+      + '?webmap=' + survey.webmapId
+      + '&embed=true'
+      + '&basemaps=true'
+      + '&heading=false'
+      + '&scroll=false'
+      + '&center=' + MAP_CENTER
+      + '&scale=' + MAP_SCALE;
+    return base;
   }
 
   function tlSelect(idx) {
