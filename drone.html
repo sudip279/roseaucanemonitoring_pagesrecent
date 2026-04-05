@@ -252,7 +252,7 @@
     max-height:0;
     transition:max-height 0.45s cubic-bezier(0.4,0,0.2,1);
   }
-  .result-panel.open { max-height:680px; }
+  .result-panel.open { max-height:780px; }
 
   .result-panel-inner {
     padding:0 28px 28px;
@@ -293,7 +293,7 @@
     position:relative;
   }
   .rp-map-wrap iframe {
-    width:100%; height:480px; border:none; display:block;
+    width:100%; height:420px; border:none; display:block;
   }
   .rp-map-label {
     position:absolute; bottom:10px; left:12px;
@@ -312,23 +312,29 @@
 
   /* ── Survey legend inside panel ── */
   .rp-legend {
-    display:flex; flex-wrap:wrap; gap:6px 16px;
-    padding:12px 0 4px; border-top:1px solid var(--border-neutral); margin-top:14px;
+    display:flex; flex-wrap:wrap; gap:8px 20px;
+    padding:16px 20px; margin-top:14px;
+    background:rgba(0,0,0,0.25);
+    border:1px solid var(--border-neutral);
+    border-radius:10px;
   }
+  .rp-legend:empty { display:none; }
   .rp-legend-item {
-    display:flex; align-items:center; gap:7px;
+    display:flex; align-items:center; gap:8px;
     font-family:'IBM Plex Mono',monospace; font-size:10px;
-    color:rgba(255,255,255,0.55); letter-spacing:0.5px;
+    color:rgba(255,255,255,0.65); letter-spacing:0.5px;
     white-space:nowrap;
   }
   .rp-legend-swatch {
-    width:13px; height:13px; border-radius:3px; flex-shrink:0;
-    border:1px solid rgba(255,255,255,0.12);
+    width:14px; height:14px; border-radius:3px; flex-shrink:0;
+    border:1px solid rgba(255,255,255,0.15);
   }
   .rp-legend-title {
     font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px;
-    text-transform:uppercase; color:rgba(255,255,255,0.25);
-    padding-bottom:6px; width:100%;
+    text-transform:uppercase; color:rgba(255,255,255,0.3);
+    padding-bottom:4px; width:100%;
+    border-bottom:1px solid var(--border-neutral);
+    margin-bottom:4px;
   }
   .featured-acc-card {
     background:var(--card-bg); border:1px solid var(--border);
@@ -710,7 +716,7 @@
       date: '2022-12-07',
       acc: 'Accuracy TBD',
       featured: false,
-      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/mapviewer/index.html?webmap=d637391b91d44972b221e3b4f6b7f1f3&embed=true'
+      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=d637391b91d44972b221e3b4f6b7f1f3&embed=true'
     },
     {
       idx: 1,
@@ -718,7 +724,7 @@
       date: '2023-06-07',
       acc: 'Accuracy TBD',
       featured: false,
-      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/mapviewer/index.html?webmap=f2bccc3308bf4590a543554d06f042ba&embed=true'
+      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=f2bccc3308bf4590a543554d06f042ba&embed=true'
     },
     {
       idx: 2,
@@ -726,7 +732,7 @@
       date: '2023-10-09',
       acc: 'Accuracy TBD',
       featured: false,
-      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/mapviewer/index.html?webmap=44db2defce66479ab7b2bd605523af48&embed=true'
+      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=44db2defce66479ab7b2bd605523af48&embed=true'
     },
     {
       idx: 3,
@@ -734,7 +740,7 @@
       date: '2024-06-07',
       acc: 'Accuracy TBD',
       featured: false,
-      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/mapviewer/index.html?webmap=090fc7c541ea4476b105318d820a55dc&embed=true'
+      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=090fc7c541ea4476b105318d820a55dc&embed=true'
     },
     {
       idx: 4,
@@ -742,7 +748,7 @@
       date: '2024-10-28',
       acc: 'OA 92%  ·  κ = 0.89',
       featured: true,
-      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/mapviewer/index.html?webmap=cc8df8c01ee2469d878fb1f5439fb428&embed=true'
+      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=cc8df8c01ee2469d878fb1f5439fb428&embed=true'
     },
     {
       idx: 5,
@@ -750,7 +756,7 @@
       date: '2025-06-03',
       acc: 'Accuracy TBD',
       featured: false,
-      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/mapviewer/index.html?webmap=43a6c44294cf4224825caf86ec4a495a&embed=true'
+      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=43a6c44294cf4224825caf86ec4a495a&embed=true'
     },
     {
       idx: 6,
@@ -758,7 +764,7 @@
       date: '2025-10-21',
       acc: 'Accuracy TBD',
       featured: false,
-      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/mapviewer/index.html?webmap=8645879e06e949a287abdbf047f7017f&embed=true'
+      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=8645879e06e949a287abdbf047f7017f&embed=true'
     }
   ];
 
