@@ -397,17 +397,9 @@
       <div class="sec-rule"></div>
     </div>
 
-    <a class="ext-link-card" href="https://lsu-its.hub.arcgis.com/pages/five-year-monitoring~5dd894b2badd4e1d9ff9284c93905356" target="_blank">
-      <div>
-        <div class="elc-label">StoryMaps · Full Interactive Timeline</div>
-        <div class="elc-title">View Five-Year Monitoring — Temporal Change Interactive StoryMap</div>
-      </div>
-      <div class="elc-arrow">↗</div>
-    </a>
-
     <div class="info-card">
       <h3>Overview</h3>
-      <p>Since 2022, continuous fine-scale drone monitoring of Roseau cane habitat has been conducted at the Pass-A-Loutre site in the lower Mississippi River Delta (MRD), with surveys each summer and fall season. The goal is mid-term resilience analysis — quantifying habitat changes in response to disturbance events including the 2021 freeze, hurricane impacts, and the extreme drought of 2023. The same DJI Matrice 600 Pro platform with MicaSense RedEdge-MX dual camera system, flight settings, and U-Net deep learning classification are applied consistently across all surveys to ensure full temporal comparability.</p>
+      <p>Roseau cane habitat dynamics operate on multi-year timescales driven by compound disturbances — freeze events, hurricane storm surges, and gradual environmental change. Short-term surveys cannot capture the full trajectory of resilience and recovery. To address this, continuous fine-scale drone monitoring has been conducted at the Pass-A-Loutre site in the lower Mississippi River Delta (MRD) since 2022, with surveys each summer and fall season. The same DJI Matrice 600 Pro platform with MicaSense RedEdge-MX dual camera system, flight settings, and U-Net deep learning classification are applied consistently across all surveys to ensure full temporal comparability.</p>
       <p>Seven classified surveys are now available spanning Fall 2022 through Fall 2025. The October 2024 survey achieved the highest documented accuracy at 92% overall accuracy (κ = 0.89). Select any survey date on the timeline below to view its classification result and land cover legend.</p>
     </div>
 
@@ -525,6 +517,55 @@
             <tr class="row-hl"><td colspan="3"><strong>Kappa Coefficient</strong></td><td colspan="2" class="val-accent"><strong>κ = 0.89</strong></td></tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- Disturbance Context -->
+    <div class="info-card" style="margin-top:20px;">
+      <h3>Environmental Context — Disturbance Events Captured in the Monitoring Window</h3>
+      <p style="margin-bottom:20px;">The five-year monitoring window deliberately spans multiple disturbance cycles to quantify Roseau cane response and recovery trajectories.</p>
+      <div class="grid-2">
+
+        <div style="border:1px solid var(--border-neutral); border-radius:10px; padding:18px 20px;">
+          <div style="font-size:20px; margin-bottom:8px;">🌨</div>
+          <div style="font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:8px;">Freeze Events</div>
+          <p style="font-size:13px; line-height:1.7; color:var(--muted); margin-bottom:12px;">Winter freeze episodes cause rapid die-back in Roseau cane stands, creating distinct spectral signatures visible in post-freeze drone imagery. Recovery monitoring reveals species-specific resilience patterns.</p>
+          <div style="background:rgba(122,184,146,0.07); border-left:2px solid var(--accent); padding:8px 12px; border-radius:0 6px 6px 0;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:4px;">Monitoring Relevance</div>
+            <div style="font-size:12px; line-height:1.6; color:var(--muted);">Allows quantification of freeze-induced canopy loss area and recovery timeline through sequential classification maps.</div>
+          </div>
+        </div>
+
+        <div style="border:1px solid var(--border-neutral); border-radius:10px; padding:18px 20px;">
+          <div style="font-size:20px; margin-bottom:8px;">🌀</div>
+          <div style="font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:8px;">Storm Surges &amp; Hurricanes</div>
+          <p style="font-size:13px; line-height:1.7; color:var(--muted); margin-bottom:12px;">Gulf coast tropical events introduce saltwater intrusion and mechanical damage to Roseau cane stands. Post-storm surveys document extent of physical disturbance and subsequent vegetation recovery dynamics.</p>
+          <div style="background:rgba(122,184,146,0.07); border-left:2px solid var(--accent); padding:8px 12px; border-radius:0 6px 6px 0;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:4px;">Monitoring Relevance</div>
+            <div style="font-size:12px; line-height:1.6; color:var(--muted);">Before/after survey pairs isolate storm-driven habitat change from background seasonal variability.</div>
+          </div>
+        </div>
+
+        <div style="border:1px solid var(--border-neutral); border-radius:10px; padding:18px 20px;">
+          <div style="font-size:20px; margin-bottom:8px;">💧</div>
+          <div style="font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:8px;">Hydrological Fluctuations</div>
+          <p style="font-size:13px; line-height:1.7; color:var(--muted); margin-bottom:12px;">Extreme water level variability — from record high levels in summer 2023 to complete site drying in fall seasons — profoundly affects both field survey access and vegetation condition across the study period.</p>
+          <div style="background:rgba(122,184,146,0.07); border-left:2px solid var(--accent); padding:8px 12px; border-radius:0 6px 6px 0;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:4px;">Monitoring Relevance</div>
+            <div style="font-size:12px; line-height:1.6; color:var(--muted);">Multi-temporal comparison separates water-driven spectral change from true vegetation structural change.</div>
+          </div>
+        </div>
+
+        <div style="border:1px solid var(--border-neutral); border-radius:10px; padding:18px 20px;">
+          <div style="font-size:20px; margin-bottom:8px;">🌿</div>
+          <div style="font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:8px;">Gradual Environmental Change</div>
+          <p style="font-size:13px; line-height:1.7; color:var(--muted); margin-bottom:12px;">Long-term subsidence, sediment dynamics, and salinity shifts in the lower MRD create cumulative stressors on Roseau cane habitat. Five-year monitoring captures trends invisible in single-season snapshots.</p>
+          <div style="background:rgba(122,184,146,0.07); border-left:2px solid var(--accent); padding:8px 12px; border-radius:0 6px 6px 0;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:4px;">Monitoring Relevance</div>
+            <div style="font-size:12px; line-height:1.6; color:var(--muted);">Trend analysis across 5 years separates episodic disturbance from directional habitat change trajectory.</div>
+          </div>
+        </div>
+
       </div>
     </div>
 
