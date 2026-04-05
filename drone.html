@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Drone Monitoring — LSU TiGers Lab</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Hanken+Grotesk:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/dark/main.css">
+<script src="https://js.arcgis.com/4.29/"></script>
 <style>
   :root {
     --dark: #0a100c;
@@ -195,6 +197,14 @@
   .featured-badge-standalone { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--dark); background:var(--accent); border-radius:4px; padding:3px 9px; }
   .featured-acc-title { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--text); }
   .featured-acc-body { padding:20px 24px; }
+
+  /* Basemap switcher */
+  .basemap-bar { display:flex; gap:6px; flex-wrap:wrap; padding:10px 0 14px; }
+  .basemap-bar-label { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); width:100%; margin-bottom:4px; }
+  .bm-btn { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:5px; padding:5px 13px; color:rgba(255,255,255,0.5); cursor:pointer; transition:all 0.15s; text-transform:uppercase; }
+  .bm-btn:hover { background:rgba(122,184,146,0.12); border-color:var(--border); color:var(--accent); }
+  .bm-btn.active { background:rgba(122,184,146,0.18); border-color:var(--accent); color:var(--accent); }
+  #rpMap { width:100%; height:440px; display:block; }
 
   /* placeholder */
   .placeholder-section {
@@ -483,8 +493,18 @@
               <button class="rp-close" onclick="tlClose()">✕ Close</button>
             </div>
           </div>
+          <!-- Basemap switcher -->
+          <div class="basemap-bar">
+            <div class="basemap-bar-label">Basemap</div>
+            <button class="bm-btn active" onclick="setBasemap('satellite')">Satellite</button>
+            <button class="bm-btn" onclick="setBasemap('hybrid')">Hybrid</button>
+            <button class="bm-btn" onclick="setBasemap('topo-vector')">Topographic</button>
+            <button class="bm-btn" onclick="setBasemap('streets-vector')">Streets</button>
+            <button class="bm-btn" onclick="setBasemap('dark-gray-vector')">Dark Gray</button>
+            <button class="bm-btn" onclick="setBasemap('oceans')">Oceans</button>
+          </div>
           <div class="rp-map-wrap">
-            <iframe id="rpIframe" src="about:blank" allowfullscreen title="Survey classification map"></iframe>
+            <div id="rpMap"></div>
             <div class="rp-map-label" id="rpMapLabel"></div>
           </div>
           <div class="rp-legend" id="rpLegend"></div>
@@ -575,14 +595,15 @@
   </div><!-- /D3 -->
 
   <script>
+  // Survey data — web map IDs on LSU ArcGIS portal
   var surveys = [
-    { idx:0, season:'Fall 2022',    date:'2022-12-07', acc:'Accuracy TBD',      featured:false, legend:'8', arcgisUrl:'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=d637391b91d44972b221e3b4f6b7f1f3&embed=true' },
-    { idx:1, season:'Summer 2023',  date:'2023-06-07', acc:'Accuracy TBD',      featured:false, legend:'7', arcgisUrl:'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=f2bccc3308bf4590a543554d06f042ba&embed=true' },
-    { idx:2, season:'Fall 2023',    date:'2023-10-09', acc:'Accuracy TBD',      featured:false, legend:'7', arcgisUrl:'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=44db2defce66479ab7b2bd605523af48&embed=true' },
-    { idx:3, season:'Summer 2024',  date:'2024-06-07', acc:'Accuracy TBD',      featured:false, legend:'8', arcgisUrl:'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=090fc7c541ea4476b105318d820a55dc&embed=true' },
-    { idx:4, season:'Fall 2024',    date:'2024-10-28', acc:'OA 92%  ·  κ = 0.89', featured:true, legend:'8', arcgisUrl:'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=cc8df8c01ee2469d878fb1f5439fb428&embed=true' },
-    { idx:5, season:'Summer 2025',  date:'2025-06-03', acc:'Accuracy TBD',      featured:false, legend:'8', arcgisUrl:'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=43a6c44294cf4224825caf86ec4a495a&embed=true' },
-    { idx:6, season:'Fall 2025',    date:'2025-10-21', acc:'Accuracy TBD',      featured:false, legend:'8', arcgisUrl:'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=8645879e06e949a287abdbf047f7017f&embed=true' }
+    { idx:0, season:'Fall 2022',   date:'2022-12-07', acc:'Accuracy TBD',        featured:false, legend:'8', webmapId:'d637391b91d44972b221e3b4f6b7f1f3' },
+    { idx:1, season:'Summer 2023', date:'2023-06-07', acc:'Accuracy TBD',        featured:false, legend:'7', webmapId:'f2bccc3308bf4590a543554d06f042ba' },
+    { idx:2, season:'Fall 2023',   date:'2023-10-09', acc:'Accuracy TBD',        featured:false, legend:'7', webmapId:'44db2defce66479ab7b2bd605523af48' },
+    { idx:3, season:'Summer 2024', date:'2024-06-07', acc:'Accuracy TBD',        featured:false, legend:'8', webmapId:'090fc7c541ea4476b105318d820a55dc' },
+    { idx:4, season:'Fall 2024',   date:'2024-10-28', acc:'OA 92%  ·  κ = 0.89',featured:true,  legend:'8', webmapId:'cc8df8c01ee2469d878fb1f5439fb428' },
+    { idx:5, season:'Summer 2025', date:'2025-06-03', acc:'Accuracy TBD',        featured:false, legend:'8', webmapId:'43a6c44294cf4224825caf86ec4a495a' },
+    { idx:6, season:'Fall 2025',   date:'2025-10-21', acc:'Accuracy TBD',        featured:false, legend:'8', webmapId:'8645879e06e949a287abdbf047f7017f' }
   ];
 
   var legend8 = [
@@ -606,6 +627,69 @@
   ];
 
   var activeIdx = -1;
+  var arcgisMap = null;
+  var mapView  = null;
+  var currentBasemap = 'satellite';
+
+  // Pass-A-Loutre center coordinates
+  var SITE_CENTER = { longitude: -89.028, latitude: 29.065 };
+  var SITE_ZOOM   = 14;
+
+  // Portal for LSU organization
+  var PORTAL_URL = 'https://lsu-its.maps.arcgis.com';
+
+  require([
+    'esri/Map',
+    'esri/views/MapView',
+    'esri/WebMap',
+    'esri/portal/Portal'
+  ], function(Map, MapView, WebMap, Portal) {
+
+    function initMap(webmapId) {
+      var container = document.getElementById('rpMap');
+
+      // Destroy previous view if exists
+      if (mapView) { mapView.destroy(); mapView = null; arcgisMap = null; }
+
+      var portal = new Portal({ url: PORTAL_URL });
+      var webmap = new WebMap({
+        portalItem: { id: webmapId, portal: portal }
+      });
+
+      mapView = new MapView({
+        container: container,
+        map: webmap,
+        center: [SITE_CENTER.longitude, SITE_CENTER.latitude],
+        zoom: SITE_ZOOM,
+        ui: { components: ['zoom', 'compass'] }
+      });
+
+      arcgisMap = webmap;
+
+      // Apply current basemap after webmap loads
+      mapView.when(function() {
+        applyBasemap(currentBasemap);
+      });
+    }
+
+    function applyBasemap(basemapId) {
+      if (!mapView) return;
+      require(['esri/Basemap'], function(Basemap) {
+        mapView.map.basemap = basemapId;
+      });
+    }
+
+    window._initMap     = initMap;
+    window._applyBasemap = applyBasemap;
+  });
+
+  function setBasemap(basemapId) {
+    currentBasemap = basemapId;
+    document.querySelectorAll('.bm-btn').forEach(function(b) {
+      b.classList.toggle('active', b.getAttribute('onclick').indexOf("'" + basemapId + "'") > -1);
+    });
+    if (window._applyBasemap) window._applyBasemap(basemapId);
+  }
 
   function tlSelect(idx) {
     var nodes = document.querySelectorAll('.tl-node');
@@ -618,6 +702,7 @@
     });
     nodes[idx].classList.add('active');
     activeIdx = idx;
+
     var badge = document.getElementById('rpBadge');
     badge.textContent = survey.season;
     badge.className = survey.featured ? 'rp-badge featured-badge' : 'rp-badge';
@@ -626,17 +711,22 @@
     accEl.textContent = survey.acc;
     accEl.className = survey.acc === 'Accuracy TBD' ? 'rp-acc tbd' : 'rp-acc';
     document.getElementById('rpMapLabel').textContent = survey.season + ' · ' + survey.date + ' · U-Net · Pass-A-Loutre';
-    document.getElementById('rpIframe').src = survey.arcgisUrl;
-    buildLegend(idx);
+
     panel.classList.add('open');
-    setTimeout(function() { panel.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 60);
+    buildLegend(idx);
+
+    // Init map after panel opens so container has dimensions
+    setTimeout(function() {
+      if (window._initMap) window._initMap(survey.webmapId);
+      panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }, 80);
   }
 
   function tlClose() {
     document.querySelectorAll('.tl-node').forEach(function(n) { n.classList.remove('active','visited'); });
     document.getElementById('resultPanel').classList.remove('open');
-    document.getElementById('rpIframe').src = 'about:blank';
     document.getElementById('rpLegend').innerHTML = '';
+    if (mapView) { mapView.destroy(); mapView = null; arcgisMap = null; }
     activeIdx = -1;
   }
 
