@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Drone Monitoring — LSU TiGers Lab</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Hanken+Grotesk:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/dark/main.css">
-<script src="https://js.arcgis.com/4.29/"></script>
 <style>
   :root {
     --dark: #0a100c;
@@ -498,13 +496,13 @@
             <div class="basemap-bar-label">Basemap</div>
             <button class="bm-btn active" onclick="setBasemap('satellite')">Satellite</button>
             <button class="bm-btn" onclick="setBasemap('hybrid')">Hybrid</button>
-            <button class="bm-btn" onclick="setBasemap('topo-vector')">Topographic</button>
-            <button class="bm-btn" onclick="setBasemap('streets-vector')">Streets</button>
-            <button class="bm-btn" onclick="setBasemap('dark-gray-vector')">Dark Gray</button>
+            <button class="bm-btn" onclick="setBasemap('topo')">Topographic</button>
+            <button class="bm-btn" onclick="setBasemap('streets')">Streets</button>
+            <button class="bm-btn" onclick="setBasemap('gray')">Gray</button>
             <button class="bm-btn" onclick="setBasemap('oceans')">Oceans</button>
           </div>
           <div class="rp-map-wrap">
-            <div id="rpMap"></div>
+            <iframe id="rpIframe" src="about:blank" allowfullscreen title="Survey classification map"></iframe>
             <div class="rp-map-label" id="rpMapLabel"></div>
           </div>
           <div class="rp-legend" id="rpLegend"></div>
@@ -595,7 +593,6 @@
   </div><!-- /D3 -->
 
   <script>
-  // Survey data
   var surveys = [
     { idx:0, season:'Fall 2022',   date:'2022-12-07', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'d637391b91d44972b221e3b4f6b7f1f3' },
     { idx:1, season:'Summer 2023', date:'2023-06-07', acc:'Accuracy TBD',         featured:false, legend:'7', webmapId:'f2bccc3308bf4590a543554d06f042ba' },
@@ -605,6 +602,16 @@
     { idx:5, season:'Summer 2025', date:'2025-06-03', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'43a6c44294cf4224825caf86ec4a495a' },
     { idx:6, season:'Fall 2025',   date:'2025-10-21', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'8645879e06e949a287abdbf047f7017f' }
   ];
+
+  // ArcGIS basemap IDs mapped to Map Viewer basemap parameter
+  var basemapMap = {
+    'satellite': '55ebf90799fa4a3fa57562700a68c405',
+    'hybrid':    'dac2a5516fa14b498da1c4688cfff3ab',
+    'topo':      '5e9b3685f4c24d8781073dd928ebda50',
+    'streets':   '27f6ff14ce464b099e4f6e7b5ffffd00',
+    'gray':      '291da5eab3a0412593b66d384379f89f',
+    'oceans':    '5ae9e138a17842688b0b79283a4353f6'
+  };
 
   var legend8 = [
     { label:'Dead Vegetation',     color:'rgb(115,38,0)'    },
@@ -627,69 +634,37 @@
   ];
 
   var activeIdx      = -1;
-  var mapView        = null;
   var currentBasemap = 'satellite';
-  var PORTAL_URL     = 'https://lsu-its.maps.arcgis.com';
-  var SITE_CENTER    = [-89.028, 29.065];
-  var SITE_ZOOM      = 14;
+  var PORTAL        = 'https://lsu-its.maps.arcgis.com';
 
-  // Configure AMD loader to point at the already-loaded SDK
-  window.dojoConfig = { async: true };
-
-  // Wait for SDK to be available, then initialise
-  function waitForRequire(cb) {
-    if (typeof require !== 'undefined' && require.on) { cb(); }
-    else { setTimeout(function(){ waitForRequire(cb); }, 50); }
+  function buildUrl(webmapId, basemap) {
+    var base = PORTAL + '/apps/mapviewer/index.html';
+    var params = '?webmap=' + webmapId + '&embed=true';
+    if (basemap && basemap !== 'satellite') {
+      params += '&basemapUrl=https://basemaps.arcgis.com/arcgis/rest/services/World_Imagery/MapServer';
+    }
+    // Use the mapviewer's basemap parameter
+    var bmNames = {
+      'satellite': 'satellite',
+      'hybrid':    'hybrid',
+      'topo':      'topo',
+      'streets':   'streets',
+      'gray':      'gray',
+      'oceans':    'oceans'
+    };
+    return base + params + '&basemap=' + (bmNames[basemap] || 'satellite');
   }
 
-  function loadMap(webmapId) {
-    waitForRequire(function() {
-      require([
-        'esri/WebMap',
-        'esri/views/MapView',
-        'esri/portal/Portal'
-      ], function(WebMap, MapView, Portal) {
-
-        // Destroy existing view first
-        if (mapView) { mapView.destroy(); mapView = null; }
-
-        var portal = new Portal({ url: PORTAL_URL });
-        var webmap = new WebMap({
-          portalItem: { id: webmapId, portal: portal }
-        });
-
-        mapView = new MapView({
-          container: 'rpMap',
-          map: webmap,
-          center: SITE_CENTER,
-          zoom: SITE_ZOOM,
-          ui: { components: ['zoom', 'compass'] }
-        });
-
-        mapView.when(function() {
-          applyBasemap(currentBasemap);
-        }).catch(function(err) {
-          console.warn('Map load error:', err);
-        });
-      });
-    });
-  }
-
-  function applyBasemap(basemapId) {
-    if (!mapView || !mapView.map) return;
-    waitForRequire(function() {
-      require(['esri/Basemap'], function(Basemap) {
-        mapView.map.basemap = Basemap.fromId(basemapId);
-      });
-    });
-  }
-
-  function setBasemap(basemapId) {
-    currentBasemap = basemapId;
+  function setBasemap(basemap) {
+    currentBasemap = basemap;
     document.querySelectorAll('.bm-btn').forEach(function(b) {
-      b.classList.toggle('active', b.getAttribute('onclick') === "setBasemap('" + basemapId + "')");
+      b.classList.toggle('active', b.getAttribute('onclick') === "setBasemap('" + basemap + "')");
     });
-    applyBasemap(basemapId);
+    // Reload iframe with new basemap if a survey is active
+    if (activeIdx >= 0) {
+      var iframe = document.getElementById('rpIframe');
+      iframe.src = buildUrl(surveys[activeIdx].webmapId, basemap);
+    }
   }
 
   function tlSelect(idx) {
@@ -712,15 +687,13 @@
     accEl.textContent = survey.acc;
     accEl.className   = survey.acc === 'Accuracy TBD' ? 'rp-acc tbd' : 'rp-acc';
     document.getElementById('rpMapLabel').textContent = survey.season + ' · ' + survey.date + ' · U-Net · Pass-A-Loutre';
+    document.getElementById('rpIframe').src = buildUrl(survey.webmapId, currentBasemap);
 
     buildLegend(idx);
     panel.classList.add('open');
-
-    // Small delay so the panel finishes opening before map renders
     setTimeout(function() {
-      loadMap(survey.webmapId);
       panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, 120);
+    }, 60);
   }
 
   function tlClose() {
@@ -728,8 +701,8 @@
       n.classList.remove('active', 'visited');
     });
     document.getElementById('resultPanel').classList.remove('open');
+    document.getElementById('rpIframe').src = 'about:blank';
     document.getElementById('rpLegend').innerHTML = '';
-    if (mapView) { mapView.destroy(); mapView = null; }
     activeIdx = -1;
   }
 
