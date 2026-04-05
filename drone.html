@@ -578,13 +578,13 @@
 
   <script>
   var surveys = [
-    { idx:0, season:'Fall 2022',   date:'2022-12-07', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'d637391b91d44972b221e3b4f6b7f1f3' },
-    { idx:1, season:'Summer 2023', date:'2023-06-07', acc:'Accuracy TBD',         featured:false, legend:'7', webmapId:'f2bccc3308bf4590a543554d06f042ba'  },
-    { idx:2, season:'Fall 2023',   date:'2023-10-09', acc:'Accuracy TBD',         featured:false, legend:'7', webmapId:'44db2defce66479ab7b2bd605523af48'  },
-    { idx:3, season:'Summer 2024', date:'2024-06-07', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'090fc7c541ea4476b105318d820a55dc'  },
-    { idx:4, season:'Fall 2024',   date:'2024-10-28', acc:'OA 92%  ·  κ = 0.89', featured:true,  legend:'8', webmapId:'cc8df8c01ee2469d878fb1f5439fb428'  },
-    { idx:5, season:'Summer 2025', date:'2025-06-03', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'43a6c44294cf4224825caf86ec4a495a'  },
-    { idx:6, season:'Fall 2025',   date:'2025-10-21', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'8645879e06e949a287abdbf047f7017f'  }
+    { idx:0, season:'Fall 2022',   date:'2022-12-07', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'d637391b91d44972b221e3b4f6b7f1f3', expUrl:'https://experience.arcgis.com/experience/763f451081164458b32dc347233f1870' },
+    { idx:1, season:'Summer 2023', date:'2023-06-07', acc:'Accuracy TBD',         featured:false, legend:'7', webmapId:'f2bccc3308bf4590a543554d06f042ba',  expUrl:'https://experience.arcgis.com/experience/4725e3349ae64c51a318b9683b592dcf' },
+    { idx:2, season:'Fall 2023',   date:'2023-10-09', acc:'Accuracy TBD',         featured:false, legend:'7', webmapId:'44db2defce66479ab7b2bd605523af48',  expUrl:'https://experience.arcgis.com/experience/d1c8ac1fea8a4d419fa23c57ed76a119' },
+    { idx:3, season:'Summer 2024', date:'2024-06-07', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'090fc7c541ea4476b105318d820a55dc',  expUrl:'https://experience.arcgis.com/experience/cc3334ee778d43889bacdda8239fef38' },
+    { idx:4, season:'Fall 2024',   date:'2024-10-28', acc:'OA 92%  ·  κ = 0.89', featured:true,  legend:'8', webmapId:'cc8df8c01ee2469d878fb1f5439fb428',  expUrl:'https://experience.arcgis.com/experience/51d7a111a8924809ba8a6bdaacb01e74' },
+    { idx:5, season:'Summer 2025', date:'2025-06-03', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'43a6c44294cf4224825caf86ec4a495a',  expUrl:'https://experience.arcgis.com/experience/9c11afc49ff64c28a108c2416dd03f5e' },
+    { idx:6, season:'Fall 2025',   date:'2025-10-21', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'8645879e06e949a287abdbf047f7017f',  expUrl:'https://experience.arcgis.com/experience/24b92f5d51fe454ea4ecfd65ad829685' }
   ];
 
   // ArcGIS basemap IDs mapped to Map Viewer basemap parameter
@@ -623,15 +623,14 @@
   var MAP_SCALE  = '17587.984538975445';
 
   function buildUrl(survey) {
-    var base = PORTAL + '/apps/mapviewer/index.html'
+    if (survey.expUrl) {
+      return survey.expUrl;
+    }
+    return PORTAL + '/apps/mapviewer/index.html'
       + '?webmap=' + survey.webmapId
       + '&embed=true'
-      + '&basemaps=true'
-      + '&heading=false'
-      + '&scroll=false'
       + '&center=' + MAP_CENTER
       + '&scale=' + MAP_SCALE;
-    return base;
   }
 
   function tlSelect(idx) {
