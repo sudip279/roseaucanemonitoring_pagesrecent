@@ -141,218 +141,59 @@
     background:var(--card-bg); border:1px solid var(--border-neutral);
     border-radius:14px; padding:28px 28px 0; margin-bottom:20px; overflow:hidden;
   }
-  .tl-wrapper h3 {
-    font-family:'Playfair Display',serif; font-size:17px; font-weight:700;
-    color:var(--text); margin-bottom:24px;
-  }
-
-  /* The horizontal rail */
-  .tl-rail {
-    display:flex; align-items:flex-start; position:relative;
-    overflow-x:auto; padding-bottom:4px; gap:0;
-  }
-  /* connector line behind the dots */
-  .tl-rail::before {
-    content:''; position:absolute; top:17px; left:0; right:0; height:2px;
-    background:var(--border-neutral); z-index:0;
-  }
-
-  .tl-node {
-    display:flex; flex-direction:column; align-items:center;
-    flex:1; min-width:96px; cursor:pointer; position:relative; z-index:1;
-    padding-bottom:20px;
-    -webkit-tap-highlight-color:transparent;
-  }
-
-  /* progress line fills left-to-right as active node advances */
-  .tl-rail .tl-node.visited::before {
-    content:''; position:absolute; top:17px; left:0; width:50%; height:2px;
-    background:var(--accent); z-index:0;
-  }
-  .tl-rail .tl-node.visited::after {
-    content:''; position:absolute; top:17px; left:50%; width:50%; height:2px;
-    background:var(--accent); z-index:0;
-  }
-  .tl-rail .tl-node:last-child.visited::after { display:none; }
-
-  .tl-dot {
-    width:34px; height:34px; border-radius:50%;
-    border:2px solid rgba(122,184,146,0.35);
-    background:var(--card-bg);
-    display:flex; align-items:center; justify-content:center;
-    position:relative; z-index:2; flex-shrink:0;
-    transition:border-color 0.25s, background 0.25s, transform 0.2s, box-shadow 0.25s;
-  }
-  .tl-dot-inner {
-    width:10px; height:10px; border-radius:50%;
-    background:rgba(122,184,146,0.4);
-    transition:background 0.25s, transform 0.2s;
-  }
-  .tl-node:hover .tl-dot {
-    border-color:var(--accent);
-    transform:scale(1.12);
-  }
+  .tl-wrapper h3 { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:24px; }
+  .tl-rail { display:flex; align-items:flex-start; position:relative; overflow-x:auto; padding-bottom:4px; gap:0; }
+  .tl-rail::before { content:''; position:absolute; top:17px; left:0; right:0; height:2px; background:var(--border-neutral); z-index:0; }
+  .tl-node { display:flex; flex-direction:column; align-items:center; flex:1; min-width:96px; cursor:pointer; position:relative; z-index:1; padding-bottom:20px; -webkit-tap-highlight-color:transparent; }
+  .tl-node.visited::before { content:''; position:absolute; top:17px; left:0; width:50%; height:2px; background:var(--accent); z-index:0; }
+  .tl-node.visited::after { content:''; position:absolute; top:17px; left:50%; width:50%; height:2px; background:var(--accent); z-index:0; }
+  .tl-node:last-child.visited::after { display:none; }
+  .tl-dot { width:34px; height:34px; border-radius:50%; border:2px solid rgba(122,184,146,0.35); background:var(--card-bg); display:flex; align-items:center; justify-content:center; position:relative; z-index:2; flex-shrink:0; transition:border-color 0.25s, background 0.25s, transform 0.2s, box-shadow 0.25s; }
+  .tl-dot-inner { width:10px; height:10px; border-radius:50%; background:rgba(122,184,146,0.4); transition:background 0.25s, transform 0.2s; }
+  .tl-node:hover .tl-dot { border-color:var(--accent); transform:scale(1.12); }
   .tl-node:hover .tl-dot-inner { background:var(--accent); }
-
-  /* Active state */
-  .tl-node.active .tl-dot {
-    border-color:var(--accent);
-    background:var(--accent);
-    box-shadow:0 0 0 4px rgba(122,184,146,0.18), 0 0 14px rgba(122,184,146,0.35);
-    transform:scale(1.18);
-  }
+  .tl-node.active .tl-dot { border-color:var(--accent); background:var(--accent); box-shadow:0 0 0 4px rgba(122,184,146,0.18), 0 0 14px rgba(122,184,146,0.35); transform:scale(1.18); }
   .tl-node.active .tl-dot-inner { background:var(--dark); transform:scale(0.7); }
-
-  /* Featured star node (Fall 2024) */
-  .tl-node.featured .tl-dot {
-    border-color:rgba(122,184,146,0.6);
-  }
-  .tl-node.featured .tl-dot-inner {
-    background:rgba(122,184,146,0.6);
-  }
-  .tl-node.featured.active .tl-dot {
-    box-shadow:0 0 0 4px rgba(122,184,146,0.22), 0 0 20px rgba(122,184,146,0.5);
-  }
-
-  .tl-season {
-    font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px;
-    text-transform:uppercase; color:rgba(255,255,255,0.45);
-    margin-top:10px; text-align:center; line-height:1.4;
-    transition:color 0.2s;
-  }
-  .tl-node:hover .tl-season,
-  .tl-node.active .tl-season { color:var(--accent); }
-
-  .tl-date {
-    font-family:'IBM Plex Mono',monospace; font-size:9px;
-    color:rgba(255,255,255,0.25); margin-top:3px; text-align:center;
-    transition:color 0.2s;
-  }
+  .tl-node.featured .tl-dot { border-color:rgba(122,184,146,0.6); }
+  .tl-node.featured .tl-dot-inner { background:rgba(122,184,146,0.6); }
+  .tl-season { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-top:10px; text-align:center; line-height:1.4; transition:color 0.2s; }
+  .tl-node:hover .tl-season, .tl-node.active .tl-season { color:var(--accent); }
+  .tl-date { font-family:'IBM Plex Mono',monospace; font-size:9px; color:rgba(255,255,255,0.25); margin-top:3px; text-align:center; transition:color 0.2s; }
   .tl-node.active .tl-date { color:rgba(255,255,255,0.55); }
-
-  .tl-click-hint {
-    font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:1px;
-    text-transform:uppercase; color:rgba(122,184,146,0.5);
-    margin-top:5px; text-align:center;
-    transition:color 0.2s;
-  }
+  .tl-click-hint { font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:1px; text-transform:uppercase; color:rgba(122,184,146,0.5); margin-top:5px; text-align:center; transition:color 0.2s; }
   .tl-node:hover .tl-click-hint { color:var(--accent); }
   .tl-node.active .tl-click-hint { color:rgba(122,184,146,0.3); }
+  .tl-star { font-size:9px; color:var(--accent); margin-top:3px; text-align:center; font-family:'IBM Plex Mono',monospace; letter-spacing:1px; }
 
-  .tl-star {
-    font-size:9px; color:var(--accent); margin-top:3px; text-align:center;
-    font-family:'IBM Plex Mono',monospace; letter-spacing:1px;
-  }
-
-  /* ── Result panel ── */
-  .result-panel {
-    border-top:1px solid var(--border-neutral);
-    margin:0 -28px;
-    overflow:hidden;
-    max-height:0;
-    transition:max-height 0.45s cubic-bezier(0.4,0,0.2,1);
-  }
-  .result-panel.open { max-height:780px; }
-
-  .result-panel-inner {
-    padding:0 28px 28px;
-  }
-
-  /* Panel header bar */
-  .rp-header {
-    display:flex; align-items:center; justify-content:space-between;
-    padding:16px 0 14px; flex-wrap:wrap; gap:10px;
-  }
+  /* Result panel */
+  .result-panel { border-top:1px solid var(--border-neutral); margin:0 -28px; overflow:hidden; max-height:0; transition:max-height 0.45s cubic-bezier(0.4,0,0.2,1); }
+  .result-panel.open { max-height:900px; }
+  .result-panel-inner { padding:0 28px 28px; }
+  .rp-header { display:flex; align-items:center; justify-content:space-between; padding:16px 0 14px; flex-wrap:wrap; gap:10px; }
   .rp-title-group { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-  .rp-badge {
-    font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px;
-    text-transform:uppercase; padding:3px 10px; border-radius:4px;
-    background:rgba(122,184,146,0.15); color:var(--accent); border:1px solid var(--border);
-  }
-  .rp-badge.featured-badge {
-    background:var(--accent); color:var(--dark); border-color:var(--accent);
-  }
-  .rp-title {
-    font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--text);
-  }
-  .rp-acc {
-    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--accent);
-    background:rgba(122,184,146,0.08); border:1px solid var(--border);
-    border-radius:4px; padding:3px 10px;
-  }
-  .rp-acc.tbd {
-    color:rgba(255,255,255,0.25); background:rgba(255,255,255,0.03);
-    border-color:rgba(255,255,255,0.08);
-  }
-
-  /* Map iframe inside panel */
-  .rp-map-wrap {
-    border-radius:10px; overflow:hidden;
-    border:1px solid var(--border-neutral);
-    background:#0a1a0e;
-    position:relative;
-  }
-  .rp-map-wrap iframe {
-    width:100%; height:420px; border:none; display:block;
-  }
-  .rp-map-label {
-    position:absolute; bottom:10px; left:12px;
-    font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px;
-    text-transform:uppercase; color:rgba(255,255,255,0.5);
-    background:rgba(10,16,12,0.75); border-radius:4px; padding:3px 8px;
-    pointer-events:none;
-  }
-  .rp-close {
-    display:inline-flex; align-items:center; gap:6px;
-    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px;
-    color:rgba(255,255,255,0.3); cursor:pointer; background:none; border:none;
-    padding:4px 0; transition:color 0.2s; text-transform:uppercase;
-  }
+  .rp-badge { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; padding:3px 10px; border-radius:4px; background:rgba(122,184,146,0.15); color:var(--accent); border:1px solid var(--border); }
+  .rp-badge.featured-badge { background:var(--accent); color:var(--dark); border-color:var(--accent); }
+  .rp-title { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--text); }
+  .rp-acc { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--accent); background:rgba(122,184,146,0.08); border:1px solid var(--border); border-radius:4px; padding:3px 10px; }
+  .rp-acc.tbd { color:rgba(255,255,255,0.25); background:rgba(255,255,255,0.03); border-color:rgba(255,255,255,0.08); }
+  .rp-map-wrap { border-radius:10px; overflow:hidden; border:1px solid var(--border-neutral); background:#0a1a0e; position:relative; }
+  .rp-map-wrap iframe { width:100%; height:440px; border:none; display:block; }
+  .rp-map-label { position:absolute; bottom:10px; left:12px; font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,0.5); background:rgba(10,16,12,0.75); border-radius:4px; padding:3px 8px; pointer-events:none; }
+  .rp-close { display:inline-flex; align-items:center; gap:6px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:1px; color:rgba(255,255,255,0.3); cursor:pointer; background:none; border:none; padding:4px 0; transition:color 0.2s; text-transform:uppercase; }
   .rp-close:hover { color:rgba(255,255,255,0.7); }
 
-  /* ── Survey legend inside panel ── */
-  .rp-legend {
-    display:flex; flex-wrap:wrap; gap:8px 20px;
-    padding:16px 20px; margin-top:14px;
-    background:rgba(0,0,0,0.25);
-    border:1px solid var(--border-neutral);
-    border-radius:10px;
-  }
+  /* Legend */
+  .rp-legend { display:flex; flex-wrap:wrap; gap:8px 20px; padding:14px 18px; margin-top:14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-neutral); border-radius:10px; }
   .rp-legend:empty { display:none; }
-  .rp-legend-item {
-    display:flex; align-items:center; gap:8px;
-    font-family:'IBM Plex Mono',monospace; font-size:10px;
-    color:rgba(255,255,255,0.65); letter-spacing:0.5px;
-    white-space:nowrap;
-  }
-  .rp-legend-swatch {
-    width:14px; height:14px; border-radius:3px; flex-shrink:0;
-    border:1px solid rgba(255,255,255,0.15);
-  }
-  .rp-legend-title {
-    font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px;
-    text-transform:uppercase; color:rgba(255,255,255,0.3);
-    padding-bottom:4px; width:100%;
-    border-bottom:1px solid var(--border-neutral);
-    margin-bottom:4px;
-  }
-  .featured-acc-card {
-    background:var(--card-bg); border:1px solid var(--border);
-    border-radius:14px; overflow:hidden; margin-bottom:20px;
-  }
-  .featured-acc-head {
-    background:rgba(122,184,146,0.07); padding:16px 24px;
-    border-bottom:1px solid var(--border-neutral);
-    display:flex; align-items:center; gap:12px;
-  }
-  .featured-badge-standalone {
-    font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px;
-    text-transform:uppercase; color:var(--dark); background:var(--accent);
-    border-radius:4px; padding:3px 9px;
-  }
-  .featured-acc-title {
-    font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--text);
-  }
+  .rp-legend-title { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); width:100%; padding-bottom:8px; border-bottom:1px solid var(--border-neutral); margin-bottom:2px; }
+  .rp-legend-item { display:flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:10px; color:rgba(255,255,255,0.65); letter-spacing:0.5px; white-space:nowrap; }
+  .rp-legend-swatch { width:14px; height:14px; border-radius:3px; flex-shrink:0; border:1px solid rgba(255,255,255,0.15); }
+
+  /* Featured accuracy card */
+  .featured-acc-card { background:var(--card-bg); border:1px solid var(--border); border-radius:14px; overflow:hidden; margin-bottom:20px; }
+  .featured-acc-head { background:rgba(122,184,146,0.07); padding:16px 24px; border-bottom:1px solid var(--border-neutral); display:flex; align-items:center; gap:12px; }
+  .featured-badge-standalone { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--dark); background:var(--accent); border-radius:4px; padding:3px 9px; }
+  .featured-acc-title { font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:var(--text); }
   .featured-acc-body { padding:20px 24px; }
 
   /* placeholder */
@@ -566,11 +407,10 @@
 
     <div class="info-card">
       <h3>Overview</h3>
-      <p>Since 2022, continuous fine-scale drone monitoring of Roseau cane habitat has been conducted at the Pass-A-Loutre site in the lower Mississippi River Delta (MRD), with surveys each summer and fall season. The goal is mid-term resilience analysis — quantifying habitat changes in response to disturbance events including the 2021 freeze, hurricane impacts, and the extreme drought of 2023. The same DJI Matrice 600 Pro platform with MicaSense RedEdge-MX dual camera system, flight settings, and U-Net deep learning classification (8 land cover classes) are applied consistently across all surveys to ensure full temporal comparability.</p>
-      <p>Seven classified surveys are now available spanning Fall 2022 through Fall 2025. The October 2024 survey achieved the highest documented accuracy at 92% overall accuracy (κ = 0.89), validated via full confusion matrix analysis. Select any survey date on the timeline below to view its classification result.</p>
+      <p>Since 2022, continuous fine-scale drone monitoring of Roseau cane habitat has been conducted at the Pass-A-Loutre site in the lower Mississippi River Delta (MRD), with surveys each summer and fall season. The goal is mid-term resilience analysis — quantifying habitat changes in response to disturbance events including the 2021 freeze, hurricane impacts, and the extreme drought of 2023. The same DJI Matrice 600 Pro platform with MicaSense RedEdge-MX dual camera system, flight settings, and U-Net deep learning classification are applied consistently across all surveys to ensure full temporal comparability.</p>
+      <p>Seven classified surveys are now available spanning Fall 2022 through Fall 2025. The October 2024 survey achieved the highest documented accuracy at 92% overall accuracy (κ = 0.89). Select any survey date on the timeline below to view its classification result and land cover legend.</p>
     </div>
 
-    <!-- Key stats -->
     <div class="grid-3" style="margin-bottom:24px;">
       <div class="stat-block">
         <div class="sb-val">7</div>
@@ -580,49 +420,43 @@
       <div class="stat-block">
         <div class="sb-val">92% OA</div>
         <div class="sb-label">Best Accuracy (Oct 2024)</div>
-        <div class="sb-desc">U-Net 8-class classification. Full confusion matrix with per-class user and producer accuracies documented.</div>
+        <div class="sb-desc">U-Net classification. Full confusion matrix with per-class user and producer accuracies documented.</div>
       </div>
       <div class="stat-block">
         <div class="sb-val">κ = 0.89</div>
         <div class="sb-label">Kappa (Oct 2024)</div>
-        <div class="sb-desc">High inter-rater agreement confirms the reliability of the Oct 2024 map for change analysis benchmarking.</div>
+        <div class="sb-desc">High inter-rater agreement confirms reliability of Oct 2024 map for change analysis benchmarking.</div>
       </div>
     </div>
 
-    <!-- ── INTERACTIVE TIMELINE + RESULT PANEL ── -->
+    <!-- INTERACTIVE TIMELINE -->
     <div class="tl-wrapper">
       <h3>Survey Results — Pass-A-Loutre, Lower MRD <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:400;color:rgba(255,255,255,0.3);margin-left:10px;">Select a date to view map</span></h3>
-
       <div class="tl-rail" id="tlRail">
-
         <div class="tl-node" data-idx="0" onclick="tlSelect(0)">
           <div class="tl-dot"><div class="tl-dot-inner"></div></div>
           <div class="tl-season">Fall 2022</div>
           <div class="tl-date">2022-12-07</div>
           <div class="tl-click-hint">View map</div>
         </div>
-
         <div class="tl-node" data-idx="1" onclick="tlSelect(1)">
           <div class="tl-dot"><div class="tl-dot-inner"></div></div>
           <div class="tl-season">Summer 2023</div>
           <div class="tl-date">2023-06-07</div>
           <div class="tl-click-hint">View map</div>
         </div>
-
         <div class="tl-node" data-idx="2" onclick="tlSelect(2)">
           <div class="tl-dot"><div class="tl-dot-inner"></div></div>
           <div class="tl-season">Fall 2023</div>
           <div class="tl-date">2023-10-09</div>
           <div class="tl-click-hint">View map</div>
         </div>
-
         <div class="tl-node" data-idx="3" onclick="tlSelect(3)">
           <div class="tl-dot"><div class="tl-dot-inner"></div></div>
           <div class="tl-season">Summer 2024</div>
           <div class="tl-date">2024-06-07</div>
           <div class="tl-click-hint">View map</div>
         </div>
-
         <div class="tl-node featured" data-idx="4" onclick="tlSelect(4)">
           <div class="tl-dot"><div class="tl-dot-inner"></div></div>
           <div class="tl-season">Fall 2024</div>
@@ -630,24 +464,21 @@
           <div class="tl-click-hint">View map</div>
           <div class="tl-star">★ Featured</div>
         </div>
-
         <div class="tl-node" data-idx="5" onclick="tlSelect(5)">
           <div class="tl-dot"><div class="tl-dot-inner"></div></div>
           <div class="tl-season">Summer 2025</div>
           <div class="tl-date">2025-06-03</div>
           <div class="tl-click-hint">View map</div>
         </div>
-
         <div class="tl-node" data-idx="6" onclick="tlSelect(6)">
           <div class="tl-dot"><div class="tl-dot-inner"></div></div>
           <div class="tl-season">Fall 2025</div>
           <div class="tl-date">2025-10-21</div>
           <div class="tl-click-hint">View map</div>
         </div>
+      </div>
 
-      </div><!-- /tl-rail -->
-
-      <!-- Sliding result panel -->
+      <!-- Result panel -->
       <div class="result-panel" id="resultPanel">
         <div class="result-panel-inner">
           <div class="rp-header">
@@ -661,27 +492,22 @@
             </div>
           </div>
           <div class="rp-map-wrap">
-            <!-- iframe src is set by JS when a node is clicked -->
             <iframe id="rpIframe" src="about:blank" allowfullscreen title="Survey classification map"></iframe>
             <div class="rp-map-label" id="rpMapLabel"></div>
           </div>
-          <!-- Legend built dynamically per survey -->
           <div class="rp-legend" id="rpLegend"></div>
         </div>
       </div>
-
     </div><!-- /tl-wrapper -->
 
-    <!-- Featured Accuracy Table — Oct 2024 -->
+    <!-- Featured Accuracy Table -->
     <div class="featured-acc-card">
       <div class="featured-acc-head">
         <span class="featured-badge-standalone">★ Featured Accuracy</span>
         <span class="featured-acc-title">Accuracy Assessment — Fall 2024 Survey (2024-10-28)</span>
       </div>
       <div class="featured-acc-body">
-        <p style="font-size:13px;line-height:1.75;color:var(--muted);margin-bottom:16px;">
-          A comprehensive accuracy assessment was conducted for the October 2024 classification using 314 reference points across all 8 land cover classes. The U-Net model achieved an overall accuracy of 92% (κ = 0.89), confirming the high reliability of this habitat map for change detection benchmarking. Accuracy assessments for all remaining surveys will be added as they are completed.
-        </p>
+        <p style="font-size:13px;line-height:1.75;color:var(--muted);margin-bottom:16px;">A comprehensive accuracy assessment was conducted for the October 2024 classification using 314 reference points across all 8 land cover classes. The U-Net model achieved an overall accuracy of 92% (κ = 0.89). Accuracy assessments for remaining surveys will be added as they are completed.</p>
         <table class="data-table">
           <thead>
             <tr><th>Class</th><th>Ref. Points</th><th>Correctly Classified</th><th>User Accuracy</th><th>Producer Accuracy</th></tr>
@@ -708,170 +534,82 @@
   </div><!-- /D3 -->
 
   <script>
-  // ── Survey data — replace each arcgisUrl with your real ArcGIS Online embed URL ──
   var surveys = [
-    {
-      idx: 0,
-      season: 'Fall 2022',
-      date: '2022-12-07',
-      acc: 'Accuracy TBD',
-      featured: false,
-      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=d637391b91d44972b221e3b4f6b7f1f3&embed=true'
-    },
-    {
-      idx: 1,
-      season: 'Summer 2023',
-      date: '2023-06-07',
-      acc: 'Accuracy TBD',
-      featured: false,
-      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=f2bccc3308bf4590a543554d06f042ba&embed=true'
-    },
-    {
-      idx: 2,
-      season: 'Fall 2023',
-      date: '2023-10-09',
-      acc: 'Accuracy TBD',
-      featured: false,
-      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=44db2defce66479ab7b2bd605523af48&embed=true'
-    },
-    {
-      idx: 3,
-      season: 'Summer 2024',
-      date: '2024-06-07',
-      acc: 'Accuracy TBD',
-      featured: false,
-      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=090fc7c541ea4476b105318d820a55dc&embed=true'
-    },
-    {
-      idx: 4,
-      season: 'Fall 2024',
-      date: '2024-10-28',
-      acc: 'OA 92%  ·  κ = 0.89',
-      featured: true,
-      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=cc8df8c01ee2469d878fb1f5439fb428&embed=true'
-    },
-    {
-      idx: 5,
-      season: 'Summer 2025',
-      date: '2025-06-03',
-      acc: 'Accuracy TBD',
-      featured: false,
-      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=43a6c44294cf4224825caf86ec4a495a&embed=true'
-    },
-    {
-      idx: 6,
-      season: 'Fall 2025',
-      date: '2025-10-21',
-      acc: 'Accuracy TBD',
-      featured: false,
-      arcgisUrl: 'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=8645879e06e949a287abdbf047f7017f&embed=true'
-    }
+    { idx:0, season:'Fall 2022',    date:'2022-12-07', acc:'Accuracy TBD',      featured:false, legend:'8', arcgisUrl:'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=d637391b91d44972b221e3b4f6b7f1f3&embed=true' },
+    { idx:1, season:'Summer 2023',  date:'2023-06-07', acc:'Accuracy TBD',      featured:false, legend:'7', arcgisUrl:'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=f2bccc3308bf4590a543554d06f042ba&embed=true' },
+    { idx:2, season:'Fall 2023',    date:'2023-10-09', acc:'Accuracy TBD',      featured:false, legend:'7', arcgisUrl:'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=44db2defce66479ab7b2bd605523af48&embed=true' },
+    { idx:3, season:'Summer 2024',  date:'2024-06-07', acc:'Accuracy TBD',      featured:false, legend:'8', arcgisUrl:'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=090fc7c541ea4476b105318d820a55dc&embed=true' },
+    { idx:4, season:'Fall 2024',    date:'2024-10-28', acc:'OA 92%  ·  κ = 0.89', featured:true, legend:'8', arcgisUrl:'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=cc8df8c01ee2469d878fb1f5439fb428&embed=true' },
+    { idx:5, season:'Summer 2025',  date:'2025-06-03', acc:'Accuracy TBD',      featured:false, legend:'8', arcgisUrl:'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=43a6c44294cf4224825caf86ec4a495a&embed=true' },
+    { idx:6, season:'Fall 2025',    date:'2025-10-21', acc:'Accuracy TBD',      featured:false, legend:'8', arcgisUrl:'https://lsu-its.maps.arcgis.com/apps/instant/basic/index.html?appid=&webmap=8645879e06e949a287abdbf047f7017f&embed=true' }
   ];
 
-  // ── Legend definitions — exact RGB from .lyrx files ──
   var legend8 = [
-    { label:'Dead Vegetation',    color:'rgb(115,38,0)'   },
-    { label:'Delta Phragmites',   color:'rgb(38,115,0)'   },
-    { label:'European Phragmites',color:'rgb(152,230,0)'  },
-    { label:'Marsh Grass',        color:'rgb(255,255,0)'  },
-    { label:'Mud',                color:'rgb(255,235,175)'},
-    { label:'Water',              color:'rgb(122,182,245)'},
-    { label:'Shadow',             color:'rgb(0,0,0)'      },
-    { label:'Shrub',              color:'rgb(137,137,68)' }
+    { label:'Dead Vegetation',     color:'rgb(115,38,0)'    },
+    { label:'Delta Phragmites',    color:'rgb(38,115,0)'    },
+    { label:'European Phragmites', color:'rgb(152,230,0)'   },
+    { label:'Marsh Grass',         color:'rgb(255,255,0)'   },
+    { label:'Mud',                 color:'rgb(255,235,175)' },
+    { label:'Water',               color:'rgb(122,182,245)' },
+    { label:'Shadow',              color:'rgb(0,0,0)'       },
+    { label:'Shrub',               color:'rgb(137,137,68)'  }
   ];
   var legend7 = [
-    { label:'Dead Vegetation',    color:'rgb(115,38,0)'   },
-    { label:'Delta Phragmites',   color:'rgb(38,115,0)'   },
-    { label:'European Phragmites',color:'rgb(152,230,0)'  },
-    { label:'Marsh Grass',        color:'rgb(255,255,0)'  },
-    { label:'Water',              color:'rgb(122,182,245)'},
-    { label:'Shadow',             color:'rgb(0,0,0)'      },
-    { label:'Shrub',              color:'rgb(137,137,68)' }
+    { label:'Dead Vegetation',     color:'rgb(115,38,0)'    },
+    { label:'Delta Phragmites',    color:'rgb(38,115,0)'    },
+    { label:'European Phragmites', color:'rgb(152,230,0)'   },
+    { label:'Marsh Grass',         color:'rgb(255,255,0)'   },
+    { label:'Water',               color:'rgb(122,182,245)' },
+    { label:'Shadow',              color:'rgb(0,0,0)'       },
+    { label:'Shrub',               color:'rgb(137,137,68)'  }
   ];
 
-  // assign legend per survey index
-  var surveyLegends = [
-    legend8, // Fall 2022
-    legend7, // Summer 2023
-    legend7, // Fall 2023
-    legend8, // Summer 2024
-    legend8, // Fall 2024
-    legend8, // Summer 2025
-    legend8  // Fall 2025
-  ];
-
-  function buildLegend(idx) {
-    var items = surveyLegends[idx];
-    var el = document.getElementById('rpLegend');
-    var html = '<div class="rp-legend-title">Land Cover Classes</div>';
-    items.forEach(function(item) {
-      html += '<div class="rp-legend-item">'
-        + '<div class="rp-legend-swatch" style="background:' + item.color + ';'
-        + (item.color === 'rgb(0,0,0)' ? 'border-color:rgba(255,255,255,0.3);' : '')
-        + '"></div>'
-        + item.label
-        + '</div>';
-    });
-    el.innerHTML = html;
-  }
+  var activeIdx = -1;
 
   function tlSelect(idx) {
     var nodes = document.querySelectorAll('.tl-node');
     var panel = document.getElementById('resultPanel');
     var survey = surveys[idx];
-
-    // If clicking the already-active node, close it
-    if (activeIdx === idx) {
-      tlClose();
-      return;
-    }
-
-    // Update active node styling
+    if (activeIdx === idx) { tlClose(); return; }
     nodes.forEach(function(n, i) {
-      n.classList.remove('active', 'visited');
+      n.classList.remove('active','visited');
       if (i < idx) n.classList.add('visited');
     });
     nodes[idx].classList.add('active');
     activeIdx = idx;
-
-    // Populate panel content
     var badge = document.getElementById('rpBadge');
     badge.textContent = survey.season;
     badge.className = survey.featured ? 'rp-badge featured-badge' : 'rp-badge';
-
-    document.getElementById('rpTitle').textContent =
-      'Classification Map — ' + survey.date;
-
+    document.getElementById('rpTitle').textContent = 'Classification Map — ' + survey.date;
     var accEl = document.getElementById('rpAcc');
     accEl.textContent = survey.acc;
     accEl.className = survey.acc === 'Accuracy TBD' ? 'rp-acc tbd' : 'rp-acc';
-
-    document.getElementById('rpMapLabel').textContent =
-      survey.season + ' · ' + survey.date + ' · U-Net 8-class · Pass-A-Loutre';
-
-    // Set iframe src (loads the map)
+    document.getElementById('rpMapLabel').textContent = survey.season + ' · ' + survey.date + ' · U-Net · Pass-A-Loutre';
     document.getElementById('rpIframe').src = survey.arcgisUrl;
-
-    // Build legend for this survey
     buildLegend(idx);
-
-    // Open panel
     panel.classList.add('open');
-
-    // Smooth scroll so panel is visible
-    setTimeout(function() {
-      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, 60);
+    setTimeout(function() { panel.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 60);
   }
 
   function tlClose() {
-    var nodes = document.querySelectorAll('.tl-node');
-    nodes.forEach(function(n) { n.classList.remove('active', 'visited'); });
+    document.querySelectorAll('.tl-node').forEach(function(n) { n.classList.remove('active','visited'); });
     document.getElementById('resultPanel').classList.remove('open');
-    // Blank the iframe to stop any tile loading
     document.getElementById('rpIframe').src = 'about:blank';
     document.getElementById('rpLegend').innerHTML = '';
     activeIdx = -1;
+  }
+
+  function buildLegend(idx) {
+    var items = surveys[idx].legend === '7' ? legend7 : legend8;
+    var el = document.getElementById('rpLegend');
+    var html = '<div class="rp-legend-title">Land Cover Classes — ' + surveys[idx].season + '</div>';
+    items.forEach(function(item) {
+      html += '<div class="rp-legend-item">'
+        + '<div class="rp-legend-swatch" style="background:' + item.color + ';'
+        + (item.color==='rgb(0,0,0)' ? 'border-color:rgba(255,255,255,0.3);' : '') + '"></div>'
+        + item.label + '</div>';
+    });
+    el.innerHTML = html;
   }
   </script>
 
