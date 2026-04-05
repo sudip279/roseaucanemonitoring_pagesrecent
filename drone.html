@@ -310,7 +310,26 @@
   }
   .rp-close:hover { color:rgba(255,255,255,0.7); }
 
-  /* ── Featured accuracy card ── */
+  /* ── Survey legend inside panel ── */
+  .rp-legend {
+    display:flex; flex-wrap:wrap; gap:6px 16px;
+    padding:12px 0 4px; border-top:1px solid var(--border-neutral); margin-top:14px;
+  }
+  .rp-legend-item {
+    display:flex; align-items:center; gap:7px;
+    font-family:'IBM Plex Mono',monospace; font-size:10px;
+    color:rgba(255,255,255,0.55); letter-spacing:0.5px;
+    white-space:nowrap;
+  }
+  .rp-legend-swatch {
+    width:13px; height:13px; border-radius:3px; flex-shrink:0;
+    border:1px solid rgba(255,255,255,0.12);
+  }
+  .rp-legend-title {
+    font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px;
+    text-transform:uppercase; color:rgba(255,255,255,0.25);
+    padding-bottom:6px; width:100%;
+  }
   .featured-acc-card {
     background:var(--card-bg); border:1px solid var(--border);
     border-radius:14px; overflow:hidden; margin-bottom:20px;
@@ -640,6 +659,8 @@
             <iframe id="rpIframe" src="about:blank" allowfullscreen title="Survey classification map"></iframe>
             <div class="rp-map-label" id="rpMapLabel"></div>
           </div>
+          <!-- Legend built dynamically per survey -->
+          <div class="rp-legend" id="rpLegend"></div>
         </div>
       </div>
 
@@ -741,7 +762,52 @@
     }
   ];
 
-  var activeIdx = -1;
+  // ── Legend definitions — exact RGB from .lyrx files ──
+  var legend8 = [
+    { label:'Dead Vegetation',    color:'rgb(115,38,0)'   },
+    { label:'Delta Phragmites',   color:'rgb(38,115,0)'   },
+    { label:'European Phragmites',color:'rgb(152,230,0)'  },
+    { label:'Marsh Grass',        color:'rgb(255,255,0)'  },
+    { label:'Mud',                color:'rgb(255,235,175)'},
+    { label:'Water',              color:'rgb(122,182,245)'},
+    { label:'Shadow',             color:'rgb(0,0,0)'      },
+    { label:'Shrub',              color:'rgb(137,137,68)' }
+  ];
+  var legend7 = [
+    { label:'Dead Vegetation',    color:'rgb(115,38,0)'   },
+    { label:'Delta Phragmites',   color:'rgb(38,115,0)'   },
+    { label:'European Phragmites',color:'rgb(152,230,0)'  },
+    { label:'Marsh Grass',        color:'rgb(255,255,0)'  },
+    { label:'Water',              color:'rgb(122,182,245)'},
+    { label:'Shadow',             color:'rgb(0,0,0)'      },
+    { label:'Shrub',              color:'rgb(137,137,68)' }
+  ];
+
+  // assign legend per survey index
+  var surveyLegends = [
+    legend8, // Fall 2022
+    legend7, // Summer 2023
+    legend7, // Fall 2023
+    legend8, // Summer 2024
+    legend8, // Fall 2024
+    legend8, // Summer 2025
+    legend8  // Fall 2025
+  ];
+
+  function buildLegend(idx) {
+    var items = surveyLegends[idx];
+    var el = document.getElementById('rpLegend');
+    var html = '<div class="rp-legend-title">Land Cover Classes</div>';
+    items.forEach(function(item) {
+      html += '<div class="rp-legend-item">'
+        + '<div class="rp-legend-swatch" style="background:' + item.color + ';'
+        + (item.color === 'rgb(0,0,0)' ? 'border-color:rgba(255,255,255,0.3);' : '')
+        + '"></div>'
+        + item.label
+        + '</div>';
+    });
+    el.innerHTML = html;
+  }
 
   function tlSelect(idx) {
     var nodes = document.querySelectorAll('.tl-node');
@@ -780,6 +846,9 @@
     // Set iframe src (loads the map)
     document.getElementById('rpIframe').src = survey.arcgisUrl;
 
+    // Build legend for this survey
+    buildLegend(idx);
+
     // Open panel
     panel.classList.add('open');
 
@@ -795,6 +864,7 @@
     document.getElementById('resultPanel').classList.remove('open');
     // Blank the iframe to stop any tile loading
     document.getElementById('rpIframe').src = 'about:blank';
+    document.getElementById('rpLegend').innerHTML = '';
     activeIdx = -1;
   }
   </script>
