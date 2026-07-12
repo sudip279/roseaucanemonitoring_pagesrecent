@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drone Monitoring — LSU TiGers Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Hanken+Grotesk:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════════════
+     DESIGN SYSTEM — Refined Natural Light Theme
+     Warm whites · Forest greens · Warm neutrals
+     Depth through layering, not darkness
+  ═══════════════════════════════════════════════ */
+  :root {
+    /* Surface layers — warm white to soft sage */
+    --bg:          #f8f7f4;          /* warm off-white page */
+    --surface-0:   #ffffff;          /* pure white cards */
+    --surface-1:   #f2f5f1;          /* very light sage cards */
+    --surface-2:   #e8efe9;          /* soft sage — hover/active states */
+
+    /* Accent — forest green palette */
+    --accent:      #2d7a4f;          /* primary forest green */
+    --accent-mid:  #4a9468;          /* mid-tone green — hover */
+    --accent-soft: rgba(45,122,79,0.10); /* tinted fills */
+    --accent-glow: rgba(45,122,79,0.18); /* stronger tints */
+
+    /* Amber / warm highlight */
+    --amber:       #c07528;
+    --amber-soft:  rgba(192,117,40,0.12);
+
+    /* Typography */
+    --text:        #1c2e24;          /* near-black, green-tinted */
+    --text-mid:    #3d5244;          /* body copy */
+    --text-muted:  #6b8273;          /* secondary labels */
+    --text-faint:  #9db3a4;          /* tertiary / placeholders */
+
+    /* Borders */
+    --border:      rgba(45,122,79,0.22);
+    --border-soft: rgba(45,122,79,0.13);
+    --border-faint:rgba(45,122,79,0.08);
+
+    /* Shadows */
+    --shadow-sm:   0 1px 3px rgba(30,50,36,0.07), 0 1px 2px rgba(30,50,36,0.05);
+    --shadow-md:   0 4px 12px rgba(30,50,36,0.09), 0 2px 4px rgba(30,50,36,0.06);
+    --shadow-lg:   0 8px 28px rgba(30,50,36,0.11), 0 3px 8px rgba(30,50,36,0.07);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family:'Hanken Grotesk', sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ── NAV ── */
+  nav {
+    background:var(--surface-0);
+    padding:16px 64px;
+    border-bottom:1px solid var(--border-soft);
+    display:flex; align-items:center; gap:16px;
+    box-shadow:var(--shadow-sm);
+    position:sticky; top:0; z-index:100;
+  }
+  .nav-back {
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:2px;
+    color:var(--accent); text-decoration:none;
+    display:flex; align-items:center; gap:8px;
+    transition:color 0.2s;
+  }
+  .nav-back:hover { color:var(--text); }
+  .nav-sep { color:var(--text-faint); }
+  .nav-current {
+    font-family:'IBM Plex Mono', monospace; font-size:11px;
+    color:var(--text-muted); letter-spacing:1px;
+  }
+
+  /* ── JUMP NAV ── */
+  .jump-nav {
+    background:var(--surface-0);
+    border-bottom:1px solid var(--border-soft);
+    padding:12px 64px;
+    display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+  }
+  .jump-label {
+    font-family:'IBM Plex Mono', monospace; font-size:10px;
+    letter-spacing:2px; text-transform:uppercase;
+    color:var(--text-faint); margin-right:8px;
+  }
+  .jump-btn {
+    font-family:'IBM Plex Mono', monospace; font-size:11px;
+    background:var(--surface-1); border:1px solid var(--border-soft);
+    border-radius:6px; padding:5px 14px; color:var(--accent);
+    text-decoration:none; letter-spacing:0.8px;
+    transition:background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+    box-shadow:var(--shadow-sm);
+  }
+  .jump-btn:hover {
+    background:var(--surface-2); border-color:var(--border);
+    box-shadow:var(--shadow-md); transform:translateY(-1px);
+  }
+  .jump-btn.placeholder {
+    color:var(--text-faint); background:var(--bg);
+    border-color:var(--border-faint); pointer-events:none;
+    box-shadow:none;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background:linear-gradient(145deg, #e4efe7 0%, #eef5ef 45%, #f2f7f3 100%);
+    padding:72px 64px 64px;
+    border-bottom:1px solid var(--border-soft);
+    position:relative; overflow:hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse at 85% 40%, rgba(45,122,79,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse at 15% 80%, rgba(45,122,79,0.06) 0%, transparent 45%);
+  }
+  .hero::after {
+    content:''; position:absolute;
+    top:-60px; right:-60px;
+    width:320px; height:320px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(45,122,79,0.08) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .hero-inner { max-width:1200px; margin:0 auto; position:relative; z-index:1; }
+  .hero-kicker {
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:3px;
+    text-transform:uppercase; color:var(--accent); margin-bottom:18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .hero-kicker::before { content:''; width:28px; height:2px; background:var(--accent); border-radius:1px; display:block; }
+  h1 {
+    font-family:'Playfair Display', serif;
+    font-size:clamp(30px,4vw,50px); font-weight:700; line-height:1.18;
+    color:var(--text); max-width:820px; margin-bottom:20px;
+  }
+  h1 em { font-style:italic; color:var(--accent); }
+  .hero-desc {
+    font-size:15.5px; line-height:1.82; color:var(--text-mid);
+    max-width:720px; margin-bottom:40px; font-weight:400;
+  }
+  .hero-stats { display:flex; gap:0; flex-wrap:wrap; }
+  .hstat {
+    border-left:2px solid var(--border);
+    padding:2px 28px 2px 16px;
+  }
+  .hstat:first-child { border-left-color:var(--accent); }
+  .hstat-val {
+    font-family:'IBM Plex Mono', monospace; font-size:20px;
+    font-weight:500; color:var(--accent);
+  }
+  .hstat-label {
+    font-family:'IBM Plex Mono', monospace; font-size:9.5px;
+    letter-spacing:1.2px; text-transform:uppercase; color:var(--text-muted); margin-top:3px;
+  }
+
+  /* ── CONTENT WRAP ── */
+  .content-wrap { max-width:1200px; margin:0 auto; padding:64px 64px 80px; }
+
+  /* ── SUB-SECTIONS ── */
+  .sub-section {
+    margin-top:72px; padding-top:52px;
+    border-top:1px solid var(--border-faint);
+    scroll-margin-top:80px;
+  }
+  .sub-section:first-child { margin-top:0; padding-top:0; border-top:none; }
+
+  .sec-head { display:flex; align-items:center; gap:14px; margin-bottom:36px; }
+  .sec-num {
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:2px;
+    color:var(--accent); background:var(--accent-soft); border:1px solid var(--border-soft);
+    border-radius:5px; padding:4px 12px; white-space:nowrap;
+  }
+  h2 { font-family:'Playfair Display', serif; font-size:24px; font-weight:700; color:var(--text); }
+  .sec-rule { flex:1; height:1px; background:linear-gradient(to right, var(--border-soft), transparent); }
+
+  /* ── EXTERNAL LINK CARD ── */
+  .ext-link-card {
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--surface-0); border:1px solid var(--border-soft);
+    border-radius:12px; padding:18px 24px; margin-bottom:24px;
+    text-decoration:none; color:inherit;
+    transition:background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.18s;
+    gap:16px; box-shadow:var(--shadow-sm);
+  }
+  .ext-link-card:hover {
+    background:var(--surface-1); border-color:var(--border);
+    box-shadow:var(--shadow-md); transform:translateY(-2px);
+  }
+  .elc-label {
+    font-family:'IBM Plex Mono', monospace; font-size:9.5px;
+    letter-spacing:2px; text-transform:uppercase; color:var(--text-faint); margin-bottom:5px;
+  }
+  .elc-title { font-size:14px; font-weight:500; color:var(--text); }
+  .elc-arrow {
+    color:var(--accent); font-size:20px; flex-shrink:0;
+    background:var(--accent-soft); width:36px; height:36px;
+    border-radius:8px; display:flex; align-items:center; justify-content:center;
+    transition:background 0.2s;
+  }
+  .ext-link-card:hover .elc-arrow { background:var(--accent-glow); }
+
+  /* ── INFO CARD ── */
+  .info-card {
+    background:var(--surface-0); border:1px solid var(--border-soft);
+    border-radius:14px; padding:28px 32px; margin-bottom:20px;
+    box-shadow:var(--shadow-sm);
+  }
+  .info-card h3 {
+    font-family:'Playfair Display', serif; font-size:17px; font-weight:700;
+    color:var(--text); margin-bottom:12px;
+  }
+  .info-card p { font-size:14px; line-height:1.82; color:var(--text-mid); }
+  .info-card p+p { margin-top:11px; }
+  .info-card p strong { color:var(--text); }
+
+  /* ── GRIDS ── */
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+
+  /* ── STAT BLOCKS ── */
+  .stat-block {
+    background:var(--surface-0); border:1px solid var(--border-soft);
+    border-radius:14px; padding:24px 26px;
+    box-shadow:var(--shadow-sm);
+    transition:box-shadow 0.2s, transform 0.2s;
+  }
+  .stat-block:hover { box-shadow:var(--shadow-md); transform:translateY(-2px); }
+  .sb-val {
+    font-family:'IBM Plex Mono', monospace; font-size:27px; font-weight:500;
+    color:var(--accent); line-height:1; margin-bottom:7px;
+  }
+  .sb-label {
+    font-family:'IBM Plex Mono', monospace; font-size:9.5px;
+    letter-spacing:1.2px; text-transform:uppercase; color:var(--text-muted);
+  }
+  .sb-desc { font-size:13px; line-height:1.7; color:var(--text-mid); margin-top:10px; }
+
+  /* ── SITE CARDS ── */
+  .sites-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin-bottom:24px; }
+  .site-card {
+    background:var(--surface-0); border:1px solid var(--border-soft);
+    border-radius:14px; padding:22px 24px;
+    box-shadow:var(--shadow-sm);
+    transition:box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  }
+  .site-card:hover { box-shadow:var(--shadow-md); transform:translateY(-2px); border-color:var(--border); }
+  .site-num {
+    font-family:'IBM Plex Mono', monospace; font-size:9.5px;
+    letter-spacing:2px; color:var(--accent);
+    background:var(--accent-soft); display:inline-block;
+    border-radius:4px; padding:2px 8px; margin-bottom:10px;
+  }
+  .site-name { font-size:15px; font-weight:600; color:var(--text); margin-bottom:8px; }
+  .site-desc { font-size:13px; line-height:1.68; color:var(--text-mid); }
+
+  /* ── DATA TABLE ── */
+  .data-table { width:100%; border-collapse:collapse; font-size:13px; margin-top:16px; }
+  .data-table th {
+    font-family:'IBM Plex Mono', monospace; font-size:9.5px;
+    letter-spacing:1.2px; text-transform:uppercase; color:var(--text-muted);
+    text-align:left; padding:10px 16px;
+    border-bottom:2px solid var(--border-soft);
+    background:var(--surface-1);
+  }
+  .data-table th:first-child { border-radius:8px 0 0 0; }
+  .data-table th:last-child { border-radius:0 8px 0 0; }
+  .data-table td {
+    padding:10px 16px; border-bottom:1px solid var(--border-faint);
+    color:var(--text-mid);
+    transition:background 0.15s;
+  }
+  .data-table tr:hover td { background:var(--surface-1); }
+  .data-table tr:last-child td { border-bottom:none; }
+  .val-accent { color:var(--accent); font-family:'IBM Plex Mono', monospace; font-weight:500; }
+  .row-hl td { color:var(--text); font-weight:600; background:var(--accent-soft) !important; }
+
+  /* ── TAG STRIP ── */
+  .tag-strip { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+  .tag {
+    font-family:'IBM Plex Mono', monospace; font-size:10px;
+    border:1px solid var(--border-soft); border-radius:20px;
+    padding:4px 12px; color:var(--text-muted);
+    background:var(--surface-1);
+    transition:background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .tag:hover { background:var(--accent-soft); border-color:var(--border); color:var(--accent); }
+
+  /* ── TIMELINE ── */
+  .tl-wrapper {
+    background:var(--surface-0); border:1px solid var(--border-soft);
+    border-radius:16px; padding:28px 28px 0; margin-bottom:24px;
+    overflow:hidden; box-shadow:var(--shadow-sm);
+  }
+  .tl-wrapper h3 {
+    font-family:'Playfair Display', serif; font-size:17px; font-weight:700;
+    color:var(--text); margin-bottom:28px;
+  }
+  .tl-rail {
+    display:flex; align-items:flex-start; position:relative;
+    overflow-x:auto; padding-bottom:4px; gap:0;
+  }
+  .tl-rail::before {
+    content:''; position:absolute; top:17px; left:0; right:0;
+    height:2px; background:var(--border-soft); z-index:0;
+    border-radius:1px;
+  }
+  .tl-node {
+    display:flex; flex-direction:column; align-items:center;
+    flex:1; min-width:96px; cursor:pointer; position:relative;
+    z-index:1; padding-bottom:20px; -webkit-tap-highlight-color:transparent;
+  }
+  .tl-node.visited::before {
+    content:''; position:absolute; top:17px; left:0; width:50%;
+    height:2px; background:var(--accent); z-index:0;
+  }
+  .tl-node.visited::after {
+    content:''; position:absolute; top:17px; left:50%; width:50%;
+    height:2px; background:var(--accent); z-index:0;
+  }
+  .tl-node:last-child.visited::after { display:none; }
+  .tl-dot {
+    width:34px; height:34px; border-radius:50%;
+    border:2px solid var(--border-soft);
+    background:var(--surface-0);
+    display:flex; align-items:center; justify-content:center;
+    position:relative; z-index:2; flex-shrink:0;
+    transition:border-color 0.25s, background 0.25s, transform 0.2s, box-shadow 0.25s;
+    box-shadow:var(--shadow-sm);
+  }
+  .tl-dot-inner {
+    width:10px; height:10px; border-radius:50%;
+    background:rgba(45,122,79,0.35);
+    transition:background 0.25s, transform 0.2s;
+  }
+  .tl-node:hover .tl-dot { border-color:var(--accent); transform:scale(1.12); box-shadow:var(--shadow-md); }
+  .tl-node:hover .tl-dot-inner { background:var(--accent); }
+  .tl-node.active .tl-dot {
+    border-color:var(--accent); background:var(--accent);
+    box-shadow:0 0 0 5px var(--accent-glow), var(--shadow-md);
+    transform:scale(1.18);
+  }
+  .tl-node.active .tl-dot-inner { background:#ffffff; transform:scale(0.7); }
+  .tl-node.featured .tl-dot { border-color:var(--accent-mid); }
+  .tl-node.featured .tl-dot-inner { background:var(--accent-mid); }
+  .tl-season {
+    font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:1px;
+    text-transform:uppercase; color:var(--text-muted);
+    margin-top:10px; text-align:center; line-height:1.4; transition:color 0.2s;
+  }
+  .tl-node:hover .tl-season, .tl-node.active .tl-season { color:var(--accent); }
+  .tl-date {
+    font-family:'IBM Plex Mono', monospace; font-size:9px;
+    color:var(--text-faint); margin-top:3px; text-align:center; transition:color 0.2s;
+  }
+  .tl-node.active .tl-date { color:var(--text-mid); }
+  .tl-click-hint {
+    font-family:'IBM Plex Mono', monospace; font-size:8px; letter-spacing:1px;
+    text-transform:uppercase; color:rgba(45,122,79,0.5);
+    margin-top:5px; text-align:center; transition:color 0.2s;
+  }
+  .tl-node:hover .tl-click-hint { color:var(--accent); }
+  .tl-node.active .tl-click-hint { color:rgba(45,122,79,0.3); }
+  .tl-star {
+    font-size:9px; color:var(--accent); margin-top:3px;
+    text-align:center; font-family:'IBM Plex Mono', monospace; letter-spacing:1px;
+  }
+
+  /* ── RESULT PANEL ── */
+  .result-panel {
+    border-top:1px solid var(--border-soft); margin:0 -28px;
+    overflow:hidden; max-height:0;
+    transition:max-height 0.45s cubic-bezier(0.4,0,0.2,1);
+  }
+  .result-panel.open { max-height:900px; }
+  .result-panel-inner { padding:0 28px 28px; }
+  .rp-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 0 16px; flex-wrap:wrap; gap:10px;
+  }
+  .rp-title-group { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .rp-badge {
+    font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:2px;
+    text-transform:uppercase; padding:4px 11px; border-radius:5px;
+    background:var(--accent-soft); color:var(--accent); border:1px solid var(--border-soft);
+  }
+  .rp-badge.featured-badge { background:var(--accent); color:#ffffff; border-color:var(--accent); }
+  .rp-title { font-family:'Playfair Display', serif; font-size:15px; font-weight:700; color:var(--text); }
+  .rp-acc {
+    font-family:'IBM Plex Mono', monospace; font-size:11px;
+    color:var(--accent); background:var(--accent-soft);
+    border:1px solid var(--border-soft); border-radius:5px; padding:4px 11px;
+  }
+  .rp-acc.tbd { color:var(--text-faint); background:var(--surface-1); border-color:var(--border-faint); }
+  .rp-map-wrap {
+    border-radius:12px; overflow:hidden; border:1px solid var(--border-soft);
+    background:var(--surface-1); position:relative; box-shadow:var(--shadow-sm);
+  }
+  .rp-map-wrap iframe { width:100%; height:440px; border:none; display:block; }
+  .rp-map-label {
+    position:absolute; bottom:10px; left:12px;
+    font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:1px;
+    text-transform:uppercase; color:var(--text-mid);
+    background:rgba(248,247,244,0.92); border-radius:5px; padding:3px 9px;
+    pointer-events:none; border:1px solid var(--border-faint);
+    backdrop-filter:blur(4px);
+  }
+  .rp-close {
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:1px;
+    color:var(--text-muted); cursor:pointer; background:none; border:none;
+    padding:6px 12px; transition:color 0.2s, background 0.2s;
+    text-transform:uppercase; border-radius:6px;
+  }
+  .rp-close:hover { color:var(--text); background:var(--surface-1); }
+
+  /* ── LEGEND ── */
+  .rp-legend {
+    display:flex; flex-wrap:wrap; gap:8px 20px; padding:14px 18px;
+    margin-top:14px; background:var(--surface-1);
+    border:1px solid var(--border-soft); border-radius:10px;
+  }
+  .rp-legend:empty { display:none; }
+  .rp-legend-title {
+    font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:2px;
+    text-transform:uppercase; color:var(--text-muted); width:100%;
+    padding-bottom:8px; border-bottom:1px solid var(--border-soft); margin-bottom:2px;
+  }
+  .rp-legend-item {
+    display:flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono', monospace; font-size:10px;
+    color:var(--text-mid); letter-spacing:0.5px; white-space:nowrap;
+  }
+  .rp-legend-swatch {
+    width:14px; height:14px; border-radius:3px; flex-shrink:0;
+    border:1px solid rgba(0,0,0,0.12); box-shadow:0 1px 2px rgba(0,0,0,0.1);
+  }
+
+  /* ── FEATURED ACCURACY ── */
+  .featured-acc-card {
+    background:var(--surface-0); border:1px solid var(--border-soft);
+    border-radius:16px; overflow:hidden; margin-bottom:24px;
+    box-shadow:var(--shadow-sm);
+  }
+  .featured-acc-head {
+    background:linear-gradient(135deg, var(--accent-soft) 0%, rgba(45,122,79,0.05) 100%);
+    padding:18px 26px; border-bottom:1px solid var(--border-soft);
+    display:flex; align-items:center; gap:12px;
+  }
+  .featured-badge-standalone {
+    font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:2px;
+    text-transform:uppercase; color:#ffffff; background:var(--accent);
+    border-radius:5px; padding:4px 10px;
+    box-shadow:0 2px 6px rgba(45,122,79,0.3);
+  }
+  .featured-acc-title { font-family:'Playfair Display', serif; font-size:15px; font-weight:700; color:var(--text); }
+  .featured-acc-body { padding:22px 26px; }
+
+  /* ── PLACEHOLDER ── */
+  .placeholder-section {
+    border:2px dashed var(--border-soft);
+    border-radius:14px; padding:36px;
+    background:linear-gradient(135deg, var(--surface-1) 0%, var(--bg) 100%);
+    scroll-margin-top:80px;
+  }
+  .ph-badge {
+    font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:2px;
+    color:var(--amber); background:var(--amber-soft); border:1px solid rgba(192,117,40,0.25);
+    border-radius:5px; padding:4px 12px; display:inline-block; margin-bottom:16px;
+  }
+  .placeholder-section h3 { font-family:'Playfair Display', serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:10px; }
+  .placeholder-section p { font-size:14px; line-height:1.82; color:var(--text-mid); }
+  .ph-slots { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; margin-top:20px; }
+  .ph-slot {
+    border:1.5px dashed var(--border-soft); border-radius:10px; padding:18px;
+    min-height:80px; display:flex; flex-direction:column; gap:7px;
+    background:var(--surface-0); transition:border-color 0.2s, background 0.2s;
+  }
+  .ph-slot:hover { border-color:var(--border); background:var(--surface-1); }
+  .ph-slot-label {
+    font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:1.5px;
+    text-transform:uppercase; color:var(--text-faint);
+  }
+  .ph-slot-name { font-size:13px; color:var(--text-muted); font-weight:500; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top:1px solid var(--border-faint);
+    background:var(--surface-0);
+    padding:28px 64px;
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:10px;
+  }
+  .footer-text { font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-faint); }
+
+  /* ── MEDIA ── */
+  @media(max-width:700px){
+    nav, footer, .hero, .content-wrap, .jump-nav { padding-left:24px; padding-right:24px; }
+    .grid-2,.grid-3,.grid-4,.sites-grid { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-back" href="Home.html">← Return to Home</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-current">DRONE / UAV · FINE-SCALE MONITORING</span>
+</nav>
+
+<!-- Jump nav -->
+<div class="jump-nav">
+  <span class="jump-label">Jump to</span>
+  <a class="jump-btn" href="#fragmented-mapping">D1 · Fragmented Mapping Method</a>
+  <a class="jump-btn" href="#four-regions">D2 · Four Regions</a>
+  <a class="jump-btn" href="#five-year">D3 · Five-Year Monitoring</a>
+  <a class="jump-btn placeholder" href="#five-year-final">D4 · Final Analysis (Pending)</a>
+</div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-kicker">Scale 03 · Drone / UAV · 8 cm Resolution</div>
+    <h1>Fine-Scale Drone Monitoring of <em>Roseau Cane</em> Habitat</h1>
+    <p class="hero-desc">High-resolution UAV surveys across four Louisiana coastal sites (2021–2025) using deep learning classification. Covers habitat mapping methodology, multi-site characterization, and continuous five-year temporal monitoring for disturbance-resilience analysis at Pass-A-Loutre in the lower Mississippi River Delta.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-val">4 Sites</div><div class="hstat-label">Coastal Regions</div></div>
+      <div class="hstat"><div class="hstat-val">8 cm</div><div class="hstat-label">Drone Spatial Resolution</div></div>
+      <div class="hstat"><div class="hstat-val">92%</div><div class="hstat-label">Best Classification OA</div></div>
+      <div class="hstat"><div class="hstat-val">κ = 0.89</div><div class="hstat-label">Kappa (Oct 2024)</div></div>
+      <div class="hstat"><div class="hstat-val">2021–2025</div><div class="hstat-label">Monitoring Period</div></div>
+    </div>
+    <div class="tag-strip" style="margin-top:28px;">
+      <span class="tag">DJI 600 Pro</span><span class="tag">MicaSense RedEdge-MX</span><span class="tag">U-Net</span><span class="tag">Agisoft Metashape</span><span class="tag">8 Land Cover Classes</span><span class="tag">Pass-A-Loutre</span>
+    </div>
+  </div>
+</section>
+
+<div class="content-wrap">
+
+  <!-- ══ D1: FRAGMENTED MAPPING ══ -->
+  <div class="sub-section" id="fragmented-mapping">
+    <div class="sec-head">
+      
+      <h2>Fragmented Wetland Mapping Method</h2>
+      <div class="sec-rule"></div>
+    </div>
+
+    <a class="ext-link-card" href="https://lsu-its.hub.arcgis.com/pages/wetland-mapping-1~f80469aaaffe4bf89bcbb7a222578351" target="_blank">
+      <div>
+        <div class="elc-label">StoryMaps · Full Interactive Results</div>
+        <div class="elc-title">View Fragmented Wetland Mapping — Interactive ArcGIS StoryMap</div>
+      </div>
+      <div class="elc-arrow">↗</div>
+    </a>
+
+    <div class="info-card">
+      <h3>Overview</h3>
+      <p>This work developed a comprehensive multi-scale classification methodology combining large-area satellite mapping (Landsat, Sentinel-2) with fine-scale drone validation at Pass-A-Loutre. A novel drone sampling strategy was developed specifically to address the limited accessibility challenge in coastal wetland environments — enabling adequate sampling even in areas not reachable by boat.</p>
+      <p>SVM classification of drone imagery produced reliable habitat maps at over 85% accuracy, with detailed separation of Delta vs. European <em>Phragmites</em> and six additional land cover classes. This method forms the methodological foundation for all subsequent drone monitoring work.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="stat-block">
+        <div class="sb-val">&gt; 85%</div>
+        <div class="sb-label">Drone SVM Accuracy</div>
+        <div class="sb-desc">Reliable habitat classification at Pass-A-Loutre using drone imagery and SVM — validated against ground truth samples.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-val">8 Classes</div>
+        <div class="sb-label">Land Cover Categories</div>
+        <div class="sb-desc">Delta Phragmites, European Phragmites, Dead Vegetation, Marsh Grass, Mud, Open Water, Shrub/Woody, Shadow.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-val">92%</div>
+        <div class="sb-label">Satellite Agreement</div>
+        <div class="sb-desc">Drone-derived classification showed ~79% agreement with Landsat/WV-2 results — validating multi-scale consistency.</div>
+      </div>
+    </div>
+
+    <div class="info-card" style="margin-top:20px;">
+      <h3>Key Methodological Contributions</h3>
+      <p><strong>Novel drone sampling strategy:</strong> A customized stake-mounted target system was developed to stabilize survey control points in soft mud and shallow water — solving the core accessibility limitation in wetland drone mapping.</p>
+      <p><strong>Multi-scale integration:</strong> Drone results directly validated Landsat and WorldView-2 classifications, establishing the consistency and reliability of the broader mapping framework from 30 m down to 8 cm resolution.</p>
+      <p><strong>Temporal baseline:</strong> Initial drone surveys (Fall 2020 to May 2022) at Pass-A-Loutre established the habitat change baseline that underpins the 5-year monitoring work (D3).</p>
+    </div>
+
+    <div class="tag-strip">
+      <span class="tag">Landsat</span><span class="tag">Sentinel-2</span><span class="tag">UAV</span><span class="tag">SVM</span><span class="tag">2010–2022</span><span class="tag">Pass-A-Loutre</span><span class="tag">Accessibility Solution</span>
+    </div>
+  </div><!-- /D1 -->
+
+
+  <!-- ══ D2: FOUR REGIONS ══ -->
+  <div class="sub-section" id="four-regions">
+    <div class="sec-head">
+      
+      <h2>Drone Monitoring Across Four Coastal Regions</h2>
+      <div class="sec-rule"></div>
+    </div>
+
+    <a class="ext-link-card" href="https://lsu-its.hub.arcgis.com/pages/drone-monitoring~b700dd0b474b4f2a9e7a734c331e5153" target="_blank">
+      <div>
+        <div class="elc-label">Experience Builder · Full Interactive Map</div>
+        <div class="elc-title">Explore Drone Monitoring — All Four Regions Interactive App</div>
+      </div>
+      <div class="elc-arrow">↗</div>
+    </a>
+
+    <div class="info-card">
+      <h3>Overview</h3>
+      <p>UAV surveys were conducted across four ecologically distinct Louisiana coastal sites to characterize Roseau cane distribution and habitat conditions at fine scale. A deep learning (U-Net) classifier was applied to high-resolution drone orthomosaics at each site, producing 8-class land cover maps. Site-specific challenges (shallow water, sun glint, launch logistics) were addressed through iterative field protocol optimization.</p>
+    </div>
+
+    <div class="sites-grid">
+      <div class="site-card">
+        <div class="site-num">SITE 01</div>
+        <div class="site-name">Lower MRD — Pass-A-Loutre</div>
+        <div class="site-desc">Primary long-term monitoring site. Dense Roseau cane stands dominated by Delta phenotype. Deep-water access via two-boat operation.</div>
+      </div>
+      <div class="site-card">
+        <div class="site-num">SITE 02</div>
+        <div class="site-name">Rockefeller Wildlife Refuge</div>
+        <div class="site-desc">Extremely shallow water levels required airboat support from refuge director. Largest drone coverage area; expanded mapping plan optimized over five test flights.</div>
+      </div>
+      <div class="site-card">
+        <div class="site-num">SITE 03</div>
+        <div class="site-name">Atchafalaya Basin</div>
+        <div class="site-desc">Shallow water and no boat launch for industrial drones. Phantom 4 with natural color camera deployed from boat. Plant types confirmed by angle observation.</div>
+      </div>
+      <div class="site-card">
+        <div class="site-num">SITE 04</div>
+        <div class="site-name">Vermilion Bay</div>
+        <div class="site-desc">Significant open water presence causing sun-glint and rolling artifacts. Flight parameters adapted based on sun angle; strategies refined for fall 2025.</div>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="stat-block">
+        <div class="sb-val">U-Net</div>
+        <div class="sb-label">Deep Learning Classifier</div>
+        <div class="sb-desc">Pixel-level classification across all four sites — outperforming traditional SVM for complex multi-site mapping.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-val">κ = 0.89</div>
+        <div class="sb-label">Kappa Coefficient</div>
+        <div class="sb-desc">High agreement between classified maps and validation data across all four regions.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-val">8 Classes</div>
+        <div class="sb-label">Land Cover per Site</div>
+        <div class="sb-desc">Consistent 8-class scheme: Delta Phragmites, European Phragmites, Dead Veg., Marsh Grass, Mud, Water, Shadow, Shrub.</div>
+      </div>
+    </div>
+
+    <div class="info-card" style="margin-top:20px;">
+      <h3>Equipment &amp; Field Methods</h3>
+      <p><strong>Platform:</strong> DJI Matrice 600 Pro with MicaSense RedEdge-MX dual camera system (10 spectral bands). Flights conducted at 120 m altitude, 75% overlap, 8 m/s speed. Orthomosaics generated at ~8 cm spatial resolution via Agisoft Metashape photogrammetric processing.</p>
+      <p><strong>Control targets:</strong> Customized stake-mounted targets (24-inch and 36-inch stakes) for stable ground control in soft mud. Larger target dimensions adopted starting Fall 2023 to improve recognition accuracy.</p>
+      <p><strong>Reflectance calibration:</strong> Calibration panel measurements taken immediately before and after each flight to ensure radiometric consistency across dates.</p>
+    </div>
+
+    <div class="tag-strip">
+      <span class="tag">4 Sites</span><span class="tag">U-Net</span><span class="tag">DJI 600 Pro</span><span class="tag">MicaSense 10-band</span><span class="tag">κ = 0.89</span>
+    </div>
+  </div><!-- /D2 -->
+
+
+  <!-- ══ D3: FIVE-YEAR ══ -->
+  <div class="sub-section" id="five-year">
+    <div class="sec-head">
+      
+      <h2>Five-Year Drone Monitoring — Roseau Cane Resilience, Lower MRD (2022–2025)</h2>
+      <div class="sec-rule"></div>
+    </div>
+
+    <div class="info-card">
+      <h3>Overview</h3>
+      <p>Roseau cane habitat dynamics operate on multi-year timescales driven by compound disturbances — freeze events, hurricane storm surges, and gradual environmental change. Short-term surveys cannot capture the full trajectory of resilience and recovery. To address this, continuous fine-scale drone monitoring has been conducted at the Pass-A-Loutre site in the lower Mississippi River Delta (MRD) since 2022, with surveys each summer and fall season. The same DJI Matrice 600 Pro platform with MicaSense RedEdge-MX dual camera system, flight settings, and U-Net deep learning classification are applied consistently across all surveys to ensure full temporal comparability.</p>
+      <p>Seven classified surveys are now available spanning Fall 2022 through Fall 2025. The October 2024 survey achieved the highest documented accuracy at 92% overall accuracy (κ = 0.89). Select any survey date on the timeline below to view its classification result and land cover legend.</p>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:24px;">
+      <div class="stat-block">
+        <div class="sb-val">7</div>
+        <div class="sb-label">Classified Surveys</div>
+        <div class="sb-desc">Fall 2022 through Fall 2025 — two surveys per year (summer + fall) at Pass-A-Loutre, lower MRD.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-val">90-92% OA</div>
+        <div class="sb-label">Best Accuracy: 92% (Oct 2024)</div>
+        <div class="sb-desc">U-Net classification. Full confusion matrix with per-class user and producer accuracies documented.</div>
+      </div>
+      <div class="stat-block">
+        <div class="sb-val">κ = 0.80-0.89</div>
+        <div class="sb-label">Best Kappa: 0.89 (Oct 2024)</div>
+        <div class="sb-desc">High inter-rater agreement confirms reliability of Oct 2024 map for change analysis benchmarking.</div>
+      </div>
+    </div>
+
+    <!-- INTERACTIVE TIMELINE -->
+    <div class="tl-wrapper">
+      <h3>Survey Results — Pass-A-Loutre, Lower MRD <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:400;color:rgba(255,255,255,0.3);margin-left:10px;">Select a date to view map</span></h3>
+      <div class="tl-rail" id="tlRail">
+        <div class="tl-node" data-idx="0" onclick="tlSelect(0)">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-season">Fall 2022</div>
+          <div class="tl-date">2022-12-07</div>
+          <div class="tl-click-hint">View map</div>
+        </div>
+        <div class="tl-node" data-idx="1" onclick="tlSelect(1)">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-season">Summer 2023</div>
+          <div class="tl-date">2023-06-07</div>
+          <div class="tl-click-hint">View map</div>
+        </div>
+        <div class="tl-node" data-idx="2" onclick="tlSelect(2)">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-season">Fall 2023</div>
+          <div class="tl-date">2023-10-09</div>
+          <div class="tl-click-hint">View map</div>
+        </div>
+        <div class="tl-node" data-idx="3" onclick="tlSelect(3)">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-season">Summer 2024</div>
+          <div class="tl-date">2024-06-07</div>
+          <div class="tl-click-hint">View map</div>
+        </div>
+        <div class="tl-node featured" data-idx="4" onclick="tlSelect(4)">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-season">Fall 2024</div>
+          <div class="tl-date">2024-10-28</div>
+          <div class="tl-click-hint">View map</div>
+          <div class="tl-star">★ Featured</div>
+        </div>
+        <div class="tl-node" data-idx="5" onclick="tlSelect(5)">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-season">Summer 2025</div>
+          <div class="tl-date">2025-06-03</div>
+          <div class="tl-click-hint">View map</div>
+        </div>
+        <div class="tl-node" data-idx="6" onclick="tlSelect(6)">
+          <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+          <div class="tl-season">Fall 2025</div>
+          <div class="tl-date">2025-10-21</div>
+          <div class="tl-click-hint">View map</div>
+        </div>
+      </div>
+
+      <!-- Result panel -->
+      <div class="result-panel" id="resultPanel">
+        <div class="result-panel-inner">
+          <div class="rp-header">
+            <div class="rp-title-group">
+              <span class="rp-badge" id="rpBadge"></span>
+              <span class="rp-title" id="rpTitle"></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="rp-acc" id="rpAcc"></span>
+              <button class="rp-close" onclick="tlClose()">✕ Close</button>
+            </div>
+          </div>
+          <div class="rp-map-wrap">
+            <iframe id="rpIframe" src="about:blank" allowfullscreen title="Survey classification map"></iframe>
+            <div class="rp-map-label" id="rpMapLabel"></div>
+          </div>
+          <div class="rp-legend" id="rpLegend"></div>
+        </div>
+      </div>
+    </div><!-- /tl-wrapper -->
+
+    <!-- Featured Accuracy Table -->
+    <div class="featured-acc-card">
+      <div class="featured-acc-head">
+        <span class="featured-badge-standalone">★ Featured Accuracy</span>
+        <span class="featured-acc-title">Accuracy Assessment — Fall 2024 Survey (2024-10-28)</span>
+      </div>
+      <div class="featured-acc-body">
+        <p style="font-size:13px;line-height:1.75;color:var(--text-mid);margin-bottom:16px;">A comprehensive accuracy assessment was conducted for the October 2024 classification using 314 reference points across all 8 land cover classes. The U-Net model achieved an overall accuracy of 92% (κ = 0.89). Accuracy assessments for remaining surveys will be added as they are completed.</p>
+        <table class="data-table">
+          <thead>
+            <tr><th>Class</th><th>Ref. Points</th><th>Correctly Classified</th><th>User Accuracy</th><th>Producer Accuracy</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>C1 — Dead Vegetation</td><td>15</td><td>15</td><td class="val-accent">1.00</td><td class="val-accent">1.00</td></tr>
+            <tr><td>C2 — Delta Phragmites</td><td>117</td><td>105</td><td class="val-accent">0.90</td><td class="val-accent">1.00</td></tr>
+            <tr><td>C3 — European Phragmites</td><td>13</td><td>12</td><td class="val-accent">0.92</td><td>0.50</td></tr>
+            <tr><td>C4 — Marsh Grass</td><td>98</td><td>93</td><td class="val-accent">0.95</td><td class="val-accent">0.90</td></tr>
+            <tr><td>C5 — Mud</td><td>7</td><td>7</td><td class="val-accent">1.00</td><td class="val-accent">1.00</td></tr>
+            <tr><td>C6 — Water</td><td>22</td><td>21</td><td class="val-accent">0.95</td><td class="val-accent">1.00</td></tr>
+            <tr><td>C7 — Shadow</td><td>15</td><td>15</td><td class="val-accent">1.00</td><td class="val-accent">1.00</td></tr>
+            <tr><td>C8 — Shrub</td><td>27</td><td>21</td><td>0.78</td><td>0.88</td></tr>
+            <tr class="row-hl"><td colspan="3"><strong>Overall Accuracy</strong></td><td colspan="2" class="val-accent"><strong>0.92 (92%) — 314 reference points</strong></td></tr>
+            <tr class="row-hl"><td colspan="3"><strong>Kappa Coefficient</strong></td><td colspan="2" class="val-accent"><strong>κ = 0.89</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Disturbance Context -->
+    <div class="info-card" style="margin-top:20px;">
+      <h3>Environmental Context — Disturbance Events Captured in the Monitoring Window</h3>
+      <p style="margin-bottom:20px;">The five-year monitoring window deliberately spans multiple disturbance cycles to quantify Roseau cane response and recovery trajectories.</p>
+      <div class="grid-2">
+
+        <div style="border:1px solid var(--border-soft); border-radius:10px; padding:18px 20px;">
+          <div style="font-size:20px; margin-bottom:8px;">🌨</div>
+          <div style="font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:8px;">Freeze &amp; Drought Events</div>
+          <p style="font-size:13px; line-height:1.7; color:var(--text-mid); margin-bottom:12px;">Winter freeze episodes cause rapid die-back in Roseau cane stands, creating distinct spectral signatures visible in post-freeze drone imagery. Recovery monitoring reveals species-specific resilience patterns.</p>
+          <div style="background:var(--accent-soft); border-left:2px solid var(--accent); padding:8px 12px; border-radius:0 6px 6px 0;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:4px;">Monitoring Relevance</div>
+            <div style="font-size:12px; line-height:1.6; color:var(--text-mid);">Allows quantification of freeze-induced canopy loss area and recovery timeline through sequential classification maps.</div>
+          </div>
+        </div>
+
+        <div style="border:1px solid var(--border-soft); border-radius:10px; padding:18px 20px;">
+          <div style="font-size:20px; margin-bottom:8px;">🌀</div>
+          <div style="font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:8px;">Storm Surges &amp; Hurricanes</div>
+          <p style="font-size:13px; line-height:1.7; color:var(--text-mid); margin-bottom:12px;">Gulf coast tropical events introduce saltwater intrusion and mechanical damage to Roseau cane stands. Post-storm surveys document extent of physical disturbance and subsequent vegetation recovery dynamics.</p>
+          <div style="background:var(--accent-soft); border-left:2px solid var(--accent); padding:8px 12px; border-radius:0 6px 6px 0;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:4px;">Monitoring Relevance</div>
+            <div style="font-size:12px; line-height:1.6; color:var(--text-mid);">Map and quantify disturbances and recovery of Roseau Cane and other marshes from natural hazards.</div>
+          </div>
+        </div>
+
+        <div style="border:1px solid var(--border-soft); border-radius:10px; padding:18px 20px;">
+          <div style="font-size:20px; margin-bottom:8px;">💧</div>
+          <div style="font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:8px;">Hydrological Fluctuations</div>
+          <p style="font-size:13px; line-height:1.7; color:var(--text-mid); margin-bottom:12px;">Extreme water level variability, soil salinity, water salinity and inundation — profoundly affects Roseau Cane condition across the study period.</p>
+          <div style="background:var(--accent-soft); border-left:2px solid var(--accent); padding:8px 12px; border-radius:0 6px 6px 0;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:4px;">Monitoring Relevance</div>
+            <div style="font-size:12px; line-height:1.6; color:var(--text-mid);">Quantify 3D-structure of Roseau Cane habitat and see its relationship with inundation.</div>
+          </div>
+        </div>
+
+        <div style="border:1px solid var(--border-soft); border-radius:10px; padding:18px 20px;">
+          <div style="font-size:20px; margin-bottom:8px;">🌿</div>
+          <div style="font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:8px;">Environmental Change</div>
+          <p style="font-size:13px; line-height:1.7; color:var(--text-mid); margin-bottom:12px;">Long-term subsidence, sediment dynamics, and salinity shifts in the lower MRD create cumulative stressors on Roseau cane habitat. Five-year monitoring captures trends invisible in single-season snapshots.</p>
+          <div style="background:var(--accent-soft); border-left:2px solid var(--accent); padding:8px 12px; border-radius:0 6px 6px 0;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:4px;">Monitoring Relevance</div>
+            <div style="font-size:12px; line-height:1.6; color:var(--text-mid);">Trend analysis across 5 years separates episodic disturbance from directional habitat change trajectory.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="tag-strip">
+      <span class="tag">2022–2025</span><span class="tag">7 Surveys</span><span class="tag">Temporal Change</span><span class="tag">Resilience</span><span class="tag">Pass-A-Loutre</span><span class="tag">U-Net</span><span class="tag">ArcGIS Online</span>
+    </div>
+  </div><!-- /D3 -->
+
+  <script>
+  var surveys = [
+    { idx:0, season:'Fall 2022',   date:'2022-12-07', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'d637391b91d44972b221e3b4f6b7f1f3', expUrl:'https://experience.arcgis.com/experience/763f451081164458b32dc347233f1870' },
+    { idx:1, season:'Summer 2023', date:'2023-06-07', acc:'Accuracy TBD',         featured:false, legend:'7', webmapId:'f2bccc3308bf4590a543554d06f042ba',  expUrl:'https://experience.arcgis.com/experience/4725e3349ae64c51a318b9683b592dcf' },
+    { idx:2, season:'Fall 2023',   date:'2023-10-09', acc:'Accuracy TBD',         featured:false, legend:'7', webmapId:'44db2defce66479ab7b2bd605523af48',  expUrl:'https://experience.arcgis.com/experience/d1c8ac1fea8a4d419fa23c57ed76a119' },
+    { idx:3, season:'Summer 2024', date:'2024-06-07', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'090fc7c541ea4476b105318d820a55dc',  expUrl:'https://experience.arcgis.com/experience/cc3334ee778d43889bacdda8239fef38' },
+    { idx:4, season:'Fall 2024',   date:'2024-10-28', acc:'OA 92%  ·  κ = 0.89', featured:true,  legend:'8', webmapId:'cc8df8c01ee2469d878fb1f5439fb428',  expUrl:'https://experience.arcgis.com/experience/51d7a111a8924809ba8a6bdaacb01e74' },
+    { idx:5, season:'Summer 2025', date:'2025-06-03', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'43a6c44294cf4224825caf86ec4a495a',  expUrl:'https://experience.arcgis.com/experience/9c11afc49ff64c28a108c2416dd03f5e' },
+    { idx:6, season:'Fall 2025',   date:'2025-10-21', acc:'Accuracy TBD',         featured:false, legend:'8', webmapId:'8645879e06e949a287abdbf047f7017f',  expUrl:'https://experience.arcgis.com/experience/24b92f5d51fe454ea4ecfd65ad829685' }
+  ];
+
+  // ArcGIS basemap IDs mapped to Map Viewer basemap parameter
+  var basemapMap = {
+    'satellite': '55ebf90799fa4a3fa57562700a68c405',
+    'hybrid':    'dac2a5516fa14b498da1c4688cfff3ab',
+    'topo':      '5e9b3685f4c24d8781073dd928ebda50',
+    'streets':   '27f6ff14ce464b099e4f6e7b5ffffd00',
+    'gray':      '291da5eab3a0412593b66d384379f89f',
+    'oceans':    '5ae9e138a17842688b0b79283a4353f6'
+  };
+
+  var legend8 = [
+    { label:'Dead Vegetation',     color:'rgb(115,38,0)'    },
+    { label:'Delta Phragmites',    color:'rgb(38,115,0)'    },
+    { label:'European Phragmites', color:'rgb(152,230,0)'   },
+    { label:'Marsh Grass',         color:'rgb(255,255,0)'   },
+    { label:'Mud',                 color:'rgb(255,235,175)' },
+    { label:'Water',               color:'rgb(122,182,245)' },
+    { label:'Shadow',              color:'rgb(0,0,0)'       },
+    { label:'Shrub',               color:'rgb(137,137,68)'  }
+  ];
+  var legend7 = [
+    { label:'Dead Vegetation',     color:'rgb(115,38,0)'    },
+    { label:'Delta Phragmites',    color:'rgb(38,115,0)'    },
+    { label:'European Phragmites', color:'rgb(152,230,0)'   },
+    { label:'Marsh Grass',         color:'rgb(255,255,0)'   },
+    { label:'Water',               color:'rgb(122,182,245)' },
+    { label:'Shadow',              color:'rgb(0,0,0)'       },
+    { label:'Shrub',               color:'rgb(137,137,68)'  }
+  ];
+
+  var activeIdx      = -1;
+  var PORTAL     = 'https://lsu-its.maps.arcgis.com';
+  var MAP_CENTER = '-89.1909746695004,29.138589799975524';
+  var MAP_SCALE  = '17587.984538975445';
+
+  function buildUrl(survey) {
+    if (survey.expUrl) {
+      return survey.expUrl;
+    }
+    return PORTAL + '/apps/mapviewer/index.html'
+      + '?webmap=' + survey.webmapId
+      + '&embed=true'
+      + '&center=' + MAP_CENTER
+      + '&scale=' + MAP_SCALE;
+  }
+
+  function tlSelect(idx) {
+    var nodes  = document.querySelectorAll('.tl-node');
+    var panel  = document.getElementById('resultPanel');
+    var survey = surveys[idx];
+    if (activeIdx === idx) { tlClose(); return; }
+    nodes.forEach(function(n, i) {
+      n.classList.remove('active', 'visited');
+      if (i < idx) n.classList.add('visited');
+    });
+    nodes[idx].classList.add('active');
+    activeIdx = idx;
+
+    var badge = document.getElementById('rpBadge');
+    badge.textContent = survey.season;
+    badge.className   = survey.featured ? 'rp-badge featured-badge' : 'rp-badge';
+    document.getElementById('rpTitle').textContent = 'Classification Map — ' + survey.date;
+    var accEl = document.getElementById('rpAcc');
+    accEl.textContent = survey.acc;
+    accEl.className   = survey.acc === 'Accuracy TBD' ? 'rp-acc tbd' : 'rp-acc';
+    document.getElementById('rpMapLabel').textContent = survey.season + ' · ' + survey.date + ' · U-Net · Pass-A-Loutre';
+    document.getElementById('rpIframe').src = buildUrl(survey);
+
+    buildLegend(idx);
+    panel.classList.add('open');
+    setTimeout(function() {
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  function tlClose() {
+    document.querySelectorAll('.tl-node').forEach(function(n) {
+      n.classList.remove('active', 'visited');
+    });
+    document.getElementById('resultPanel').classList.remove('open');
+    document.getElementById('rpIframe').src = 'about:blank';
+    document.getElementById('rpLegend').innerHTML = '';
+    activeIdx = -1;
+  }
+
+  function buildLegend(idx) {
+    var items = surveys[idx].legend === '7' ? legend7 : legend8;
+    var el    = document.getElementById('rpLegend');
+    var html  = '<div class="rp-legend-title">Land Cover Classes — ' + surveys[idx].season + '</div>';
+    items.forEach(function(item) {
+      html += '<div class="rp-legend-item">'
+        + '<div class="rp-legend-swatch" style="background:' + item.color + ';'
+        + (item.color === 'rgb(0,0,0)' ? 'border-color:rgba(255,255,255,0.3);' : '')
+        + '"></div>' + item.label + '</div>';
+    });
+    el.innerHTML = html;
+  }
+  </script>
+
+
+  <!-- ══ D4: FINAL ANALYSIS (PLACEHOLDER) ══ -->
+  <div class="sub-section" id="five-year-final">
+    <div class="sec-head">
+      
+      <h2>Five-Year Mid-Term Habitat Change &amp; Resilience Analysis — Final Report</h2>
+      <div class="sec-rule"></div>
+    </div>
+
+    <div class="placeholder-section">
+      <div class="ph-badge">⏳ In Progress — Work not yet complete</div>
+      <h3>Comprehensive Mid-Term Change Detection &amp; Resilience Analysis (2021–2027)</h3>
+      <p>This section will present the complete mid-term analysis integrating all drone surveys from 2021 through project end (Aug 2027). It will quantify habitat shifts, coverage trajectories from disturbance events (2021 freeze, hurricanes, extreme drought 2023), and long-term trends in Roseau cane coverage and condition at the lower MRD site. To be completed once the full 5-year dataset is assembled and all surveys are classified.</p>
+      <div class="ph-slots">
+        <div class="ph-slot">
+          <div class="ph-slot-label">Add Here</div>
+          <div class="ph-slot-name">5-Year Area Change Summary Chart</div>
+        </div>
+        <div class="ph-slot">
+          <div class="ph-slot-label">Add Here</div>
+          <div class="ph-slot-name">Per-Class Change Maps (All Years)</div>
+        </div>
+        <div class="ph-slot">
+          <div class="ph-slot-label">Add Here</div>
+          <div class="ph-slot-name">Disturbance–Recovery Trajectory Analysis</div>
+        </div>
+        <div class="ph-slot">
+          <div class="ph-slot-label">Add Here</div>
+          <div class="ph-slot-name">Final Classification (Jun 2025 + later surveys)</div>
+        </div>
+        <div class="ph-slot">
+          <div class="ph-slot-label">Add Here</div>
+          <div class="ph-slot-name">Resilience Index / Recovery Rate Metrics</div>
+        </div>
+        <div class="ph-slot">
+          <div class="ph-slot-label">Add Here</div>
+          <div class="ph-slot-name">Summary Statistics Table (All Survey Dates)</div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /D4 -->
+
+</div>
+
+<footer>
+  <span class="footer-text">← <a href="Home.html" style="color:var(--accent);text-decoration:none;">Return to Home</a></span>
+  <span class="footer-text">Louisiana State University · Dr. Xuelian Meng · AP23PPQS&amp;T00C161</span>
+</footer>
+
+</body>
+</html>
